@@ -523,7 +523,7 @@ Te recomendamos explorar las siguientes opciones:
 ### Primeros pasos
 
 > :information_source: Antes de comenzar a programar te recomendamos leer y
-> seguir con detenimiento la [**guía de _primeros pasos_**](./GETTING-STARTED-MONGODB.md)
+> seguir con detenimiento la [**guía de _primeros pasos_**]([./GETTING-STARTED-MONGODB.md](https://github.com/Laboratoria/DEV002-burger-queen-api/blob/main/GETTING-STARTED.md))
 > para ayudarte con el stack recomendado y configurar tu entorno de desarrollo.
 
 ### Otros recursos
