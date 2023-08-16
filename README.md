@@ -45,7 +45,7 @@ Esto implica que tendremos que partir por leer la implementación existente, y
 familiarizarnos con el _stack_ elegido ([Node.js](https://nodejs.org/) y
 [Express](https://expressjs.com/)) y complementarlo con un motor de bases de
 datos. Recomendamos el uso de [MongoDB](https://www.mongodb.com/) y tenemos una
-[guía para empezar con MongoDB](./guides/GETTING-STARTED-MONGO-DB.md).
+[guía para empezar con MongoDB](https://github.com/Laboratoria/DEV004-burger-queen-api/blob/main/guides/GETTING-STARTED-MONGODB.md).
 
 La clienta nos ha dado un [link a la documentación](https://app.swaggerhub.com/apis-docs/ssinuco/BurgerQueenAPI/2.0.0)
 que especifica el comportamiento esperado de la API que expondremos por
