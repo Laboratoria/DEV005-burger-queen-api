@@ -4,9 +4,6 @@ services:
     image: mongo:6
     environment:
       NODE_ENV: production
-      JWT_SECRET: xxxxxxxx
-      ADMIN_EMAIL: admin@localhost
-      ADMIN_PASSWORD: changeme
       MONGO_INITDB_ROOT_USERNAME: bq
       MONGO_INITDB_ROOT_PASSWORD: secret
     volumes:
@@ -21,7 +18,7 @@ services:
     environment:
       NODE_ENV: production
       PORT: 8080
-      DB_URL: mongodb+srv://bq:secret@cluster0:27017/ #esta hay que cambiarla parece
+      DB_URL: mongodb://bq:secret@db:27017/ #esta hay que cambiarla parece
       JWT_SECRET: xxxxxxxx
       ADMIN_EMAIL: admin@localhost
       ADMIN_PASSWORD: changeme
