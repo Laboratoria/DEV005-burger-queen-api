@@ -1,9 +1,12 @@
+/* eslint-disable import/no-extraneous-dependencies */
+/* eslint-disable no-console */
+/* eslint-disable no-promise-executor-return */
 const path = require('path');
 const { spawn } = require('child_process');
 const kill = require('tree-kill');
 const { MongoClient } = require('mongodb');
 
-const mongoGlobalSetup = require("@shelf/jest-mongodb/lib/setup");
+const mongoGlobalSetup = require('@shelf/jest-mongodb/lib/setup');
 
 const config = require('../config');
 
@@ -108,16 +111,16 @@ module.exports = () => new Promise((resolve, reject) => {
     return resolve();
   }
 
-  mongoGlobalSetup({rootDir: __dirname}).then(async () => {
-
+  mongoGlobalSetup({ rootDir: __dirname }).then(async () => {
     console.info('\n Starting local server...');
-
-    const child = spawn(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', ['start', port],
+    const child = spawn(
+      /^win/.test(process.platform) ? 'npm.cmd' : 'npm',
+      ['start', port],
       {
-        cwd: path.resolve(__dirname, "../"),
-        stdio: ["ignore", "pipe", "pipe"],
-        env: { PATH: process.env.PATH, MONGO_URL: process.env.MONGO_URL }
-      }
+        cwd: path.resolve(__dirname, '../'),
+        stdio: ['ignore', 'pipe', 'pipe'],
+        env: { PATH: process.env.PATH, MONGO_URL: process.env.MONGO_URL },
+      },
     );
 
     Object.assign(__e2e, { childProcessPid: child.pid });
@@ -147,8 +150,8 @@ module.exports = () => new Promise((resolve, reject) => {
       .catch((err) => {
         console.log('there was an error');
         kill(child.pid, 'SIGKILL', () => reject(err));
-      })
-    }).catch((error)=> console.log(error));
+      });
+  }).catch((error) => console.log(error));
 });
 
 // Export globals - ugly... :-(
