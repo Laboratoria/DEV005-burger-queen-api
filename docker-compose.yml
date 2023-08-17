@@ -6,7 +6,7 @@ services:
     environment:
       NODE_ENV: production
       PORT: 27017
-      DB_URL: mongodb://127.0.0.1:27017/test
+      DB_URL: mongodb://127.0.0.1:27017/
       JWT_SECRET: xxxxxxxx
       ADMIN_EMAIL: admin@localhost
       ADMIN_PASSWORD: changeme
@@ -24,12 +24,13 @@ services:
     environment:
       NODE_ENV: production
       PORT: 8080
-      DB_URL: http://localhost:8080/test
+      DB_URL: http://localhost:8080/ #esta hay que cambiarla parece
       JWT_SECRET: xxxxxxxx
       ADMIN_EMAIL: admin@localhost
       ADMIN_PASSWORD: changeme
     volumes:
-      - ./db-data:/data/node
+      - ./:/home/node/app
+    expose:
       - 8080
     ports:
       - 80:8080
@@ -37,6 +38,7 @@ services:
     depends_on:
       - db
     networks:
+      - public
       - private
 networks:
   public:
