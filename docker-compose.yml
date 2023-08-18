@@ -10,6 +10,10 @@ services:
     restart: always
     networks:
       - private
+    expose:
+      - 27017
+    ports:
+      - 28017:27017
   node:
     image: node:20
     user: node
@@ -17,7 +21,7 @@ services:
     environment:
       NODE_ENV: production
       PORT: 8080
-      DB_URL: mongodb://bq:secret@localhost:27017/ #esta hay que cambiarla parece
+      DB_URL: mongodb://db:secret@localhost:27017/
       JWT_SECRET: xxxxxxxx
       ADMIN_EMAIL: admin@localhost
       ADMIN_PASSWORD: changeme

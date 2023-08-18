@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "@shelf/jest-mongodb": "^4.1.7",
-    "bcrypt": "^5.0.1",
+    "bcrypt": "^5.1.1",
     "body-parser": "^1.19.0",
     "express": "^4.17.1",
     "jsdoc": "^4.0.2",
@@ -34,7 +34,7 @@
     "@babel/eslint-parser": "^7.22.10",
     "@babel/preset-env": "^7.22.10",
     "docdash": "^1.2.0",
-    "eslint": "^8.3.0",
+    "eslint": "^8.47.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.22.1",
     "gh-pages": "^3.1.0",
