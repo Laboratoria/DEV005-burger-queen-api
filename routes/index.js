@@ -10,7 +10,6 @@ const root = (app, next) => {
   return next();
 };
 
-// eslint-disable-next-line consistent-return
 const register = (app, routes, cb) => {
   if (!routes.length) {
     return cb();
