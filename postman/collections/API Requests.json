@@ -32,13 +32,12 @@
 							}
 						},
 						"url": {
-							"raw": "https://burger-queen-api-mock-u59i-dev.fl0.io/login",
-							"protocol": "https",
+							"raw": "http://localhost:80/login",
+							"protocol": "http",
 							"host": [
-								"burger-queen-api-mock-u59i-dev",
-								"fl0",
-								"io"
+								"localhost"
 							],
+							"port": "80",
 							"path": [
 								"login"
 							]
@@ -48,7 +47,7 @@
 				}
 			],
 			"id": "da7eec78-230c-4e4b-8019-95b73c44aa58",
-			"description": "Collection containing all the request for the login endpoint."
+			"description": "Collection containing the POST/login request"
 		},
 		{
 			"name": "Users",
@@ -61,23 +60,22 @@
 					},
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
 						"url": {
-							"raw": "https://burger-queen-api-mock-r47a.onrender.com/users?content-type: =application/json",
-							"protocol": "https",
+							"raw": "http://localhost:80/users",
+							"protocol": "http",
 							"host": [
-								"burger-queen-api-mock-r47a",
-								"onrender",
-								"com"
+								"localhost"
 							],
+							"port": "80",
 							"path": [
 								"users"
-							],
-							"query": [
-								{
-									"key": "content-type: ",
-									"value": "application/json"
-								}
 							]
 						}
 					},
@@ -102,13 +100,12 @@
 							}
 						},
 						"url": {
-							"raw": "https://burger-queen-api-mock-r47a.onrender.com/users",
-							"protocol": "https",
+							"raw": "http://localhost:80/users",
+							"protocol": "http",
 							"host": [
-								"burger-queen-api-mock-r47a",
-								"onrender",
-								"com"
+								"localhost"
 							],
+							"port": "80",
 							"path": [
 								"users"
 							]
@@ -124,7 +121,13 @@
 					},
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "raw",
 							"raw": "",
@@ -135,16 +138,15 @@
 							}
 						},
 						"url": {
-							"raw": "https://burger-queen-api-mock-r47a.onrender.com/users/{id}",
-							"protocol": "https",
+							"raw": "http://localhost:80/users/{uid}",
+							"protocol": "http",
 							"host": [
-								"burger-queen-api-mock-r47a",
-								"onrender",
-								"com"
+								"localhost"
 							],
+							"port": "80",
 							"path": [
 								"users",
-								"{id}"
+								"{uid}"
 							]
 						}
 					},
@@ -169,16 +171,15 @@
 							}
 						},
 						"url": {
-							"raw": "https://burger-queen-api-mock-r47a.onrender.com/users/{id}",
-							"protocol": "https",
+							"raw": "http://localhost:80/users/{uid}",
+							"protocol": "http",
 							"host": [
-								"burger-queen-api-mock-r47a",
-								"onrender",
-								"com"
+								"localhost"
 							],
+							"port": "80",
 							"path": [
 								"users",
-								"{id}"
+								"{uid}"
 							]
 						}
 					},
@@ -203,16 +204,15 @@
 							}
 						},
 						"url": {
-							"raw": "https://burger-queen-api-mock-r47a.onrender.com/users/{id}",
-							"protocol": "https",
+							"raw": "http://localhost:80/users/{uid}",
+							"protocol": "http",
 							"host": [
-								"burger-queen-api-mock-r47a",
-								"onrender",
-								"com"
+								"localhost"
 							],
+							"port": "80",
 							"path": [
 								"users",
-								"{id}"
+								"{uid}"
 							]
 						}
 					},
@@ -250,13 +250,12 @@
 							}
 						},
 						"url": {
-							"raw": "https://burger-queen-api-mock-u59i-dev.fl0.io/orders",
-							"protocol": "https",
+							"raw": "http://localhost:80/orders",
+							"protocol": "http",
 							"host": [
-								"burger-queen-api-mock-u59i-dev",
-								"fl0",
-								"io"
+								"localhost"
 							],
+							"port": "80",
 							"path": [
 								"orders"
 							]
@@ -289,13 +288,12 @@
 							}
 						},
 						"url": {
-							"raw": "https://burger-queen-api-mock-r47a.onrender.com/orders",
-							"protocol": "https",
+							"raw": "http://localhost:80/orders",
+							"protocol": "http",
 							"host": [
-								"burger-queen-api-mock-r47a",
-								"onrender",
-								"com"
+								"localhost"
 							],
+							"port": "80",
 							"path": [
 								"orders"
 							]
@@ -319,16 +317,15 @@
 							}
 						],
 						"url": {
-							"raw": "https://burger-queen-api-mock-r47a.onrender.com/orders/{id}",
-							"protocol": "https",
+							"raw": "http://localhost:80/orders/{orderId}",
+							"protocol": "http",
 							"host": [
-								"burger-queen-api-mock-r47a",
-								"onrender",
-								"com"
+								"localhost"
 							],
+							"port": "80",
 							"path": [
 								"orders",
-								"{id}"
+								"{orderId}"
 							]
 						}
 					},
@@ -350,16 +347,15 @@
 							}
 						],
 						"url": {
-							"raw": "https://burger-queen-api-mock-r47a.onrender.com/orders/{id}",
-							"protocol": "https",
+							"raw": "http://localhost:80/orders/{orderId}",
+							"protocol": "http",
 							"host": [
-								"burger-queen-api-mock-r47a",
-								"onrender",
-								"com"
+								"localhost"
 							],
+							"port": "80",
 							"path": [
 								"orders",
-								"{id}"
+								"{orderId}"
 							]
 						}
 					},
@@ -384,13 +380,12 @@
 							}
 						},
 						"url": {
-							"raw": "https://burger-queen-api-mock-r47a.onrender.com/orders/{orderId}",
-							"protocol": "https",
+							"raw": "http://localhost:80/orders/{orderId}",
+							"protocol": "http",
 							"host": [
-								"burger-queen-api-mock-r47a",
-								"onrender",
-								"com"
+								"localhost"
 							],
+							"port": "80",
 							"path": [
 								"orders",
 								"{orderId}"
@@ -414,7 +409,13 @@
 					},
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "raw",
 							"raw": "",
@@ -425,13 +426,12 @@
 							}
 						},
 						"url": {
-							"raw": "https://burger-queen-api-mock-r47a.onrender.com/products",
-							"protocol": "https",
+							"raw": "http://localhost:80/products",
+							"protocol": "http",
 							"host": [
-								"burger-queen-api-mock-r47a",
-								"onrender",
-								"com"
+								"localhost"
 							],
+							"port": "80",
 							"path": [
 								"products"
 							]
@@ -447,7 +447,13 @@
 					},
 					"request": {
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "raw",
 							"raw": "",
@@ -458,13 +464,12 @@
 							}
 						},
 						"url": {
-							"raw": "https://burger-queen-api-mock-r47a.onrender.com/products",
-							"protocol": "https",
+							"raw": "http://localhost:80/products",
+							"protocol": "http",
 							"host": [
-								"burger-queen-api-mock-r47a",
-								"onrender",
-								"com"
+								"localhost"
 							],
+							"port": "80",
 							"path": [
 								"products"
 							]
@@ -480,7 +485,13 @@
 					},
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "raw",
 							"raw": "",
@@ -491,13 +502,12 @@
 							}
 						},
 						"url": {
-							"raw": "https://burger-queen-api-mock-r47a.onrender.com/products/{productId}",
-							"protocol": "https",
+							"raw": "http://localhost:80/products/{productId}",
+							"protocol": "http",
 							"host": [
-								"burger-queen-api-mock-r47a",
-								"onrender",
-								"com"
+								"localhost"
 							],
+							"port": "80",
 							"path": [
 								"products",
 								"{productId}"
@@ -514,7 +524,13 @@
 					},
 					"request": {
 						"method": "PATCH",
-						"header": [],
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "raw",
 							"raw": "",
@@ -525,13 +541,12 @@
 							}
 						},
 						"url": {
-							"raw": "https://burger-queen-api-mock-r47a.onrender.com/products/{productId}",
-							"protocol": "https",
+							"raw": "http://localhost:80/products/{productId}",
+							"protocol": "http",
 							"host": [
-								"burger-queen-api-mock-r47a",
-								"onrender",
-								"com"
+								"localhost"
 							],
+							"port": "80",
 							"path": [
 								"products",
 								"{productId}"
@@ -548,7 +563,13 @@
 					},
 					"request": {
 						"method": "DELETE",
-						"header": [],
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "raw",
 							"raw": "",
@@ -559,13 +580,12 @@
 							}
 						},
 						"url": {
-							"raw": "https://burger-queen-api-mock-r47a.onrender.com/products/{productId}",
-							"protocol": "https",
+							"raw": "http://localhost:80/products/{productId}",
+							"protocol": "http",
 							"host": [
-								"burger-queen-api-mock-r47a",
-								"onrender",
-								"com"
+								"localhost"
 							],
+							"port": "80",
 							"path": [
 								"products",
 								"{productId}"
