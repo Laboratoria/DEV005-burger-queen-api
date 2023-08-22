@@ -4,6 +4,7 @@ const authMiddleware = require('./middleware/auth');
 const errorHandler = require('./middleware/error');
 const routes = require('./routes');
 const pkg = require('./package.json');
+const { connect } = require('./connect');
 
 const { port, secret } = config;
 const app = express();
@@ -26,5 +27,7 @@ routes(app, (err) => {
 
   app.listen(port, () => {
     console.info(`App listening on port ${port}`);
+    connect().then(console.info);
+    console.info('hola');
   });
 });
