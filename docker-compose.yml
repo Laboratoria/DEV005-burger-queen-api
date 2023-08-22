@@ -3,15 +3,15 @@ services:
   db:
     image: mongo:6
     environment:
-      MONGO_INITDB_ROOT_USERNAME: bq
-      MONGO_INITDB_ROOT_PASSWORD: secret
+      MONGO_INITDB_ROOT_USERNAME: BQKarlaSara
+      MONGO_INITDB_ROOT_PASSWORD: BQKarlaSaraDev007
     volumes:
       - ./db-data:/data/db
     restart: always
     networks:
       - private
     expose:
-      - 28017
+      - 27017
     ports:
       - 28017:27017
   node:
@@ -21,8 +21,8 @@ services:
     environment:
       NODE_ENV: production
       PORT: 8080
-      DB_URL: mongodb://db:secret@localhost:27017/
-      JWT_SECRET: xxxxxxxx
+      DB_URL: mongodb://BQKarlaSara:BQKarlaSaraDev007@db:27017/BQKarlaSara?authSource=admin
+      JWT_SECRET: esta-es-la-api-burger-queen
       ADMIN_EMAIL: admin@localhost
       ADMIN_PASSWORD: changeme
     volumes:
