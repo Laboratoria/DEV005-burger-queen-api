@@ -28,7 +28,7 @@ const orderSchema = new Schema({
     enum: ['En preparación', 'Listo en barra', 'Entregado'],
     default: 'En  preparación',
   },
-  dataEntry: {
+  dateEntry: {
     type: Date,
     default: Date.now(),
   },
