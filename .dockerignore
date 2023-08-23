@@ -1,3 +1,5 @@
-node_modules
+node_modules/
 e2e
 controller
+db-data/
+docs
