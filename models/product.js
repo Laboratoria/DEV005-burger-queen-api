@@ -1,6 +1,9 @@
 const mongoose = require('mongoose');
+const { 
+  Schema,
+  model
+} = mongoose;
 
-const { Schema } = mongoose;
 const productSchema = new Schema({
   id: {
     type: Number,
@@ -35,5 +38,6 @@ const productSchema = new Schema({
   },
 });
 
-const Order = mongoose.model('Order', productSchema);
-exports.default = Order;
+const Product = model('Product', productSchema);
+module.exports = Product;
+

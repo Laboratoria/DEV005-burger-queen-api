@@ -1,5 +1,5 @@
 const bcrypt = require('bcrypt');
-const { User } = require('../models/user');
+const User = require('../models/user');
 const mongoose = require('mongoose');
 
 const {
@@ -11,7 +11,7 @@ const {
   getUsers,
 } = require('../controller/users');
 
-const initAdminUser = async (app, next) => {
+const initAdminUser = (app, next) => {
   const { adminEmail, adminPassword } = app.get('config');
   if (!adminEmail || !adminPassword) {
     return next();
@@ -23,16 +23,25 @@ const initAdminUser = async (app, next) => {
     // password: bcrypt.hashSync(adminPassword, 10),
     role: 'admin',
   };
-
- /*  const userExists = await User.findOne({ email: adminUser.email });
-  if (!userExists) {
+  console.log('hasta aquí voy bien', adminUser)
+  console.log('hasta aquí sigo bien, creo', User)
+  const userExists = User.findOne({ email: adminUser.email })
+  .then((res) => console.log('hasta aquí sigo bien', userExists, res))
+  .then(() => {
+    if (!userExists) {
       try {
           const user = new User(adminUser);
-          await user.save();
+          user.save();
       } catch (error) {
-          console.log(error);
+          console.error(error);
+          console.log('excepción aquí', adminUser);
       }
-  } */
+    }
+  })
+  .catch(err => {
+    console.error(err);
+    console.log('otra excepción aquí', adminUser);
+  });
   next();
 };
 
