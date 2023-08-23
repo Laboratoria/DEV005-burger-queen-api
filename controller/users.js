@@ -1,5 +1,15 @@
+const User = require('../models/user');
+
 module.exports = {
-  getUsers: (req, resp, next) => {
-    // TODO: Implementa la función necesaria para traer la colección `users`
+  validateEmail : (email) => {
+    const validRegEx = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
+    return validRegEx.test(email ?? '');
+  },
+  getUsers: async (req, res, next) => {
+    const users = await User.find()
+        .select("-password -__v")
+        .lean();
+    res.json(users);
   },
 };
+
