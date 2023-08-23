@@ -1,5 +1,6 @@
 const bcrypt = require('bcrypt');
-const User = require('../models/user');
+const { User } = require('../models/user');
+const mongoose = require('mongoose');
 
 const {
   requireAuth,
@@ -23,7 +24,7 @@ const initAdminUser = async (app, next) => {
     role: 'admin',
   };
 
-  const userExists = await User.findOne({ email: adminUser.email });
+ /*  const userExists = await User.findOne({ email: adminUser.email });
   if (!userExists) {
       try {
           const user = new User(adminUser);
@@ -31,7 +32,7 @@ const initAdminUser = async (app, next) => {
       } catch (error) {
           console.log(error);
       }
-  }
+  } */
   next();
 };
 
