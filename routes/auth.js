@@ -24,6 +24,8 @@ module.exports = (app, nextMain) => {
       return next(400);
     }
 
+    
+
     // TODO: autenticar a la usuarix
     // Hay que confirmar si el email y password
     // coinciden con un user en la base de datos
