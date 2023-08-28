@@ -12,7 +12,7 @@ const {
   getUsers,
 } = require('../controller/users');
 
-const initAdminUser = (app, next) => {
+const initAdminUser = async (app, next) => {
   const { adminEmail, adminPassword } = app.get('config');
   if (!adminEmail || !adminPassword) {
     return next();
@@ -27,21 +27,22 @@ const initAdminUser = (app, next) => {
 
   mongoose.connect(dbUrl);
   console.log('hasta aquí voy bien en routes/user.js', User, adminUser);
-  const userExists = User.findOne({ email: adminUser.email })
-    .then(res => console.log('Buscando el usuario...', res.toString(), typeof res))
-    .catch((err) => console.error('No se logró encontrar el usuario: ', adminUser.email, err));
-    if (!userExists) {
-      try {
+
+  const userExists = await User.findOne({ email: adminUser.email })
+    .then(res => { 
+      if (!res) {
+        try {
           const user = new User(adminUser);
           user.save();
           console.info('Usuario administrador creado con éxito');
-      } catch (error) {
-          console.error('Usuario ya existe', error);
+        } catch (error) {
+          console.error('Error al crear usuario', error);
+        }
+      } else {
+      console.log('Ya existe un usuario administrador con email:', res.email);
       }
-    } else {
-      console.log('Ya existe un usuario administrador', userExists);
-    }
-    next();
+    })
+  next();
   };
   
 
