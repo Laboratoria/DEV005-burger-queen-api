@@ -20,8 +20,8 @@ const initAdminUser = async (app, next) => {
 
   const adminUser = {
     email: adminEmail,
-    password: adminPassword,
-    // password: bcrypt.hashSync(adminPassword, 10),
+    // password: adminPassword,
+    password: bcrypt.hashSync(adminPassword, 10),
     role: 'admin',
   };
 
@@ -35,11 +35,13 @@ const initAdminUser = async (app, next) => {
           const user = new User(adminUser);
           user.save();
           console.info('Usuario administrador creado con éxito');
+          console.log('Nuevo usuario creado:', user);
         } catch (error) {
           console.error('Error al crear usuario', error);
         }
       } else {
       console.log('Ya existe un usuario administrador con email:', res.email);
+      console.log('Este es el usuario:', res);
       }
     })
   next();
