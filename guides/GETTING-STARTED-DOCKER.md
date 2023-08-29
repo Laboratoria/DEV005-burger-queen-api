@@ -8,7 +8,7 @@ Para ello te recomendamos seguir los pasos a continuación:
 * [2. Configurar "servicio" de base de datos](#2-configurar-servicio-de-base-de-datos)
 * [3. Configurar conexión a BBDD en "servicio" node](#3-configurar-conexión-a-bbdd-en-servicio-node)
 * [4. Iniciar, re-iniciar y parar los servicios con `docker-compose`](#4-iniciar-re-iniciar-y-parar-los-servicios-con-docker-compose)
-* [5. Familiarizarte con administración de contenedores](#5-familiarizarte-con-admisitración-de-contenedores)
+* [5. Familiarizarte con administración de contenedores](#5-familiarizarte-con-administración-de-contenedores)
 * [6. Opcionalmente, instalar interfaz gráfica para administrar data](#6-opcionalmente-instalar-interfaz-gráfica-para-administrar-data)
 * [7. Corre las pruebas de integración (e2e)](#7-corre-las-pruebas-de-integración-e2e)
 

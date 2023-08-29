@@ -16,7 +16,7 @@ services:
     ports:
       - 28017:27017
   node:
-    image: node:20
+    image: node:18
     user: node
     working_dir: /home/node/app
     environment:
