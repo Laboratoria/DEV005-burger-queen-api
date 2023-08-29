@@ -22,11 +22,20 @@ module.exports = (secret) => (req, res, next) => {
     }
 
     console.log('Token verificado:', decodedToken);
-    console.log('Token verificado2:', decodedToken.userId);
-    console.log('Token verificado2:', decodedToken.uid);
+    console.log('Token.uid verificado:', decodedToken.userId);
 
     // TODO: Verificar identidad del usuario usando `decodeToken.uid`
     req.userId = decodedToken.userId; // Agregar el ID del usuario al objeto `req`
+    req.isAdmin = decodedToken.rol; // Agregar el rol del usuario al objeto `req`
+    req.thisEmail = decodedToken.email; // Agregar el correo del usuario al objeto `req`
+
+    // verificar que sea administrador
+    if (req.isAdmin === 'admin') {
+      req.isAdmin = true;
+    } else {
+      req.isAdmin = false;
+    }
+    
     next(); // Pasar la ejecución al siguiente middleware o controlador
   });
 };
