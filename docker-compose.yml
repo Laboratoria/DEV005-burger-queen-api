@@ -24,7 +24,7 @@ services:
       PORT: 8080
       DB_URL: mongodb://BQKarlaSara:BQKarlaSaraDev007@db:27017/BQKarlaSara?authSource=admin
       JWT_SECRET: esta-es-la-api-burger-queen
-      ADMIN_EMAIL: admin@localhost
+      ADMIN_EMAIL: admin@prueba
       ADMIN_PASSWORD: changeme
     volumes:
       - ./:/home/node/app

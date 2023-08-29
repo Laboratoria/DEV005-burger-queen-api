@@ -1,7 +1,7 @@
 const bcrypt = require('bcrypt');
-const mongoose = require('mongoose');
 const User = require('../models/user');
-const { dbUrl } = require('../config');
+const mongoose = require('mongoose');
+const { dbUrl } = require('../config')
 
 const {
   requireAuth,
@@ -20,30 +20,34 @@ const initAdminUser = async (app, next) => {
 
   const adminUser = {
     email: adminEmail,
-    password: adminPassword,
-    // password: bcrypt.hashSync(adminPassword, 10),
+    // password: adminPassword,
+    password: bcrypt.hashSync(adminPassword, 10),
     role: 'admin',
   };
 
   mongoose.connect(dbUrl);
-  console.log('hasta aquí voy bien en routes/users.js', User, adminUser);
+  console.log('hasta aquí voy bien en routes/user.js', User, adminUser);
 
   const userExists = await User.findOne({ email: adminUser.email })
-    .then(res => {
+    .then(res => { 
       if (!res) {
         try {
           const user = new User(adminUser);
           user.save();
           console.info('Usuario administrador creado con éxito');
+          console.log('Nuevo usuario creado:', user);
         } catch (error) {
           console.error('Error al crear usuario', error);
         }
       } else {
-        console.log('Ya existe un usuario administrador con email:', res.email);
+      console.log('Ya existe un usuario administrador con email:', res.email);
+      console.log('Este es el usuario:', res);
       }
-    });
+    })
   next();
-};
+  };
+  
+
 
 /*
  * Diagrama de flujo de una aplicación y petición en node - express :
