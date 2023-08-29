@@ -33,4 +33,3 @@ routes(app, (err) => {
 /* connect()
 .then(db => db.collections().then(res => console.log('hola index.js', res)))
 .catch(error => console.error(error), 'excepción aquí en index.js'); */
-
