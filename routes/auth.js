@@ -23,7 +23,7 @@ module.exports = (app, nextMain) => {
     if (!email || !password) {
       return next(400);
     }
-    console.log('usuario ', res.body.email, 'está pidiendo un token');
+    console.log('usuario está pidiendo un token');
     
     // TODO: autenticar a la usuarix
     // Hay que confirmar si el email y password
