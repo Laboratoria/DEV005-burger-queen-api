@@ -11,7 +11,7 @@
 			"name": "Auth",
 			"item": [
 				{
-					"name": "/login",
+					"name": "/auth",
 					"id": "e7623876-903f-476d-bd01-d238aea683c2",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
@@ -24,7 +24,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"grace.hopper@systers.xyz\",\r\n    \"password\": \"123456\"\r\n}",
+							"raw": "{\r\n    \"email\": \"admin@localhost\",\r\n    \"password\": \"changeme\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -32,14 +32,14 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:80/login",
+							"raw": "http://localhost:80/auth",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "80",
 							"path": [
-								"login"
+								"auth"
 							]
 						}
 					},
