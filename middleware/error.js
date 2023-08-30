@@ -10,7 +10,6 @@ const isKnownHTTPErrorStatus = (num) => (
   typeof num === 'number' && Object.keys(httpErrors).indexOf(`${num}`) >= 0
 );
 
-// eslint-disable-next-line no-unused-vars
 module.exports = (err, req, res, next) => {
   const statusCode = (isKnownHTTPErrorStatus(err))
     ? err

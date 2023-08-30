@@ -34,18 +34,21 @@ const __e2e = {
 };
 
 const fetch = (url, opts = {}) => import('node-fetch')
-  .then(({ default: fetch }) => fetch(`${baseUrl}${url}`, {
-    ...opts,
-    headers: {
-      'content-type': 'application/json',
-      ...opts.headers,
-    },
-    ...(
-      opts.body && typeof opts.body !== 'string'
-        ? { body: JSON.stringify(opts.body) }
-        : {}
-    ),
-  }));
+  .then(({ default: fetch }) => {
+    console.log(`${baseUrl}${url}`);
+    fetch(`${baseUrl}${url}`, {
+      ...opts,
+      headers: {
+        'content-type': 'application/json',
+        ...opts.headers,
+      },
+      ...(
+        opts.body && typeof opts.body !== 'string'
+          ? { body: JSON.stringify(opts.body) }
+          : {}
+      ),
+    });
+  });
 
 const fetchWithAuth = (token) => (url, opts = {}) => fetch(url, {
   ...opts,
@@ -113,6 +116,7 @@ module.exports = () => new Promise((resolve, reject) => {
 
   mongoGlobalSetup({ rootDir: __dirname }).then(async () => {
     console.info('\n Starting local server...');
+    console.log(port);
     const child = spawn(
       /^win/.test(process.platform) ? 'npm.cmd' : 'npm',
       ['start', port],
@@ -122,7 +126,7 @@ module.exports = () => new Promise((resolve, reject) => {
         env: { PATH: process.env.PATH, MONGO_URL: process.env.MONGO_URL },
       },
     );
-
+    console.log('hasta aquí voy bien');
     Object.assign(__e2e, { childProcessPid: child.pid });
 
     child.stdout.on('data', (chunk) => {

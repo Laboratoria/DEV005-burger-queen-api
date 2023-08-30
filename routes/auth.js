@@ -1,7 +1,7 @@
-const jwt = require('jsonwebtoken');
-const config = require('../config');
 const { MongoClient } = require('mongodb');
+const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
+const config = require('../config');
 
 const { secret } = config;
 
@@ -31,11 +31,10 @@ module.exports = (app, nextMain) => {
     const client = new MongoClient(dbUrl);
     await client.connect();
     const db = client.db();
-    console.log(db, 'print db en routes auth');
+    // console.log(db, 'print db en routes auth');
     const usersCollection = db.collection('users');
-    console.log(usersCollection, 'print users collection en routes auth');
+    // console.log(usersCollection, 'print users collection en routes auth');
 
-    
     // TODO: autenticar a la usuarix
     // Hay que confirmar si el email y password
     // coinciden con un user en la base de datos

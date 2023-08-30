@@ -20,7 +20,8 @@ module.exports = (secret) => (req, res, next) => {
       console.log('Error al verificar el token:', err.message);
       return next(403);
     }
-
+    console.log('holaaa', authorization);
+    console.log('chauuu', req);
     console.log('Token verificado:', decodedToken);
     console.log('Token.uid verificado:', decodedToken.userId);
 
@@ -29,13 +30,15 @@ module.exports = (secret) => (req, res, next) => {
     req.isAdmin = decodedToken.rol; // Agregar el rol del usuario al objeto `req`
     req.thisEmail = decodedToken.email; // Agregar el correo del usuario al objeto `req`
 
+    console.log('request después', req.rawHeaders);
+
     // verificar que sea administrador
     if (req.isAdmin === 'admin') {
       req.isAdmin = true;
     } else {
       req.isAdmin = false;
     }
-    
+
     next(); // Pasar la ejecución al siguiente middleware o controlador
   });
 };
@@ -48,7 +51,7 @@ module.exports.isAuthenticated = (req) => (
 
 module.exports.isAdmin = (req) => (
   // TODO: decidir por la informacion del request si la usuaria es admin
-  //false
+  // false
   !!req.isAdmin
 );
 

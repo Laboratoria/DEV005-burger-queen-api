@@ -13,6 +13,7 @@
     "no-unused-vars": "off",
     "no-underscore-dangle": "off",
     "consistent-return": "off",
+    "no-nested-ternary": "off",
     "no-shadow": "off",
     "no-useless-escape": "off",
     "arrow-parens": "off",
