@@ -24,7 +24,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"admin@localhost\",\r\n    \"password\": \"changeme\"\r\n}",
+							"raw": "{\r\n    \"email\": \"admin@prueba\",\r\n    \"password\": \"changeme\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -600,13 +600,20 @@
 		}
 	],
 	"auth": {
-		"type": "bearer"
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NGVlNTUyM2ZlZTUxODQwNzBiZmM3MGUiLCJyb2wiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5AcHJ1ZWJhIiwiaWF0IjoxNjkzMzY4NTk4LCJleHAiOjE2OTMzNzIxOTh9.ZjHY_IZqT7nYRr25AGO3Le-nQWjHyHczjhrywSDRAhs",
+				"type": "string"
+			}
+		]
 	},
 	"event": [
 		{
 			"listen": "prerequest",
 			"script": {
-				"id": "cab9cb0e-b82d-4bbb-9cc6-926d43d61c3a",
+				"id": "ab86af7a-aaa9-49c4-aa5c-4a57b1a43749",
 				"type": "text/javascript",
 				"exec": [
 					""
@@ -616,7 +623,7 @@
 		{
 			"listen": "test",
 			"script": {
-				"id": "1c6dad03-f46d-4e0f-8fd7-bd711c9aa255",
+				"id": "076b7747-d097-4faa-8f4a-f7627ad2646f",
 				"type": "text/javascript",
 				"exec": [
 					""
