@@ -1,6 +1,8 @@
+const { MongoClient } = require('mongodb');
 const bcrypt = require('bcrypt');
-const User = require('../models/user');
 const mongoose = require('mongoose');
+const config = require('../config');
+const User = require('../models/user');
 const { dbUrl } = require('../config');
 
 const {
@@ -29,7 +31,7 @@ const initAdminUser = async (app, next) => {
   console.log('hasta aquí voy bien en routes/user.js', User, adminUser);
 
   const userExists = await User.findOne({ email: adminUser.email })
-    .then(res => { 
+    .then(res => {
       if (!res) {
         try {
           const user = new User(adminUser);
@@ -40,39 +42,37 @@ const initAdminUser = async (app, next) => {
           console.error('Error al crear usuario', error);
         }
       } else {
-      console.log('Ya existe un usuario administrador con email:', res.email);
-      console.log('Este es el usuario:', res);
+        console.log('Ya existe un usuario administrador con email:', res.email);
+        console.log('Este es el usuario:', res);
       }
-    })
+    });
   next();
-  };
-  
-
+};
 
 /*
  * Diagrama de flujo de una aplicación y petición en node - express :
  *
  * request  -> middleware1 -> middleware2 -> route
  *                                             |
- * response <- middleware4 <- middleware3   <---
+ * resonse <- middleware4 <- middleware3   <---
  *
  * la gracia es que la petición va pasando por cada una de las funciones
  * intermedias o "middlewares" hasta llegar a la función de la ruta, luego esa
- * función genera la respuesta y esta pasa nuevamente por otras funciones
- * intermedias hasta responder finalmente a la usuaria.
+ * función genera la resuesta y esta pasa nuevamente por otras funciones
+ * intermedias hasta resonder finalmente a la usuaria.
  *
  * Un ejemplo de middleware podría ser una función que verifique que una usuaria
  * está realmente registrado en la aplicación y que tiene permisos para usar la
- * ruta. O también un middleware de traducción, que cambie la respuesta
+ * ruta. O también un middleware de traducción, que cambie la resuesta
  * dependiendo del idioma de la usuaria.
  *
- * Es por lo anterior que siempre veremos los argumentos request, response y
+ * Es por lo anterior que siempre veremos los argumentos request, resonse y
  * next en nuestros middlewares y rutas. Cada una de estas funciones tendrá
  * la oportunidad de acceder a la consulta (request) y hacerse cargo de enviar
- * una respuesta (rompiendo la cadena), o delegar la consulta a la siguiente
+ * una resuesta (rompiendo la cadena), o delegar la consulta a la siguiente
  * función en la cadena (invocando next). De esta forma, la petición (request)
- * va pasando a través de las funciones, así como también la respuesta
- * (response).
+ * va pasando a través de las funciones, así como también la resuesta
+ * (resonse).
  */
 
 /** @module users */
@@ -89,11 +89,11 @@ module.exports = (app, next) => {
    * @header {String} link.next Link a la página siguiente
    * @header {String} link.last Link a la última página
    * @auth Requiere `token` de autenticación y que la usuaria sea **admin**
-   * @response {Array} users
-   * @response {String} users[]._id
-   * @response {Object} users[].email
-   * @response {Object} users[].roles
-   * @response {Boolean} users[].roles.admin
+   * @resonse {Array} users
+   * @resonse {String} users[]._id
+   * @resonse {Object} users[].email
+   * @resonse {Object} users[].roles
+   * @resonse {Boolean} users[].roles.admin
    * @code {200} si la autenticación es correcta
    * @code {401} si no hay cabecera de autenticación
    * @code {403} si no es ni admin
@@ -106,11 +106,11 @@ module.exports = (app, next) => {
    * @path {GET} /users/:uid
    * @params {String} :uid `id` o `email` de la usuaria a consultar
    * @auth Requiere `token` de autenticación y que la usuaria sea **admin** o la usuaria a consultar
-   * @response {Object} user
-   * @response {String} user._id
-   * @response {Object} user.email
-   * @response {Object} user.roles
-   * @response {Boolean} user.roles.admin
+   * @resonse {Object} user
+   * @resonse {String} user._id
+   * @resonse {Object} user.email
+   * @resonse {Object} user.roles
+   * @resonse {Boolean} user.roles.admin
    * @code {200} si la autenticación es correcta
    * @code {401} si no hay cabecera de autenticación
    * @code {403} si no es ni admin o la misma usuaria
@@ -128,19 +128,73 @@ module.exports = (app, next) => {
    * @body {Object} [roles]
    * @body {Boolean} [roles.admin]
    * @auth Requiere `token` de autenticación y que la usuaria sea **admin**
-   * @response {Object} user
-   * @response {String} user._id
-   * @response {Object} user.email
-   * @response {Object} user.roles
-   * @response {Boolean} user.roles.admin
+   * @resonse {Object} user
+   * @resonse {String} user._id
+   * @resonse {Object} user.email
+   * @resonse {Object} user.roles
+   * @resonse {Boolean} user.roles.admin
    * @code {200} si la autenticación es correcta
    * @code {400} si no se proveen `email` o `password` o ninguno de los dos
    * @code {401} si no hay cabecera de autenticación
    * @code {403} si ya existe usuaria con ese `email`
    */
-  app.post('/users', requireAdmin, (req, res, next) => {
+  app.post('/users', requireAdmin, async (req, res, next) => {
     // TODO: implementar la ruta para agregar
     // nuevos usuarios
+
+    const { email, password, roles } = req.body;
+
+    if (!email || !password) {
+      console.log('requiere contraseña y correo', email, password);
+      return res.status(400).json({ message: 'El correo y la contraseña son requeridos' });
+    }
+
+    const isAdmin = req.isAdmin === true;
+
+    // Verificar si el usuario autenticado es un administrador
+    if (!isAdmin) {
+      console.log('no autorizado POST', isAdmin);
+      return res.status(401).json({ error: 'Sin autorización para crear un usuario' });
+    }
+
+    // Verificar si ya existe usuario
+    const existingUser = await User.findOne({ email });
+
+    if (existingUser) {
+      // await client.close();
+      console.log('ya existe user', existingUser);
+      return res.status(403).json({ error: 'Este usuario ya está registrado' });
+    }
+
+    // Creación del nuevo usuario
+    const verifyIsAdminUser = roles === 'admin';
+
+    const newUser = {
+      email,
+      password: bcrypt.hashSync(password, 10),
+      roles: {
+        roles,
+        admin: verifyIsAdminUser,
+      },
+    };
+
+    console.log('newUser en POST rotes/users', newUser);
+
+    try {
+      const user = new User(newUser);
+      const insertedUser = await user.save();
+
+      console.log('nuevo usuario insertado', insertedUser);
+
+      res.status(200).json({
+        id: user._id,
+        email: newUser.email,
+        roles: newUser.roles,
+      });
+    } catch (error) {
+      console.error('Error al crear usuario', error);
+      res.status(500).json({ error: 'Error al crear usuario' });
+    }
   });
 
   /**
@@ -153,11 +207,11 @@ module.exports = (app, next) => {
    * @body {Object} [roles]
    * @body {Boolean} [roles.admin]
    * @auth Requiere `token` de autenticación y que la usuaria sea **admin** o la usuaria a modificar
-   * @response {Object} user
-   * @response {String} user._id
-   * @response {Object} user.email
-   * @response {Object} user.roles
-   * @response {Boolean} user.roles.admin
+   * @resonse {Object} user
+   * @resonse {String} user._id
+   * @resonse {Object} user.email
+   * @resonse {Object} user.roles
+   * @resonse {Boolean} user.roles.admin
    * @code {200} si la autenticación es correcta
    * @code {400} si no se proveen `email` o `password` o ninguno de los dos
    * @code {401} si no hay cabecera de autenticación
@@ -174,11 +228,11 @@ module.exports = (app, next) => {
    * @params {String} :uid `id` o `email` de la usuaria a modificar
    * @path {DELETE} /users
    * @auth Requiere `token` de autenticación y que la usuaria sea **admin** o la usuaria a eliminar
-   * @response {Object} user
-   * @response {String} user._id
-   * @response {Object} user.email
-   * @response {Object} user.roles
-   * @response {Boolean} user.roles.admin
+   * @resonse {Object} user
+   * @resonse {String} user._id
+   * @resonse {Object} user.email
+   * @resonse {Object} user.roles
+   * @resonse {Boolean} user.roles.admin
    * @code {200} si la autenticación es correcta
    * @code {401} si no hay cabecera de autenticación
    * @code {403} si no es ni admin o la misma usuaria

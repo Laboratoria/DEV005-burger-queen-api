@@ -35,7 +35,7 @@ module.exports = (secret) => (req, res, next) => {
     } else {
       req.isAdmin = false;
     }
-    
+
     next(); // Pasar la ejecución al siguiente middleware o controlador
   });
 };
@@ -48,7 +48,7 @@ module.exports.isAuthenticated = (req) => (
 
 module.exports.isAdmin = (req) => (
   // TODO: decidir por la informacion del request si la usuaria es admin
-  //false
+  // false
   !!req.isAdmin
 );
 
@@ -59,6 +59,7 @@ module.exports.requireAuth = (req, res, next) => (
 );
 
 module.exports.requireAdmin = (req, res, next) => (
+  // eslint-disable-next-line no-nested-ternary
   (!module.exports.isAuthenticated(req))
     ? next(401)
     : (!module.exports.isAdmin(req))
