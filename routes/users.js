@@ -142,62 +142,61 @@ module.exports = (app, next) => {
     // TODO: implementar la ruta para agregar
     // nuevos usuarios
 
-    const { email, password, roles } = req.body;
-
-    if (!email || !password) {
-      console.log('requiere contraseña y correo', email, password);
-      return res.status(400).json({ message: 'El correo y la contraseña son requeridos' });
-    }
-
-    const client = new MongoClient(config.dbUrl);
-
-    await client.connect();
-    const db = client.db();
-    const usersCollection = db.collection('users');
-
-    const isAdmin = req.isAdmin === true;
-
-    // Verificar si el usuario autenticado es un administrador
-    if (!isAdmin) {
-      await client.close();
-      console.log('no autorizado POST', isAdmin);
-      return res.status(401).json({ error: 'Sin autorización para crear un usuario' });
-    }
-
-    // Verificar si ya existe usuario
-    const existingUser = await User.findOne({ email });
-
-    if (existingUser) {
-      await client.close();
-      console.log('ya existe user', existingUser);
-      return res.status(403).json({ error: 'Este usuario ya está registrado' });
-    }
-
-    // Creación del nuevo usuario
-    const verifyIsAdminUser = roles === 'admin';
-
-    const newUser = {
-      email,
-      password: bcrypt.hashSync(password, 10),
-      roles: {
-        roles,
-        admin: verifyIsAdminUser,
-      },
-    };
-
-    console.log('newUser en POST rotes/users', newUser);
-
     try {
-      const user = new User(newUser);
-      const insertedUser = await user.save();
+      const { email, password, roles } = req.body;
 
-      usersCollection.insertOne(newUser);
+      if (!email || !password) {
+        console.log('requiere contraseña y correo', email, password);
+        return res.status(400).json({ message: 'El correo y la contraseña son requeridos' });
+      }
+
+      const client = new MongoClient(config.dbUrl);
+
+      await client.connect();
+      const db = client.db();
+      const usersCollection = db.collection('users');
+
+      const isAdmin = req.isAdmin === true;
+
+      // Verificar si el usuario autenticado es un administrador
+      if (!isAdmin) {
+        await client.close();
+        console.log('no autorizado POST', isAdmin);
+        return res.status(401).json({ error: 'Sin autorización para crear un usuario' });
+      }
+
+      // Verificar si ya existe usuario
+      const existingUser = await User.findOne({ email });
+
+      if (existingUser) {
+        await client.close();
+        console.log('ya existe user', existingUser);
+        return res.status(403).json({ error: 'Este usuario ya está registrado' });
+      }
+
+      // Creación del nuevo usuario
+      const verifyIsAdminUser = roles === 'admin';
+
+      const newUser = {
+        email,
+        password: bcrypt.hashSync(password, 10),
+        roles: {
+          roles,
+          admin: verifyIsAdminUser,
+        },
+      };
+
+      console.log('newUser en POST rotes/users', newUser);
+
+      const insertedUser = await newUser.save();
+
+      // usersCollection.insertOne(newUser);
 
       console.log('nuevo usuario insertado', insertedUser);
 
       await client.close();
       res.status(200).json({
-        id: user._id,
+        id: insertedUser.insertedId,
         email: newUser.email,
         roles: newUser.roles,
       });
