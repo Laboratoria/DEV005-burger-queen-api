@@ -188,9 +188,7 @@ module.exports = (app, next) => {
 
       console.log('newUser en POST rotes/users', newUser);
 
-      const insertedUser = await newUser.save();
-
-      // usersCollection.insertOne(newUser);
+      const insertedUser = await usersCollection.insertOne(newUser);
 
       console.log('nuevo usuario insertado', insertedUser);
 
