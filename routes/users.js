@@ -149,10 +149,17 @@ module.exports = (app, next) => {
       return res.status(400).json({ message: 'El correo y la contraseña son requeridos' });
     }
 
+    const client = new MongoClient(config.dbUrl);
+
+    await client.connect();
+    const db = client.db();
+    const usersCollection = db.collection('users');
+
     const isAdmin = req.isAdmin === true;
 
     // Verificar si el usuario autenticado es un administrador
     if (!isAdmin) {
+      await client.close();
       console.log('no autorizado POST', isAdmin);
       return res.status(401).json({ error: 'Sin autorización para crear un usuario' });
     }
@@ -161,7 +168,7 @@ module.exports = (app, next) => {
     const existingUser = await User.findOne({ email });
 
     if (existingUser) {
-      // await client.close();
+      await client.close();
       console.log('ya existe user', existingUser);
       return res.status(403).json({ error: 'Este usuario ya está registrado' });
     }
@@ -184,8 +191,11 @@ module.exports = (app, next) => {
       const user = new User(newUser);
       const insertedUser = await user.save();
 
+      usersCollection.insertOne(newUser);
+
       console.log('nuevo usuario insertado', insertedUser);
 
+      await client.close();
       res.status(200).json({
         id: user._id,
         email: newUser.email,
