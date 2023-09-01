@@ -7,33 +7,39 @@
     "node": ">=16.x"
   },
   "scripts": {
-    "pretest": "eslint .",
-    "start": "node index.js",
+    "start": "node index.js && nodemon index.js",
     "test:e2e": "jest --verbose --testPathPattern e2e --globalSetup ./e2e/globalSetup --globalTeardown ./e2e/globalTeardown --runInBand",
     "test:unit": "jest --verbose --testPathIgnorePatterns e2e",
     "test": "npm run test:e2e && npm run test:unit",
     "lint": "eslint .",
     "docs:generate": "jsdoc -c jsdoc.conf --readme README-docs.md",
-    "docs:deploy": "rm -rf docs && npm run docs:generate && gh-pages -d docs"
+    "docs:deploy": "rm -rf docs && npm run docs:generate && gh-pages -d docs",
+    "build": "babel src -d lib"
   },
   "dependencies": {
     "@shelf/jest-mongodb": "^4.1.7",
-    "bcrypt": "^5.0.1",
+    "bcrypt": "^5.1.1",
     "body-parser": "^1.19.0",
-    "express": "^4.17.1",
-    "jsonwebtoken": "^8.5.1",
-    "mongodb-memory-server": "^8.12.2"
+    "express": "^4.18.2",
+    "jsdoc": "^4.0.2",
+    "jsonwebtoken": "^9.0.1",
+    "mongodb": "^5.7.0",
+    "mongodb-memory-server": "^8.12.2",
+    "mongoose": "^7.4.3"
   },
   "devDependencies": {
+    "@babel/cli": "^7.22.10",
+    "@babel/core": "^7.22.10",
+    "@babel/eslint-parser": "^7.22.10",
+    "@babel/preset-env": "^7.22.10",
     "docdash": "^1.2.0",
-    "eslint": "^8.3.0",
+    "eslint": "^8.47.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.22.1",
     "gh-pages": "^3.1.0",
-    "jest": "^27.0.1",
-    "jsdoc": "^3.6.6",
-    "jsdoc-http-plugin": "^0.3.2",
+    "jest": "^27.5.1",
     "node-fetch": "^3.1.0",
+    "nodemon": "^3.0.1",
     "tree-kill": "^1.2.2"
   },
   "bootcamp": {

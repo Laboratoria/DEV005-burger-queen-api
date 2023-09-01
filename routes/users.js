@@ -1,4 +1,6 @@
 const bcrypt = require('bcrypt');
+const User = require('../models/user');
+const mongoose = require('mongoose');
 
 const {
   requireAuth,
@@ -17,14 +19,29 @@ const initAdminUser = (app, next) => {
 
   const adminUser = {
     email: adminEmail,
-    password: bcrypt.hashSync(adminPassword, 10),
-    roles: { admin: true },
+    password: adminPassword,
+    // password: bcrypt.hashSync(adminPassword, 10),
+    role: 'admin',
   };
-
-  // TODO: crear usuaria admin
-  // Primero ver si ya existe adminUser en base de datos
-  // si no existe, hay que guardarlo
-
+  console.log('hasta aquí voy bien', adminUser)
+  console.log('hasta aquí sigo bien, creo', User)
+  const userExists = User.findOne({ email: adminUser.email })
+  .then((res) => console.log('hasta aquí sigo bien', userExists, res))
+  .then(() => {
+    if (!userExists) {
+      try {
+          const user = new User(adminUser);
+          user.save();
+      } catch (error) {
+          console.error(error);
+          console.log('excepción aquí', adminUser);
+      }
+    }
+  })
+  .catch(err => {
+    console.error(err);
+    console.log('otra excepción aquí', adminUser);
+  });
   next();
 };
 
@@ -95,7 +112,7 @@ module.exports = (app, next) => {
    * @code {403} si no es ni admin o la misma usuaria
    * @code {404} si la usuaria solicitada no existe
    */
-  app.get('/users/:uid', requireAuth, (req, resp) => {
+  app.get('/users/:uid', requireAuth, (req, res) => {
   });
 
   /**
@@ -117,7 +134,7 @@ module.exports = (app, next) => {
    * @code {401} si no hay cabecera de autenticación
    * @code {403} si ya existe usuaria con ese `email`
    */
-  app.post('/users', requireAdmin, (req, resp, next) => {
+  app.post('/users', requireAdmin, (req, res, next) => {
     // TODO: implementar la ruta para agregar
     // nuevos usuarios
   });
@@ -144,7 +161,7 @@ module.exports = (app, next) => {
    * @code {403} una usuaria no admin intenta de modificar sus `roles`
    * @code {404} si la usuaria solicitada no existe
    */
-  app.put('/users/:uid', requireAuth, (req, resp, next) => {
+  app.put('/users/:uid', requireAuth, (req, res, next) => {
   });
 
   /**
@@ -163,7 +180,7 @@ module.exports = (app, next) => {
    * @code {403} si no es ni admin o la misma usuaria
    * @code {404} si la usuaria solicitada no existe
    */
-  app.delete('/users/:uid', requireAuth, (req, resp, next) => {
+  app.delete('/users/:uid', requireAuth, (req, res, next) => {
   });
 
   initAdminUser(app, next);

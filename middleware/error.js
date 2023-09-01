@@ -11,7 +11,7 @@ const isKnownHTTPErrorStatus = (num) => (
 );
 
 // eslint-disable-next-line no-unused-vars
-module.exports = (err, req, resp, next) => {
+module.exports = (err, req, res, next) => {
   const statusCode = (isKnownHTTPErrorStatus(err))
     ? err
     : err.statusCode || 500;
@@ -21,6 +21,6 @@ module.exports = (err, req, resp, next) => {
     console.error(statusCode, message);
   }
 
-  resp.status(statusCode).json({ statusCode, message });
+  res.status(statusCode).json({ statusCode, message });
   next();
 };

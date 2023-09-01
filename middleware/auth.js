@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 
-module.exports = (secret) => (req, resp, next) => {
+module.exports = (secret) => (req, res, next) => {
   const { authorization } = req.headers;
 
   if (!authorization) {
@@ -32,13 +32,13 @@ module.exports.isAdmin = (req) => (
   false
 );
 
-module.exports.requireAuth = (req, resp, next) => (
+module.exports.requireAuth = (req, res, next) => (
   (!module.exports.isAuthenticated(req))
     ? next(401)
     : next()
 );
 
-module.exports.requireAdmin = (req, resp, next) => (
+module.exports.requireAdmin = (req, res, next) => (
   // eslint-disable-next-line no-nested-ternary
   (!module.exports.isAuthenticated(req))
     ? next(401)
