@@ -257,7 +257,7 @@ npm run test:e2e
 Esto levanta la aplicación con `npm start` y corre los tests contra la URL de
 esta instancia (por defecto `http://127.0.0.1:8080`).
 
-Los pruebas e2e dependen del código de (`globalSetup.js`)[../e2e/globalSetup.js]
+Los pruebas e2e dependen del código de [`globalSetup.js`](../e2e/globalSetup.js)
 que `jest` ejecuta en primer lugar, antes de los tests.
 Este paso de setup levanta un mock db (como hemos hablado de
 [`mongodb-memory-server`](https://github.com/nodkz/mongodb-memory-server))

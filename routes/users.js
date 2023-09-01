@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
-const User = require('../models/user');
 const mongoose = require('mongoose');
+const User = require('../models/user');
+const { dbUrl } = require('../config');
 
 const {
   requireAuth,
@@ -11,7 +12,7 @@ const {
   getUsers,
 } = require('../controller/users');
 
-const initAdminUser = (app, next) => {
+const initAdminUser = async (app, next) => {
   const { adminEmail, adminPassword } = app.get('config');
   if (!adminEmail || !adminPassword) {
     return next();
@@ -23,25 +24,24 @@ const initAdminUser = (app, next) => {
     // password: bcrypt.hashSync(adminPassword, 10),
     role: 'admin',
   };
-  console.log('hasta aquí voy bien', adminUser)
-  console.log('hasta aquí sigo bien, creo', User)
-  const userExists = User.findOne({ email: adminUser.email })
-  .then((res) => console.log('hasta aquí sigo bien', userExists, res))
-  .then(() => {
-    if (!userExists) {
-      try {
+
+  mongoose.connect(dbUrl);
+  console.log('hasta aquí voy bien en routes/users.js', User, adminUser);
+
+  const userExists = await User.findOne({ email: adminUser.email })
+    .then(res => {
+      if (!res) {
+        try {
           const user = new User(adminUser);
           user.save();
-      } catch (error) {
-          console.error(error);
-          console.log('excepción aquí', adminUser);
+          console.info('Usuario administrador creado con éxito');
+        } catch (error) {
+          console.error('Error al crear usuario', error);
+        }
+      } else {
+        console.log('Ya existe un usuario administrador con email:', res.email);
       }
-    }
-  })
-  .catch(err => {
-    console.error(err);
-    console.log('otra excepción aquí', adminUser);
-  });
+    });
   next();
 };
 

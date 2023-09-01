@@ -10,6 +10,7 @@ services:
     restart: always
     networks:
       - private
+      - public
     expose:
       - 27017
     ports:

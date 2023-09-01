@@ -27,8 +27,9 @@ routes(app, (err) => {
 
   app.listen(port, () => {
     console.info(`App listening on port ${port}`);
-  /*   connect()
-      .then(console.info)
-      .catch(error => console.error(error)); */
   });
 });
+
+/* connect()
+.then(db => db.collections().then(res => console.log('hola index.js', res)))
+.catch(error => console.error(error), 'excepción aquí en index.js'); */
