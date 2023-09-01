@@ -33,10 +33,13 @@ const __e2e = {
   // testObjects: [],
 };
 
-const fetch = (url, opts = {}) => import('node-fetch')
-  .then(({ default: fetch }) => {
-    console.log(`${baseUrl}${url}`);
-    fetch(`${baseUrl}${url}`, {
+const fetch = (url, opts = {})  => // import('node-fetch')
+  // .then(({ default: fetch }) => {
+  //  console.log(`${baseUrl}${url}`);
+	//
+{
+    console.log('token', __e2e.adminToken);
+    return global.fetch(`${baseUrl}${url}`, {
       ...opts,
       headers: {
         'content-type': 'application/json',
@@ -48,7 +51,8 @@ const fetch = (url, opts = {}) => import('node-fetch')
           : {}
       ),
     });
-  });
+}
+  //});
 
 const fetchWithAuth = (token) => (url, opts = {}) => fetch(url, {
   ...opts,
@@ -90,7 +94,8 @@ const checkAdminCredentials = () => fetch('/auth', {
 
     return resp.json();
   })
-  .then(({ token }) => Object.assign(__e2e, { adminToken: token }));
+//   .then(console.log);
+  .then(({ accessToken }) => Object.assign(__e2e, { adminToken: accessToken }));
 
 const waitForServerToBeReady = (retries = 10) => new Promise((resolve, reject) => {
   if (!retries) {
