@@ -33,22 +33,22 @@ const __e2e = {
   // testObjects: [],
 };
 
-const fetch = (url, opts = {}) => import('node-fetch')
-  .then(({ default: fetch }) => {
-    console.log(`${baseUrl}${url}`);
-    fetch(`${baseUrl}${url}`, {
-      ...opts,
-      headers: {
-        'content-type': 'application/json',
-        ...opts.headers,
-      },
-      ...(
-        opts.body && typeof opts.body !== 'string'
-          ? { body: JSON.stringify(opts.body) }
-          : {}
-      ),
-    });
+const fetch = (url, opts = {}) => { // import('node-fetch')
+//  .then(({ default: fetch }) => {
+  console.log('aquíii', `${baseUrl}${url}`);
+  global.fetch(`${baseUrl}${url}`, {
+    ...opts,
+    headers: {
+      'content-type': 'application/json',
+      ...opts.headers,
+    },
+    ...(
+      opts.body && typeof opts.body !== 'string'
+        ? { body: JSON.stringify(opts.body) }
+        : {}
+    ),
   });
+};
 
 const fetchWithAuth = (token) => (url, opts = {}) => fetch(url, {
   ...opts,
@@ -143,7 +143,7 @@ module.exports = () => new Promise((resolve, reject) => {
 
     process.on('uncaughtException', (err) => {
       console.error('UncaughtException!');
-      console.error(err);
+      console.error(err, 'holaaa');
       kill(child.pid, 'SIGKILL', () => process.exit(1));
     });
 
