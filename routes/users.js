@@ -14,6 +14,7 @@ const {
   getUsers,
 } = require('../controller/users');
 
+// Función para inicializar al usuario administrador
 const initAdminUser = async (app, next) => {
   const { adminEmail, adminPassword } = app.get('config');
   if (!adminEmail || !adminPassword) {
@@ -75,6 +76,7 @@ const initAdminUser = async (app, next) => {
  * (resonse).
  */
 
+// Definición de las rutas y sus funciones asociadas
 /** @module users */
 module.exports = (app, next) => {
   /**
@@ -143,6 +145,7 @@ module.exports = (app, next) => {
     // nuevos usuarios
 
     try {
+      // Obtener los datos del cuerpo de la solicitud
       const { email, password, roles } = req.body;
 
       if (!email || !password) {
@@ -150,16 +153,19 @@ module.exports = (app, next) => {
         return res.status(400).json({ message: 'El correo y la contraseña son requeridos' });
       }
 
+      // Crear una instancia de MongoClient para conectar con la base de datos
       const client = new MongoClient(config.dbUrl);
-
       await client.connect();
+      // Obtener referencia a la base de datos y colección
       const db = client.db();
       const usersCollection = db.collection('users');
 
+      // Verificar si el usuario autenticado es un administrador
       const isAdmin = req.isAdmin === true;
 
-      // Verificar si el usuario autenticado es un administrador
       if (!isAdmin) {
+        // Cerrar conexión despues de usar
+        // Para liberar recursos y evitar problemas de conexiones agotadas.
         await client.close();
         console.log('no autorizado POST', isAdmin);
         return res.status(401).json({ error: 'Sin autorización para crear un usuario' });
@@ -188,11 +194,14 @@ module.exports = (app, next) => {
 
       console.log('newUser en POST rotes/users', newUser);
 
+      // Insertar el nuevo usuario en la base de datos
       const insertedUser = await usersCollection.insertOne(newUser);
 
       console.log('nuevo usuario insertado', insertedUser);
 
       await client.close();
+
+      // Enviar la respuesta con los detalles del usuario creado
       res.status(200).json({
         id: insertedUser.insertedId,
         email: newUser.email,
@@ -248,5 +257,6 @@ module.exports = (app, next) => {
   app.delete('/users/:uid', requireAuth, (req, res, next) => {
   });
 
+  // Llamar a la función para inicializar al usuario administrador
   initAdminUser(app, next);
 };
