@@ -2,7 +2,6 @@ const { MongoClient } = require('mongodb');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const config = require('../config');
-const config = require('../config');
 
 const { secret } = config;
 
