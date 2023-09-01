@@ -33,26 +33,25 @@ const __e2e = {
   // testObjects: [],
 };
 
-const fetch = (url, opts = {})  => // import('node-fetch')
-  // .then(({ default: fetch }) => {
-  //  console.log(`${baseUrl}${url}`);
-	//
-{
-    console.log('token', __e2e.adminToken);
-    return global.fetch(`${baseUrl}${url}`, {
-      ...opts,
-      headers: {
-        'content-type': 'application/json',
-        ...opts.headers,
-      },
-      ...(
-        opts.body && typeof opts.body !== 'string'
-          ? { body: JSON.stringify(opts.body) }
-          : {}
-      ),
-    });
-}
-  //});
+const fetch = (url, opts = {}) => { // import('node-fetch')
+// .then(({ default: fetch }) => {
+//  console.log(`${baseUrl}${url}`);
+
+  console.log('token', __e2e.adminToken);
+  return global.fetch(`${baseUrl}${url}`, {
+    ...opts,
+    headers: {
+      'content-type': 'application/json',
+      ...opts.headers,
+    },
+    ...(
+      opts.body && typeof opts.body !== 'string'
+        ? { body: JSON.stringify(opts.body) }
+        : {}
+    ),
+  });
+};
+// });
 
 const fetchWithAuth = (token) => (url, opts = {}) => fetch(url, {
   ...opts,
