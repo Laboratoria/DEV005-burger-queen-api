@@ -254,7 +254,45 @@ module.exports = (app, next) => {
    * @code {403} si no es ni admin o la misma usuaria
    * @code {404} si la usuaria solicitada no existe
    */
-  app.delete('/users/:uid', requireAuth, (req, res, next) => {
+  app.delete('/users/:uid', requireAuth, async (req, res, next) => {
+    try {
+      // Obtener el ID o correo de la usuario a eliminar desde los parámetros de la URL
+      const uid = req.params.uid;
+
+      console.log(uid, 'datos del usuario routes/users');
+  
+      // Verificar si el usuario autenticado es un administrador
+      const isAdmin = req.isAdmin === true;
+  
+      // Si el usuario no es un administrador ni la misma usuario, devolver un error 403
+      if (!isAdmin && uid !== req.user.email) {
+        console.log(req.user.email,'No coincide con este usuario');
+        return res.status(403).json({ error: 'No tienes autorización para eliminar este usuario' });
+      }
+  
+      // Buscar la usuario en la base de datos por ID o correo
+      const userToDelete = await User.findOne({ $or: [{ _id: uid }, { email: uid }] });
+
+      console.log('usuario a borrar', userToDelete);
+  
+      // Si no se encuentra la usuario, devolver un error 404
+      if (!userToDelete) {
+        return res.status(404).json({ error: 'El usuario que intentas eliminar no existe' });
+      }
+  
+      // Eliminar la usuario de la base de datos
+      await User.deleteOne({ _id: userToDelete._id });
+  
+      // Devolver una respuesta exitosa
+      res.status(200).json({ message: 'Usuario eliminado exitosamente',
+        id: userToDelete._id,
+        email: userToDelete.email,
+        roles: userToDelete.role,
+      });
+    } catch (error) {
+      console.error('Error al eliminar usuario', error);
+      res.status(500).json({ error: 'Error al eliminar usuario' });
+    }
   });
 
   // Llamar a la función para inicializar al usuario administrador
