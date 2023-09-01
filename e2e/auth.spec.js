@@ -24,7 +24,7 @@ describe('POST /auth', () => {
       .then((resp) => expect(resp.status).toBe(400))
   ));
 
-  it.only('fail with 404 credentials dont match', () => (
+  it('fail with 404 credentials dont match', () => (
     fetch('/auth', {
       method: 'POST',
       body: { email: `foo-${Date.now()}@bar.baz`, password: 'xxxx' },
