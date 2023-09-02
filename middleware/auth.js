@@ -20,17 +20,12 @@ module.exports = (secret) => (req, res, next) => {
       console.log('Error al verificar el token:', err.message);
       return next(403);
     }
-    console.log('holaaa', authorization);
-    console.log('chauuu', req);
     console.log('Token verificado:', decodedToken);
-    console.log('Token.uid verificado:', decodedToken.userId);
 
     // TODO: Verificar identidad del usuario usando `decodeToken.uid`
     req.userId = decodedToken.userId; // Agregar el ID del usuario al objeto `req`
     req.isAdmin = decodedToken.rol; // Agregar el rol del usuario al objeto `req`
     req.thisEmail = decodedToken.email; // Agregar el correo del usuario al objeto `req`
-
-    console.log('request después', req.rawHeaders);
 
     // verificar que sea administrador
     if (req.isAdmin === 'admin') {

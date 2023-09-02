@@ -29,7 +29,6 @@ const initAdminUser = async (app, next) => {
   };
 
   mongoose.connect(dbUrl);
-  console.log('hasta aquí voy bien en routes/user.js', User, adminUser);
 
   const userExists = await User.findOne({ email: adminUser.email })
     .then(res => {
@@ -43,8 +42,7 @@ const initAdminUser = async (app, next) => {
           console.error('Error al crear usuario', error);
         }
       } else {
-        console.log('Ya existe un usuario administrador con email:', res.email);
-        console.log('Este es el usuario:', res);
+        console.log('Ya existe usuario administrador:', res);
       }
     });
   next();
@@ -94,8 +92,8 @@ module.exports = (app, next) => {
    * @resonse {Array} users
    * @resonse {String} users[]._id
    * @resonse {Object} users[].email
-   * @resonse {Object} users[].roles
-   * @resonse {Boolean} users[].roles.admin
+   * @resonse {Object} users[].role
+   * @resonse {Boolean} users[].role.admin
    * @code {200} si la autenticación es correcta
    * @code {401} si no hay cabecera de autenticación
    * @code {403} si no es ni admin
@@ -111,8 +109,8 @@ module.exports = (app, next) => {
    * @resonse {Object} user
    * @resonse {String} user._id
    * @resonse {Object} user.email
-   * @resonse {Object} user.roles
-   * @resonse {Boolean} user.roles.admin
+   * @resonse {Object} user.role
+   * @resonse {Boolean} user.role.admin
    * @code {200} si la autenticación es correcta
    * @code {401} si no hay cabecera de autenticación
    * @code {403} si no es ni admin o la misma usuaria
@@ -127,14 +125,14 @@ module.exports = (app, next) => {
    * @path {POST} /users
    * @body {String} email Correo
    * @body {String} password Contraseña
-   * @body {Object} [roles]
-   * @body {Boolean} [roles.admin]
+   * @body {Object} [role]
+   * @body {Boolean} [role.admin]
    * @auth Requiere `token` de autenticación y que la usuaria sea **admin**
    * @resonse {Object} user
    * @resonse {String} user._id
    * @resonse {Object} user.email
-   * @resonse {Object} user.roles
-   * @resonse {Boolean} user.roles.admin
+   * @resonse {Object} user.role
+   * @resonse {Boolean} user.role.admin
    * @code {200} si la autenticación es correcta
    * @code {400} si no se proveen `email` o `password` o ninguno de los dos
    * @code {401} si no hay cabecera de autenticación
@@ -146,7 +144,7 @@ module.exports = (app, next) => {
 
     try {
       // Obtener los datos del cuerpo de la solicitud
-      const { email, password, roles } = req.body;
+      const { email, password, role } = req.body;
 
       if (!email || !password) {
         console.log('requiere contraseña y correo', email, password);
@@ -181,13 +179,13 @@ module.exports = (app, next) => {
       }
 
       // Creación del nuevo usuario
-      const verifyIsAdminUser = roles === 'admin';
+      const verifyIsAdminUser = role === 'admin';
 
       const newUser = {
         email,
         password: bcrypt.hashSync(password, 10),
-        roles: {
-          roles,
+        role: {
+          role,
           admin: verifyIsAdminUser,
         },
       };
@@ -197,15 +195,13 @@ module.exports = (app, next) => {
       // Insertar el nuevo usuario en la base de datos
       const insertedUser = await usersCollection.insertOne(newUser);
 
-      console.log('nuevo usuario insertado', insertedUser);
-
       await client.close();
 
       // Enviar la respuesta con los detalles del usuario creado
       res.status(200).json({
         id: insertedUser.insertedId,
         email: newUser.email,
-        roles: newUser.roles,
+        role: newUser.role,
       });
     } catch (error) {
       console.error('Error al crear usuario', error);
@@ -220,19 +216,19 @@ module.exports = (app, next) => {
    * @path {PUT} /users
    * @body {String} email Correo
    * @body {String} password Contraseña
-   * @body {Object} [roles]
-   * @body {Boolean} [roles.admin]
+   * @body {Object} [role]
+   * @body {Boolean} [role.admin]
    * @auth Requiere `token` de autenticación y que la usuaria sea **admin** o la usuaria a modificar
    * @resonse {Object} user
    * @resonse {String} user._id
    * @resonse {Object} user.email
-   * @resonse {Object} user.roles
-   * @resonse {Boolean} user.roles.admin
+   * @resonse {Object} user.role
+   * @resonse {Boolean} user.role.admin
    * @code {200} si la autenticación es correcta
    * @code {400} si no se proveen `email` o `password` o ninguno de los dos
    * @code {401} si no hay cabecera de autenticación
    * @code {403} si no es ni admin o la misma usuaria
-   * @code {403} una usuaria no admin intenta de modificar sus `roles`
+   * @code {403} una usuaria no admin intenta de modificar sus `role`
    * @code {404} si la usuaria solicitada no existe
    */
   app.put('/users/:uid', requireAuth, (req, res, next) => {
@@ -247,8 +243,8 @@ module.exports = (app, next) => {
    * @resonse {Object} user
    * @resonse {String} user._id
    * @resonse {Object} user.email
-   * @resonse {Object} user.roles
-   * @resonse {Boolean} user.roles.admin
+   * @resonse {Object} user.role
+   * @resonse {Boolean} user.role.admin
    * @code {200} si la autenticación es correcta
    * @code {401} si no hay cabecera de autenticación
    * @code {403} si no es ni admin o la misma usuaria
@@ -270,8 +266,8 @@ module.exports = (app, next) => {
         return res.status(403).json({ error: 'No tienes autorización para eliminar este usuario' });
       }
   
-      // Buscar la usuario en la base de datos por ID o correo
-      const userToDelete = await User.findOne({ $or: [{ _id: uid }, { email: uid }] });
+      // Buscar la usuario en la base de datos
+      const userToDelete = await User.findOne({ _id: uid });
 
       console.log('usuario a borrar', userToDelete);
   
@@ -287,7 +283,7 @@ module.exports = (app, next) => {
       res.status(200).json({ message: 'Usuario eliminado exitosamente',
         id: userToDelete._id,
         email: userToDelete.email,
-        roles: userToDelete.role,
+        role: req.body.role.role,
       });
     } catch (error) {
       console.error('Error al eliminar usuario', error);
