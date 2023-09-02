@@ -56,11 +56,21 @@ module.exports.requireAuth = (req, res, next) => (
     : next()
 );
 
-module.exports.requireAdmin = (req, res, next) => (
+module.exports.requireAdmin = (req, res, next) => {
   // eslint-disable-next-line no-nested-ternary
-  (!module.exports.isAuthenticated(req))
-    ? next(401)
-    : (!module.exports.isAdmin(req))
-      ? next(403)
-      : next()
-);
+  // (!module.exports.isAuthenticated(req))
+  //   ? next(401)
+  //   : (!module.exports.isAdmin(req))
+  //     ? next(403)
+  //     : next()
+  if (!module.exports.isAuthenticated(req)) {
+    return next(401);
+  }
+
+  if (!module.exports.isAdmin(req)) {
+    return next(403);
+  }
+
+  // Si el usuario está autenticado y es un administrador, permitir el acceso.
+  next();
+};

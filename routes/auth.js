@@ -25,7 +25,7 @@ module.exports = (app, nextMain) => {
 
     if (!email || !password) {
       console.log('Correo y contraseña son requeridos en routes/auth');
-      return next(400).json({ message: 'Correo y contraseña son requeridos' });
+      return res.status(400).json({ error: 'Correo y contraseña son requeridos' });
     }
 
     const client = new MongoClient(dbUrl);
@@ -48,7 +48,7 @@ module.exports = (app, nextMain) => {
 
     if (!user) {
       console.log('No hay un usuario registrado así en routes/auth', user);
-      return next(404).json({ message: 'Usuario no encontrado' });
+      return res.status(404).json({ message: 'Usuario no encontrado' });
     }
 
     // Comparar la contraseña proporcionada con la almacenada
@@ -56,11 +56,11 @@ module.exports = (app, nextMain) => {
 
     if (!isPasswordValid) {
       console.log('Contraseña incorrecta', user.password, 'vs', password);
-      return next(400).json({ message: 'Contraseña incorrecta' });
+      return res.status(400).json({ message: 'Contraseña incorrecta' });
     }
 
     // Genera un JWT token
-    const accessToken = jwt.sign({ userId: user._id, rol: user.role, email: user.email }, secret, { expiresIn: '1h' });
+    const accessToken = jwt.sign({ userId: user._id, role: user.role, email: user.email }, secret, { expiresIn: '1h' });
     console.log('nuevo token', accessToken);
     res.status(200).json({ accessToken });
 

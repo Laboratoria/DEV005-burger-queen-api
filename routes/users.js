@@ -205,7 +205,6 @@ module.exports = (app, next) => {
       });
     } catch (error) {
       console.error('Error al crear usuario', error);
-      res.status(500).json({ error: 'Error al crear usuario' });
     }
   });
 
@@ -267,7 +266,7 @@ module.exports = (app, next) => {
       }
   
       // Buscar la usuario en la base de datos
-      const userToDelete = await User.findOne({ _id: uid });
+      const userToDelete = await User.findOne({ $or: [{ _id: uid }, { email: uid }]  });
 
       console.log('usuario a borrar', userToDelete);
   
@@ -287,7 +286,6 @@ module.exports = (app, next) => {
       });
     } catch (error) {
       console.error('Error al eliminar usuario', error);
-      res.status(500).json({ error: 'Error al eliminar usuario' });
     }
   });
 
