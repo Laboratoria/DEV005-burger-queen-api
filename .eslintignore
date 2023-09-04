@@ -2,3 +2,4 @@ node_modules/
 docs
 db-data/
 controller/
+coverage/

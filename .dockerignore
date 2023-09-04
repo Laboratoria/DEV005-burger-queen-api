@@ -3,6 +3,7 @@
 **/e2e/
 **/controller/
 **/guides/
+**/coverage/
 **/db-data/
 .git
 npm-debug.log
