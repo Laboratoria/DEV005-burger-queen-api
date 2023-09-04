@@ -30,21 +30,21 @@ const initAdminUser = async (app, next) => {
 
   mongoose.connect(dbUrl);
 
-  const userExists = await User.findOne({ email: adminUser.email })
-    .then(res => {
-      if (!res) {
-        try {
-          const user = new User(adminUser);
-          user.save();
-          console.info('Usuario administrador creado con éxito');
-          console.log('Nuevo usuario creado:', user);
-        } catch (error) {
-          console.error('Error al crear usuario', error);
-        }
-      } else {
-        console.log('Ya existe usuario administrador:', res);
-      }
-    });
+  const userExists = await User.findOne({ email: adminUser.email });
+  // .then(res => {
+  if (!userExists) {
+    try {
+      const user = new User(adminUser);
+      user.save();
+      console.info('Usuario administrador creado con éxito');
+      console.log('Nuevo usuario creado:', user);
+    } catch (error) {
+      console.error('Error al crear usuario', error);
+    }
+  } else {
+    console.log('Ya existe usuario administrador:', userExists);
+  }
+  // });
   next();
 };
 
@@ -252,34 +252,35 @@ module.exports = (app, next) => {
   app.delete('/users/:uid', requireAuth, async (req, res, next) => {
     try {
       // Obtener el ID o correo de la usuario a eliminar desde los parámetros de la URL
-      const uid = req.params.uid;
+      const { uid } = req.params;
 
       console.log(uid, 'datos del usuario routes/users');
-  
+
       // Verificar si el usuario autenticado es un administrador
       const isAdmin = req.isAdmin === true;
-  
+
       // Si el usuario no es un administrador ni la misma usuario, devolver un error 403
       if (!isAdmin && uid !== req.user.email) {
-        console.log(req.user.email,'No coincide con este usuario');
+        console.log(req.user.email, 'No coincide con este usuario');
         return res.status(403).json({ error: 'No tienes autorización para eliminar este usuario' });
       }
-  
+
       // Buscar la usuario en la base de datos
-      const userToDelete = await User.findOne({ $or: [{ _id: uid }, { email: uid }]  });
+      const userToDelete = await User.findOne({ $or: [{ _id: uid }, { email: uid }] });
 
       console.log('usuario a borrar', userToDelete);
-  
+
       // Si no se encuentra la usuario, devolver un error 404
       if (!userToDelete) {
         return res.status(404).json({ error: 'El usuario que intentas eliminar no existe' });
       }
-  
+
       // Eliminar la usuario de la base de datos
       await User.deleteOne({ _id: userToDelete._id });
-  
+
       // Devolver una respuesta exitosa
-      res.status(200).json({ message: 'Usuario eliminado exitosamente',
+      res.status(200).json({
+        message: 'Usuario eliminado exitosamente',
         id: userToDelete._id,
         email: userToDelete.email,
         role: req.body.role.role,

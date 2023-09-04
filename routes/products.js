@@ -2,6 +2,7 @@ const {
   requireAuth,
   requireAdmin,
 } = require('../middleware/auth');
+const Product = require('../models/product.js');
 
 /** @module products */
 module.exports = (app, nextMain) => {
@@ -27,7 +28,13 @@ module.exports = (app, nextMain) => {
    * @code {200} si la autenticación es correcta
    * @code {401} si no hay cabecera de autenticación
    */
-  app.get('/products', requireAuth, (req, res, next) => {
+  app.get('/products', requireAuth, async (req, res, next) => {
+    try {
+      const products = await Product.find(); 
+      res.json(products);
+    } catch (error) {
+      next(error); 
+    }
   });
 
   /**
@@ -72,7 +79,24 @@ module.exports = (app, nextMain) => {
    * @code {403} si no es admin
    * @code {404} si el producto con `productId` indicado no existe
    */
-  app.post('/products', requireAdmin, (req, res, next) => {
+  app.post('/products', requireAdmin, async (req, res, next) => {
+    const { name, price, image, type } = req.body;
+
+    if (!name || !price) {
+      return res.status(400).json({ message: 'Debe proporcionar un nombre y un precio válidos.' });
+    }
+
+    // Lógica para crear el producto
+
+    const product = {
+      name,
+      price,
+      image,
+      type,
+      dateEntry: new Date(),
+    };
+
+    return res.status(201).json(product);
   });
 
   /**
