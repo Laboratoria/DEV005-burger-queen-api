@@ -1,11 +1,11 @@
 const jwt = require('jsonwebtoken');
 
 function formatRole(decodedToken) {
-  if (typeof decodedToken.rol === 'string') {
-    return decodedToken.rol;
+  if (typeof decodedToken.role === 'string') {
+    return decodedToken.role;
   }
-  if (typeof decodedToken.rol === 'object') {
-    return decodedToken.rol.role;
+  if (typeof decodedToken.role === 'object') {
+    return decodedToken.role.role;
   }
 }
 

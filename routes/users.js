@@ -201,7 +201,6 @@ module.exports = (app, next) => {
       };
 
       console.log('newUser en POST rotes/users', newUser);
-      console.log(req, 'REQ');
 
       // Insertar el nuevo usuario en la base de datos
       const insertedUser = await usersCollection.insertOne(newUser);
