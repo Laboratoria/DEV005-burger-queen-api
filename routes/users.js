@@ -28,7 +28,10 @@ const initAdminUser = async (app, next) => {
   const adminUser = {
     email: adminEmail,
     password: bcrypt.hashSync(adminPassword, 10),
-    role: 'admin',
+    role: {
+      role: 'admin',
+      admin: true,
+    },
   };
 
   mongoose.connect(dbUrl);
@@ -198,6 +201,7 @@ module.exports = (app, next) => {
       };
 
       console.log('newUser en POST rotes/users', newUser);
+      console.log(req, 'REQ');
 
       // Insertar el nuevo usuario en la base de datos
       const insertedUser = await usersCollection.insertOne(newUser);
@@ -263,19 +267,26 @@ module.exports = (app, next) => {
 
       console.log(uid, 'datos del usuario routes/users');
 
-      // Verificar si el usuario autenticado es un administrador
-      const isAdmin = req.isAdmin === true;
-
-      // Si el usuario no es un administrador ni la misma usuario, devolver un error 403
-      if (!isAdmin && uid !== req.user.email) {
-        console.log(req.user.email, 'No coincide con este usuario');
-        return res.status(403).json({ error: 'No tienes autorización para eliminar este usuario' });
-      }
-
-      // Buscar la usuario en la base de datos
+      // Buscar el usuario en la base de datos
       const userToDelete = await User.findOne({ $or: [{ _id: uid }, { email: uid }] });
 
       console.log('usuario a borrar', userToDelete);
+
+      // Verificar si el usuario autenticado es un administrador
+      const isAdmin = req.isAdmin === 'admin';
+
+      console.log(isAdmin, 'usuario admin?');
+
+      // Verificar si el token pertenece a la misma usuaria o si es una usuaria administradora
+      const isAuthorized = req.userId === uid || isAdmin || req.thisEmail === uid;
+
+      console.log(isAuthorized, 'autorizado?');
+
+      // Si el usuario no es un administrador ni la misma usuario, devolver un error 403
+      if (!isAuthorized) {
+        console.log(req.body.email, 'No coincide con este usuario');
+        return res.status(403).json({ error: 'No tienes autorización para eliminar este usuario' });
+      }
 
       // Si no se encuentra la usuario, devolver un error 404
       if (!userToDelete) {
@@ -286,7 +297,7 @@ module.exports = (app, next) => {
       await User.deleteOne({ _id: userToDelete._id });
 
       // Devolver una respuesta exitosa
-      res.status(200).json({
+      return res.status(200).json({
         message: 'Usuario eliminado exitosamente',
         id: userToDelete._id,
         email: userToDelete.email,
