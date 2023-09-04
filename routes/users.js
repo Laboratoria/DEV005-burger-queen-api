@@ -8,10 +8,14 @@ const { dbUrl } = require('../config');
 const {
   requireAuth,
   requireAdmin,
+  isAdmin,
 } = require('../middleware/auth');
 
 const {
+  validateEmail,
   getUsers,
+  getUserById,
+  validatePassword,
 } = require('../controller/users');
 
 // Función para inicializar al usuario administrador
@@ -23,7 +27,6 @@ const initAdminUser = async (app, next) => {
 
   const adminUser = {
     email: adminEmail,
-    // password: adminPassword,
     password: bcrypt.hashSync(adminPassword, 10),
     role: 'admin',
   };
@@ -116,8 +119,7 @@ module.exports = (app, next) => {
    * @code {403} si no es ni admin o la misma usuaria
    * @code {404} si la usuaria solicitada no existe
    */
-  app.get('/users/:uid', requireAuth, (req, res) => {
-  });
+  app.get('/users/:uid', requireAdmin, getUserById);
 
   /**
    * @name POST /users
@@ -150,6 +152,14 @@ module.exports = (app, next) => {
         console.log('requiere contraseña y correo', email, password);
         return res.status(400).json({ message: 'El correo y la contraseña son requeridos' });
       }
+      if (!validateEmail(email)) {
+        console.log('correo electrónico inválido', email);
+        return res.status(400).json({ message: 'El correo debe ser una dirección válida' });
+      }
+      if (!validatePassword(password)) {
+        console.log('contraseña inválida', password);
+        return res.status(400).json({ message: 'La contraseña debe tener al menos 6 caracteres' });
+      }
 
       // Crear una instancia de MongoClient para conectar con la base de datos
       const client = new MongoClient(config.dbUrl);
@@ -158,14 +168,11 @@ module.exports = (app, next) => {
       const db = client.db();
       const usersCollection = db.collection('users');
 
-      // Verificar si el usuario autenticado es un administrador
-      const isAdmin = req.isAdmin === true;
-
-      if (!isAdmin) {
+      if (!isAdmin(req)) {
         // Cerrar conexión despues de usar
         // Para liberar recursos y evitar problemas de conexiones agotadas.
         await client.close();
-        console.log('no autorizado POST', isAdmin);
+        console.log('no autorizado POST', isAdmin(req));
         return res.status(401).json({ error: 'Sin autorización para crear un usuario' });
       }
 
@@ -252,34 +259,35 @@ module.exports = (app, next) => {
   app.delete('/users/:uid', requireAuth, async (req, res, next) => {
     try {
       // Obtener el ID o correo de la usuario a eliminar desde los parámetros de la URL
-      const uid = req.params.uid;
+      const { uid } = req.params;
 
       console.log(uid, 'datos del usuario routes/users');
-  
+
       // Verificar si el usuario autenticado es un administrador
       const isAdmin = req.isAdmin === true;
-  
+
       // Si el usuario no es un administrador ni la misma usuario, devolver un error 403
       if (!isAdmin && uid !== req.user.email) {
-        console.log(req.user.email,'No coincide con este usuario');
+        console.log(req.user.email, 'No coincide con este usuario');
         return res.status(403).json({ error: 'No tienes autorización para eliminar este usuario' });
       }
-  
+
       // Buscar la usuario en la base de datos
-      const userToDelete = await User.findOne({ $or: [{ _id: uid }, { email: uid }]  });
+      const userToDelete = await User.findOne({ $or: [{ _id: uid }, { email: uid }] });
 
       console.log('usuario a borrar', userToDelete);
-  
+
       // Si no se encuentra la usuario, devolver un error 404
       if (!userToDelete) {
         return res.status(404).json({ error: 'El usuario que intentas eliminar no existe' });
       }
-  
+
       // Eliminar la usuario de la base de datos
       await User.deleteOne({ _id: userToDelete._id });
-  
+
       // Devolver una respuesta exitosa
-      res.status(200).json({ message: 'Usuario eliminado exitosamente',
+      res.status(200).json({
+        message: 'Usuario eliminado exitosamente',
         id: userToDelete._id,
         email: userToDelete.email,
         role: req.body.role.role,
