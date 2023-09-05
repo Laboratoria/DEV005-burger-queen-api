@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
-const { 
+
+const {
   Schema,
-  model
+  model,
 } = mongoose;
 
 const productSchema = new Schema({
@@ -21,7 +22,7 @@ const productSchema = new Schema({
     required: true,
   },
   image: {
-    type: String,
+    type: URL,
     ref: 'Product Image URL',
     required: true,
   },
@@ -40,4 +41,3 @@ const productSchema = new Schema({
 
 const Product = model('Product', productSchema);
 module.exports = Product;
-
