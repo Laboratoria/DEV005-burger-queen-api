@@ -119,13 +119,20 @@ module.exports = (app, nextMain) => {
         return res.status(403).json({ error: 'Este producto ya está registrado' });
       }
 
+      // OBTENER FECHA Y HORA ACTUAL EN FORMATO CORRECTO
+      const getDateAndTime = () => {
+        const now = new Date();
+
+        return now.toISOString().replace(/[TZ]+/gm, ' ').substring(0, 19);
+      };
+
       // Lógica para crear el producto
       const newProduct = {
         name,
         price,
         image,
         type,
-        dateEntry: new Date(),
+        dateEntry: getDateAndTime(),
       };
 
       console.log(newProduct, 'new product routes/products');

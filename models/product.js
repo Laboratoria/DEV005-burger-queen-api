@@ -22,7 +22,7 @@ const productSchema = new Schema({
     required: true,
   },
   image: {
-    type: URL,
+    type: String,
     ref: 'Product Image URL',
     required: true,
   },
