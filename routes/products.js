@@ -94,7 +94,7 @@ module.exports = (app, nextMain) => {
       const db = client.db();
       const productsCollection = db.collection('products');
 
-      // Verificar si el usuario autenticado es un administrador
+      // Verificar si el producto autenticado es un administrador
       const isAdmin = req.isAdmin === 'admin';
 
       if (!isAdmin) {
@@ -119,13 +119,20 @@ module.exports = (app, nextMain) => {
         return res.status(403).json({ error: 'Este producto ya está registrado' });
       }
 
+      // OBTENER FECHA Y HORA ACTUAL EN FORMATO CORRECTO
+      const getDateAndTime = () => {
+        const now = new Date();
+
+        return now.toISOString().replace(/[TZ]+/gm, ' ').substring(0, 19);
+      };
+
       // Lógica para crear el producto
       const newProduct = {
         name,
         price,
         image,
         type,
-        dateEntry: new Date(),
+        dateEntry: getDateAndTime(),
       };
 
       console.log(newProduct, 'new product routes/products');
@@ -154,7 +161,7 @@ module.exports = (app, nextMain) => {
    * @description Modifica un producto
    * @path {PUT} /products
    * @params {String} :productId `id` del producto
-   * @auth Requiere `token` de autenticación y que el usuario sea **admin**
+   * @auth Requiere `token` de autenticación y que el producto sea **admin**
    * @body {String} [name] Nombre
    * @body {Number} [price] Precio
    * @body {String} [imagen]  URL a la imagen
@@ -180,7 +187,7 @@ module.exports = (app, nextMain) => {
    * @description Elimina un producto
    * @path {DELETE} /products
    * @params {String} :productId `id` del producto
-   * @auth Requiere `token` de autenticación y que el usuario sea **admin**
+   * @auth Requiere `token` de autenticación y que el producto sea **admin**
    * @response {Object} product
    * @response {String} product._id Id
    * @response {String} product.name Nombre
@@ -193,7 +200,49 @@ module.exports = (app, nextMain) => {
    * @code {403} si no es ni admin
    * @code {404} si el producto con `productId` indicado no existe
    */
-  app.delete('/products/:productId', requireAdmin, (req, res, next) => {
+  app.delete('/products/:productId', requireAdmin, async (req, res, next) => {
+    try {
+      // Obtener el ID o correo de producto a eliminar desde los parámetros de la URL
+      const { productId } = req.params;
+
+      console.log(productId, 'datos del producto routes/products');
+
+      // Buscar el producto en la base de datos
+      const productToDelete = await Product.findOne({ _id: productId });
+
+      console.log('producto a borrar', productToDelete);
+
+      // Verificar si el usuario autenticado es un administrador
+      const isAdmin = req.isAdmin === 'admin';
+
+      console.log(isAdmin, 'usuario admin products?');
+
+      // Si el usuario no es un administrador devolver un error 403
+      if (!isAdmin) {
+        return res.status(403).json({ error: 'No tienes autorización para eliminar este producto' });
+      }
+
+      // Si no se encuentra el producto, devolver un error 404
+      if (!productToDelete) {
+        return res.status(404).json({ error: 'El producto que intentas eliminar no existe' });
+      }
+
+      // Eliminar la producto de la base de datos
+      await Product.deleteOne({ _id: productToDelete._id });
+
+      // Devolver una respuesta exitosa
+      return res.status(200).json({
+        message: 'producto eliminado exitosamente',
+        id: productToDelete._id,
+        name: productToDelete.name,
+        price: productToDelete.price,
+        image: productToDelete.image,
+        type: productToDelete.type,
+        dateEntry: productToDelete.dateEntry,
+      });
+    } catch (error) {
+      console.error('Error al eliminar producto', error);
+    }
   });
 
   nextMain();
