@@ -1,13 +1,6 @@
 const jwt = require('jsonwebtoken');
 
-function formatRole(decodedToken) {
-  if (typeof decodedToken.rol === 'string') {
-    return decodedToken.rol;
-  }
-  if (typeof decodedToken.rol === 'object') {
-    return decodedToken.rol.role;
-  }
-}
+const formatRole = decodedToken => (typeof decodedToken.rol === 'string' ? decodedToken.rol : decodedToken.rol.role);
 
 module.exports = secret => (req, res, next) => {
   const { authorization } = req.headers;
