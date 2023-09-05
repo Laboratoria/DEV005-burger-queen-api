@@ -129,7 +129,7 @@ module.exports = (app, nextMain) => {
       const db = client.db();
       const productsCollection = db.collection('products');
 
-      // Verificar si el producto autenticado es un administrador
+      // Verificar si el usuario autenticado es un administrador
       const isAdmin = req.isAdmin === 'admin';
 
       if (!isAdmin) {
@@ -192,7 +192,7 @@ module.exports = (app, nextMain) => {
   });
 
   /**
-   * @name PUT /products
+   * @name PATCH /products
    * @description Modifica un producto
    * @path {PUT} /products
    * @params {String} :productId `id` del producto
@@ -214,7 +214,79 @@ module.exports = (app, nextMain) => {
    * @code {403} si no es admin
    * @code {404} si el producto con `productId` indicado no existe
    */
-  app.put('/products/:productId', requireAdmin, (req, res, next) => {
+  app.patch('/products/:productId', requireAdmin, async (req, res, next) => {
+    try {
+      // Obtener el ID desde params
+      const { productId } = req.params;
+
+      // Obtener los datos del cuerpo de la solicitud
+      const {
+        name, price, image, type,
+      } = req.body;
+
+      // Buscar producto en la base de datos
+      const productToUpdate = await Product.findOne({ _id: productId });
+
+      console.log('producto a editar', productToUpdate);
+
+      // Si no se encuentra el producto, devolver error 404
+      if (!productToUpdate) {
+        return res.status(404).json({ error: 'El producto no existe' });
+      }
+
+      // Verificar si el usuario autenticado es un administrador
+      const isAdmin = req.isAdmin === 'admin';
+
+      if (!isAdmin) {
+        console.log('usurio no es admin', isAdmin);
+        return res.status(403).json({ error: 'No tiene autorización para modificar productos' });
+      }
+
+      // Verificar si hay autorización
+      const isAuth = req.authorization !== '';
+
+      if (!isAuth) {
+        console.log('no hay cabezera de auth', isAuth);
+        return res.status(401).json({ error: 'No hay infromación de autorización' });
+      }
+
+      // Verificar si se proporciona al menos una propiedad para modificar
+      if (!name && !price && !image && !type) {
+        return res.status(400).json({ error: 'Proporciona al menos una propiedad para modificar' });
+      }
+
+      // Actualizar las propiedades del producto si se proporcionan en el cuerpo de la solicitud
+      if (name) {
+        productToUpdate.name = name;
+      }
+
+      if (price) {
+        productToUpdate.price = price;
+      }
+
+      if (image) {
+        productToUpdate.image = image;
+      }
+
+      if (type) {
+        productToUpdate.type = type;
+      }
+
+      // Guardar los cambios en la base de datos
+      await productToUpdate.save();
+
+      // Devolver una respuesta exitosa con los detalles del producto actualizado
+      res.status(200).json({
+        id: productToUpdate._id,
+        name: productToUpdate.name,
+        price: productToUpdate.price,
+        image: productToUpdate.image,
+        type: productToUpdate.type,
+        dateEntry: productToUpdate.dateEntry.toISOString().replace(/[TZ]+/gm, ' ').substring(0, 19),
+      });
+    } catch (error) {
+      console.error('Error al buscar usuario', error);
+    }
   });
 
   /**
