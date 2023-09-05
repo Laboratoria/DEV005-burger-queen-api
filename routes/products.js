@@ -81,7 +81,7 @@ module.exports = (app, nextMain) => {
         price: productToGet.price,
         image: productToGet.image,
         type: productToGet.type,
-        dateEntry: productToGet.dateEntry,
+        dateEntry: productToGet.dateEntry.toISOString().replace(/[TZ]+/gm, ' ').substring(0, 19),
       });
     } catch (error) {
       console.error('Error al buscar usuario', error);
@@ -151,7 +151,7 @@ module.exports = (app, nextMain) => {
       if (existingProduct) {
         await client.close();
         console.log('ya existe el producto', existingProduct);
-        return res.status(403).json({ error: 'Este producto ya está registrado' });
+        return res.status(404).json({ error: 'Este producto ya está registrado' });
       }
 
       // OBTENER FECHA Y HORA ACTUAL EN FORMATO CORRECTO
@@ -262,6 +262,14 @@ module.exports = (app, nextMain) => {
         return res.status(404).json({ error: 'El producto que intentas eliminar no existe' });
       }
 
+      // Verificar si hay autorización
+      const isAuth = req.authorization !== '';
+
+      if (!isAuth) {
+        console.log('no hay cabezera de auth', isAuth);
+        return res.status(401).json({ message: 'No hay infromación de autorización' });
+      }
+
       // Eliminar la producto de la base de datos
       await Product.deleteOne({ _id: productToDelete._id });
 
@@ -273,7 +281,7 @@ module.exports = (app, nextMain) => {
         price: productToDelete.price,
         image: productToDelete.image,
         type: productToDelete.type,
-        dateEntry: productToDelete.dateEntry,
+        dateEntry: productToDelete.dateEntry.toISOString().replace(/[TZ]+/gm, ' ').substring(0, 19),
       });
     } catch (error) {
       console.error('Error al eliminar producto', error);
