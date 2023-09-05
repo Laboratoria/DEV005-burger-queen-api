@@ -50,7 +50,42 @@ module.exports = (app, nextMain) => {
    * @code {401} si no hay cabecera de autenticación
    * @code {404} si el producto con `productId` indicado no existe
    */
-  app.get('/products/:productId', requireAuth, (req, res, next) => {
+  app.get('/products/:productId', requireAuth, async (req, res, next) => {
+    try {
+      // Obtener el ID desde params
+      const { productId } = req.params;
+
+      // Buscar producto en la base de datos
+      const productToGet = await Product.findOne({ _id: productId });
+
+      console.log('producto encontrado es', productToGet);
+
+      // Si no se encuentra el producto, devolver error 404
+      if (!productToGet) {
+        return res.status(404).json({ error: 'El producto no existe' });
+      }
+
+      // Verificar si hay autorización
+      const isAuth = req.authorization !== '';
+
+      if (!isAuth) {
+        console.log('no hay cabezera de auth', isAuth);
+        return res.status(401).json({ message: 'No hay infromación de autorización' });
+      }
+
+      // Devolver una respuesta exitosa
+      res.status(200).json({
+        message: 'producto encontrado',
+        id: productToGet._id,
+        name: productToGet.name,
+        price: productToGet.price,
+        image: productToGet.image,
+        type: productToGet.type,
+        dateEntry: productToGet.dateEntry,
+      });
+    } catch (error) {
+      console.error('Error al buscar usuario', error);
+    }
   });
 
   /**
