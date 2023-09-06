@@ -1,6 +1,13 @@
+const { MongoClient } = require('mongodb');
 const {
   requireAuth,
+  requireAdmin,
+  isAdmin,
+  isAuthenticated,
 } = require('../middleware/auth');
+const Order = require('../models/order');
+const config = require('../config');
+const { getOrders, getOrderById } = require('../controller/orders');
 
 /** @module orders */
 module.exports = (app, nextMain) => {
@@ -30,8 +37,7 @@ module.exports = (app, nextMain) => {
    * @code {200} si la autenticación es correcta
    * @code {401} si no hay cabecera de autenticación
    */
-  app.get('/orders', requireAuth, (req, res, next) => {
-  });
+  app.get('/orders', requireAuth, getOrders);
 
   /**
    * @name GET /orders/:orderId
@@ -54,8 +60,7 @@ module.exports = (app, nextMain) => {
    * @code {401} si no hay cabecera de autenticación
    * @code {404} si la orden con `orderId` indicado no existe
    */
-  app.get('/orders/:orderId', requireAuth, (req, res, next) => {
-  });
+  app.get('/orders/:orderId', requireAuth, getOrderById);
 
   /**
    * @name POST /orders
@@ -138,7 +143,48 @@ module.exports = (app, nextMain) => {
    * @code {401} si no hay cabecera de autenticación
    * @code {404} si el producto con `orderId` indicado no existe
    */
-  app.delete('/orders/:orderId', requireAuth, (req, res, next) => {
+  app.delete('/orders/:orderId', requireAdmin, async (req, res, next) => {
+    try {
+      // Obtener el ID o correo de producto a eliminar desde los parámetros de la URL
+      const { orderId } = req.params;
+      console.log(orderId, 'datos del producto routes/products');
+
+      // Buscar el producto en la base de datos
+      const order = await Order.findOne({ _id: orderId });
+      console.log('producto a borrar', order);
+
+      // Si el usuario no es un administrador devolver un error 403
+      if (!isAdmin(req)) {
+        return res.status(403).json({ error: 'No tienes autorización para eliminar esta orden' });
+      }
+
+      // Si no se encuentra el producto, devolver un error 404
+      if (!order) {
+        return res.status(404).json({ error: 'La orden que intentas eliminar no existe' });
+      }
+
+      if (!isAuthenticated) {
+        console.log('no hay cabezera de auth', isAuthenticated);
+        return res.status(401).json({ message: 'No hay información de autorización' });
+      }
+
+      // Eliminar la producto de la base de datos
+      await order.deleteOne({ _id: order._id });
+
+      // Devolver una respuesta exitosa
+      return res.status(200).json({
+        message: 'Orden eliminada exitosamente',
+        id: order._id,
+        userID: order.userId,
+        client: order.client,
+        table: order.table,
+        products: order.products,
+        status: order.status,
+        dateEntry: order.dateEntry.toISOString().replace(/[TZ]+/gm, ' ').substring(0, 19),
+      });
+    } catch (error) {
+      console.error('Error al eliminar la orden', error);
+    }
   });
 
   nextMain();

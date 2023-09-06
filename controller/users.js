@@ -49,27 +49,27 @@ module.exports = {
       // Si usuario no es admin ni sí mismo, devolver error 403
       if (!isAdmin(req) && uid !== req.user.email) {
         console.log(req.user.email, 'No coincide con este usuario');
-        return res.status(403).json({ error: 'No tienes autorización para eliminar este usuario' });
+        return res.status(403).json({ error: 'No tienes autorización para ver esta información' });
       }
 
       // Buscar usuario en la base de datos
-      const userToGet = await User.findOne({ $or: [{ _id: uid }, { email: uid }] })
+      const user = await User.findOne({ $or: [{ _id: uid }, { email: uid }] })
         .select('-password -__v')
         .lean();
 
-      console.log('usuario encontrado es', userToGet);
+      console.log('usuario encontrado es', user);
 
       // Si no se encuentra usuario, devolver error 404
-      if (!userToGet) {
+      if (!user) {
         return res.status(404).json({ error: 'El usuario no existe' });
       }
 
       // Devolver una respuesta exitosa
       res.status(200).json({
         message: 'Usuario encontrado',
-        id: userToGet._id,
-        email: userToGet.email,
-        role: userToGet.role.role
+        id: user._id,
+        email: user.email,
+        role: user.role.role
       });
     } catch (error) {
       console.error('Error al buscar usuario', error);
