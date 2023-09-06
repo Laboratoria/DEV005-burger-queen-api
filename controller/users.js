@@ -1,5 +1,9 @@
+const { MongoClient } = require('mongodb');
 const User = require('../models/user');
 const { isAdmin, isAuthenticated } = require('../middleware/auth.js')
+const config = require('../config');
+const { dbUrl } = config;
+const client = new MongoClient(dbUrl);
 
 module.exports = {
   validatePassword: password => password.length >= 6,
@@ -33,6 +37,8 @@ module.exports = {
       }      
     } catch (error) {
         console.error('Error al obtener los usuarios', error);
+    } finally {
+      client.close();
     }
   },
   getUserById: async (req, res, next) => {
@@ -67,6 +73,8 @@ module.exports = {
       });
     } catch (error) {
       console.error('Error al buscar usuario', error);
+    } finally {
+      client.close();
     }
   },
 };

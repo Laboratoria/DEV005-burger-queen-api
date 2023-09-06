@@ -27,12 +27,15 @@ module.exports = secret => (req, res, next) => {
     req.userId = decodedToken.userId; // Agregar el ID del usuario al objeto `req`
     req.isAdmin = formatRole(decodedToken); // Agregar el rol del usuario al objeto `req`
     req.thisEmail = decodedToken.email; // Agregar el correo del usuario al objeto `req`
+    req.isAuthenticated = true;
 
     next(); // Pasar la ejecución al siguiente middleware o controlador
   });
 };
 
-module.exports.isAuthenticated = req => (!!req.userId);
+module.exports.getLoggedUserEmail = (req, res, next) => (req.thisEmail ? req.thisEmail : next());
+
+module.exports.isAuthenticated = req => (!!req.isAuthenticated);
 
 module.exports.isAdmin = req => req.isAdmin === 'admin';
 
