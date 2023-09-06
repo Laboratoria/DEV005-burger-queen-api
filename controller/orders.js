@@ -34,7 +34,7 @@ module.exports = {
       console.log("error al buscar la orden", err);
       next(err);
     } finally {
-
+      client.close();
     }
   },
 };
