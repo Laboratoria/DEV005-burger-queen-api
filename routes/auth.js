@@ -48,7 +48,7 @@ module.exports = (app, nextMain) => {
 
     if (!user) {
       console.log('No hay un usuario registrado así en routes/auth', user);
-      return res.status(404).json({ message: 'Usuario no encontrado' });
+      return res.status(404).json({ error: 'Usuario no encontrado' });
     }
 
     // Comparar la contraseña proporcionada con la almacenada
@@ -56,7 +56,7 @@ module.exports = (app, nextMain) => {
 
     if (!isPasswordValid) {
       console.log('Contraseña incorrecta', user.password, 'vs', password);
-      return res.status(400).json({ message: 'Contraseña incorrecta' });
+      return res.status(400).json({ error: 'Contraseña incorrecta' });
     }
 
     // Genera un JWT token
