@@ -1,0 +1,653 @@
+{
+	"info": {
+		"_postman_id": "589ce290-4cc0-4fbd-9398-259019f7eb20",
+		"name": "API Requests",
+		"description": "Collection with all the possible API requests and all available endpoints.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_uid": "28724924-589ce290-4cc0-4fbd-9398-259019f7eb20"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "/auth",
+					"id": "25d511f0-bbac-4ff6-a0e8-04b3d72a8e3e",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"admin@prueba.com\",\r\n    \"password\": \"changeme\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/auth",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"auth"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"id": "2adc6c48-77c9-4896-8e37-b4b582dd5926",
+			"description": "Collection containing the POST/login request"
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "/users",
+					"id": "40a56489-0877-4a6c-8f9b-ef1c1cfc2c3d",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/users?page=1&limit=20",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "20"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/users",
+					"id": "2d9afdfc-5829-4f3d-88f4-9cf5b9eb3295",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"admin@prueba.com\",\r\n    \"password\": \"changeme\",\r\n    \"role\": \"admin\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/users/{uid}",
+					"id": "1cd6d6f4-b37d-4e70-bbf1-2cc5ef71ef39",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/users/64f77ec24151160e56993bc9",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"64f77ec24151160e56993bc9"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/users/{uid}",
+					"id": "a0d9f56f-e2c9-4ea9-bdfb-25403bb8afd0",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"iamanadmin@mail.com\",\r\n    \"password\": \"123456\",\r\n    \"role\": \"admin\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/users/64f77ec24151160e56993bc9",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"64f77ec24151160e56993bc9"
+							],
+							"query": [
+								{
+									"key": "uid",
+									"value": "64f77ec24151160e56993bc9",
+									"type": "text",
+									"id": 0,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/users/{uid}",
+					"id": "4ca025db-dd40-425c-bf39-df6438cbd535",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"iamawaiter2@mail.com\",\r\n    \"password\": \"123456\",\r\n    \"role\": \"waiter\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/users/64f5724b63116e4ec7deeee6",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"64f5724b63116e4ec7deeee6"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"id": "30b50b29-d160-4405-af3a-2099fec98bca",
+			"description": "Collection containing all the request for the users endpoint."
+		},
+		{
+			"name": "Orders",
+			"item": [
+				{
+					"name": "/orders",
+					"id": "3755d781-d0db-4962-a04c-2d6c95bed2d5",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:80/orders",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "80",
+							"path": [
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/orders",
+					"id": "8de7ea92-607d-43b9-892c-d391b41bb1da",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:80/orders",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "80",
+							"path": [
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/orders/{orderId}",
+					"id": "2191c406-bcee-447f-a96d-438ab9fb589c",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:80/orders/{orderId}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "80",
+							"path": [
+								"orders",
+								"{orderId}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/orders/{orderId}",
+					"id": "dff1248a-e562-42aa-b101-ffe256200002",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:80/orders/{orderId}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "80",
+							"path": [
+								"orders",
+								"{orderId}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/orders/{orderId}",
+					"id": "93021f7d-b35a-4a17-ad75-a1c76c9de857",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"iamawaiter2@mail.com\",\r\n    \"password\": \"123456\",\r\n    \"role\": \"waiter\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:80/orders/{orderId}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "80",
+							"path": [
+								"orders",
+								"{orderId}"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"id": "1bcd7559-4fc7-409b-bef0-1b1c3fa79543",
+			"description": "Collection containing all the request for the orders endpoint."
+		},
+		{
+			"name": "Products",
+			"item": [
+				{
+					"name": "/products",
+					"id": "a524e193-317f-417a-bbb9-bc88bc5dbcab",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:80/products",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "80",
+							"path": [
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/products",
+					"id": "a82f7ccd-245a-404a-a62e-4269779b755c",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:80/products",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "80",
+							"path": [
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/products/{productId}",
+					"id": "bc15dc2b-70be-4615-8dc8-5ace761a8a1d",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:80/products/{productId}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "80",
+							"path": [
+								"products",
+								"{productId}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/products/{productId}",
+					"id": "cb052791-3b99-47a0-9272-a5a2f7319054",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:80/products/{productId}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "80",
+							"path": [
+								"products",
+								"{productId}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/products/{productId}",
+					"id": "62358c05-5931-4d44-ace9-627d32c9010c",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:80/products/{productId}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "80",
+							"path": [
+								"products",
+								"{productId}"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"id": "614580ab-0272-41ec-9f46-e9e94de94619",
+			"description": "Collection containing all the request for the products endpoint."
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NGY1NzJhYTYzMTE2ZTRlYzdkZWVlZjEiLCJyb2xlIjp7InJvbGUiOiJhZG1pbiIsImFkbWluIjp0cnVlfSwiZW1haWwiOiJhZG1pbkBwcnVlYmEuY29tIiwiaWF0IjoxNjkzOTc2MTExLCJleHAiOjE2OTM5Nzk3MTF9.3IK3cMDxqkV7nJqSLr4AzcMnpDFvX6HJ5A411K4QILU",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "cf4550aa-1e8c-4c4e-823d-a048cdf96660",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "366f4b7f-9d72-4d83-8389-0aa200f05cc1",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
