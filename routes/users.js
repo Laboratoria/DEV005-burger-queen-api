@@ -36,7 +36,7 @@ const initAdminUser = async (app, next) => {
 
   mongoose.connect(dbUrl);
 
-  const userExists = await User.findOne({ email: adminUser.email });
+  const userExists = await User.findOne({ email: adminEmail });
   // .then(res => {
   if (!userExists) {
     try {

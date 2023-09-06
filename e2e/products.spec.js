@@ -23,7 +23,9 @@ describe('POST /products', () => {
   it('should create product as admin', () => (
     fetchAsAdmin('/products', {
       method: 'POST',
-      body: { name: 'Test', price: 5 },
+      body: {
+        name: 'Test', price: 5, image: 'url.test', type: 'Desayuno',
+      },
     })
       .then((resp) => {
         expect(resp.status).toBe(200);

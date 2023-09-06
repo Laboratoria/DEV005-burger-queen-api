@@ -28,6 +28,10 @@ module.exports = secret => (req, res, next) => {
     req.isAdmin = formatRole(decodedToken); // Agregar el rol del usuario al objeto `req`
     req.thisEmail = decodedToken.email; // Agregar el correo del usuario al objeto `req`
 
+    // console.log('REEEEQ', req, 'REEEEEQ');
+
+    // console.log('REEEEQaaaa', req.isAdmin === 'admin', 'REEEEEQaaaa');
+
     next(); // Pasar la ejecución al siguiente middleware o controlador
   });
 };
