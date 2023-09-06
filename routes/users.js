@@ -1,7 +1,6 @@
 const { MongoClient } = require('mongodb');
 const bcrypt = require('bcrypt');
 const mongoose = require('mongoose');
-const config = require('../config');
 const User = require('../models/user');
 const { dbUrl } = require('../config');
 
@@ -9,6 +8,8 @@ const {
   requireAuth,
   requireAdmin,
   isAdmin,
+  isAuthenticated,
+  getLoggedUserEmail,
 } = require('../middleware/auth');
 
 const {
@@ -144,9 +145,7 @@ module.exports = (app, next) => {
    * @code {403} si ya existe usuaria con ese `email`
    */
   app.post('/users', requireAdmin, async (req, res, next) => {
-    // TODO: implementar la ruta para agregar
     // nuevos usuarios
-
     try {
       // Obtener los datos del cuerpo de la solicitud
       const { email, password, role } = req.body;
@@ -165,7 +164,7 @@ module.exports = (app, next) => {
       }
 
       // Crear una instancia de MongoClient para conectar con la base de datos
-      const client = new MongoClient(config.dbUrl);
+      const client = new MongoClient(dbUrl);
       await client.connect();
       // Obtener referencia a la base de datos y colección
       const db = client.db();
@@ -240,7 +239,73 @@ module.exports = (app, next) => {
    * @code {403} una usuaria no admin intenta de modificar sus `role`
    * @code {404} si la usuaria solicitada no existe
    */
-  app.put('/users/:uid', requireAuth, (req, res, next) => {
+  app.put('/users/:uid', requireAuth, async (req, res, next) => {
+    const client = new MongoClient(dbUrl);
+    try {
+      // Obtener los datos desde la req
+      const { email, password, role } = req.body; // nueva data para el usuario a cambiar
+      const { uid } = req.params; // usuario que se va a cambiar
+      const { userId } = req.userId; // usuario haciendo el cambio
+
+      if (!validateEmail(email)) {
+        console.log('correo electrónico inválido', email);
+        return res.status(400).json({ message: 'El correo debe ser una dirección válida' });
+      }
+      if (!validatePassword(password)) {
+        console.log('contraseña inválida', password);
+        return res.status(400).json({ message: 'La contraseña debe tener al menos 6 caracteres' });
+      }
+      if (!email && !password && !role) {
+        return res.status(400).json({ error: 'Proporciona al menos una propiedad para modificar' });
+      }
+
+      if (!isAuthenticated(req)) {
+        console.log('Usuario no autenticado', isAuthenticated(req));
+        return res.status(401).json({ error: 'Sin autorización' });
+      }
+
+      if (!isAdmin(req)) {
+        console.log('no autorizado PUT', isAdmin(req));
+        return res.status(401).json({ error: 'No tienes autorización para modificar usuario' });
+      }
+      // Conectarse a la base da datos
+      await client.connect();
+
+      const user = await User.findOne({ $or: [{ _id: uid }, { email: uid }] });
+      const verifyIsAdminUser = role === 'admin';
+
+      if (!user) {
+        console.log('No se encontró usuario con ID: ', uid);
+        return res.status(404).json({ error: 'Usuario no encontrado' });
+      }
+
+      // si es admin o el mismo usuario
+      if (isAdmin(req) || uid === userId) {
+        if (email) {
+          user.email = email;
+        }
+        if (password) {
+          user.password = bcrypt.hashSync(password, 10);
+        }
+        if (role) {
+          user.role.role = role;
+          user.role.admin = verifyIsAdminUser;
+        }
+        await user.save();
+
+        // Enviar la respuesta con los detalles del usuario modificado
+        res.status(200).json({
+          message: 'Usuario actualizado exitosamente',
+          _id: uid,
+          email: user.email,
+          role: user.role.role,
+        });
+      }
+    } catch (error) {
+      console.error('Error al modificar usuario', error);
+    } finally {
+      client.close();
+    }
   });
 
   /**
