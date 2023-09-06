@@ -1,7 +1,11 @@
+const { MongoClient } = require('mongodb');
 const {
   requireAuth,
   requireAdmin,
 } = require('../middleware/auth');
+const Product = require('../models/product');
+const config = require('../config');
+const { getProducts } = require('../controller/products');
 
 /** @module products */
 module.exports = (app, nextMain) => {
@@ -27,8 +31,7 @@ module.exports = (app, nextMain) => {
    * @code {200} si la autenticación es correcta
    * @code {401} si no hay cabecera de autenticación
    */
-  app.get('/products', requireAuth, (req, res, next) => {
-  });
+  app.get('/products', requireAuth, getProducts);
 
   /**
    * @name GET /products/:productId
@@ -72,7 +75,78 @@ module.exports = (app, nextMain) => {
    * @code {403} si no es admin
    * @code {404} si el producto con `productId` indicado no existe
    */
-  app.post('/products', requireAdmin, (req, res, next) => {
+  app.post('/products', requireAdmin, async (req, res, next) => {
+    try {
+      // Obtener los datos del cuerpo de la solicitud
+      const {
+        name, price, image, type,
+      } = req.body;
+
+      if (!name || !price) {
+        console.log('requiere nombre y precio', name, price);
+        return res.status(400).json({ message: 'Debe proporcionar un nombre y un precio' });
+      }
+
+      // Crear una instancia de MongoClient para conectar con la base de datos
+      const client = new MongoClient(config.dbUrl);
+      await client.connect();
+      // Obtener referencia a la base de datos y colección
+      const db = client.db();
+      const productsCollection = db.collection('products');
+
+      // Verificar si el usuario autenticado es un administrador
+      const isAdmin = req.isAdmin === 'admin';
+
+      if (!isAdmin) {
+        console.log('usurio no es admin', isAdmin);
+        return res.status(403).json({ message: 'No tiene autorización para agregar productos' });
+      }
+
+      // Verificar si hay autorización
+      const isAuth = req.authorization !== '';
+
+      if (!isAuth) {
+        console.log('no hay cabezera de auth', isAuth);
+        return res.status(401).json({ message: 'No hay infromación de autorización' });
+      }
+
+      // Verificar si ya existe el producto
+      const existingProduct = await Product.findOne({ name });
+
+      if (existingProduct) {
+        await client.close();
+        console.log('ya existe el producto', existingProduct);
+        return res.status(403).json({ error: 'Este producto ya está registrado' });
+      }
+
+      // Lógica para crear el producto
+      const newProduct = {
+        name,
+        price,
+        image,
+        type,
+        dateEntry: new Date(),
+      };
+
+      console.log(newProduct, 'new product routes/products');
+
+      // Insertar el nuevo producto en la base de datos
+      const insertedProduct = await productsCollection.insertOne(newProduct);
+
+      await client.close();
+
+      // Enviar la respuesta con los detalles del producto creado
+      res.status(200).json({
+        id: insertedProduct.insertedId,
+        name: newProduct.name,
+        price: newProduct.price,
+        image: newProduct.image,
+        type: newProduct.type,
+        dateEntry: newProduct.dateEntry,
+      });
+    } catch (error) {
+      console.error('Error al agregar producto', error);
+    }
   });
 
   /**

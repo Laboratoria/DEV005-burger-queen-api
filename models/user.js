@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
-const { 
+
+const {
   Schema,
-  model
+  model,
 } = mongoose;
 
 const userSchema = new Schema({
@@ -13,6 +14,7 @@ const userSchema = new Schema({
     type: String,
     ref: 'User email',
     required: true,
+    unique: true,
   },
   password: {
     type: String,
@@ -20,10 +22,14 @@ const userSchema = new Schema({
     required: true,
   },
   role: {
-    type: String,
-    ref: 'User Role',
-    enum: ['admin', 'chef', 'waiter'],
-    required: true,
+    role: {
+      type: String,
+      enum: ['admin', 'chef', 'waiter'],
+      required: true,
+    },
+    admin: {
+      type: Boolean,
+    },
   },
 });
 

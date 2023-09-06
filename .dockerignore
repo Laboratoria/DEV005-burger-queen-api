@@ -1,4 +1,13 @@
-node_modules/
-e2e
-controller
-docs
+**/node_modules/
+**/dist
+**/e2e/
+**/controller/
+**/guides/
+**/coverage/
+**/db-data/
+.git
+npm-debug.log
+.coverage
+.coverage.*
+.env
+.aws

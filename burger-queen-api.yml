@@ -634,7 +634,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'          
         "403":
-          description: "Caso 1: si el token de autenticación no es de una usuario administradora o no es de la misma usuaria que corresponde al parametro uid. Caso 2: una usuaria no admin intenta de modificar sus `roles`"
+          description: "Caso 1: si el token de autenticación no es de una usuario administradora o no es de la misma usuaria que corresponde al parametro uid. Caso 2: una usuaria no admin intenta de modificar sus `role`"
           content:
             application/json:
               schema:
@@ -702,7 +702,7 @@ components:
         password:
           type: "string"
           description: "Contraseña"
-        roles:
+        role:
           type: object
           description: "Rol administrador asignado"
           properties:
@@ -991,29 +991,29 @@ components:
       value:
         - id: 15254
           email: "anita.borg@systers.xyz"
-          roles:
+          role:
             admin: true
         - id: 15254
           email: "grace.hopper@systers.xyz"
-          roles:
+          role:
             admin: true
     NewUser:
       value:
         email: "grace.hopper@systers.xyz"
         password: "9XXLqVhq3vw9yjNt"
-        roles:
+        role:
           admin: true
     Anita:
       value:
         id: 15254
         email: "anita.borg@systers.xyz"
-        roles:
+        role:
           admin: true
     Grace:
       value:
         id: 15254
         email: "grace.hopper@systers.xyz"
-        roles:
+        role:
           admin: true
   parameters:
     pageParam:

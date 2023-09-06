@@ -15,29 +15,29 @@ services:
       - 27017
     ports:
       - 28017:27017
-  node:
-    image: node:20
-    user: node
-    working_dir: /home/node/app
-    environment:
-      NODE_ENV: production
-      PORT: 8080
-      DB_URL: mongodb://BQKarlaSara:BQKarlaSaraDev007@db:27017/BQKarlaSara?authSource=admin
-      JWT_SECRET: esta-es-la-api-burger-queen
-      ADMIN_EMAIL: admin@localhost
-      ADMIN_PASSWORD: changeme
-    volumes:
-      - ./:/home/node/app
-    expose:
-      - 8080
-    ports:
-      - 80:8080
-    command: bash -c 'rm -rf node_modules && npm install && npm start'
-    depends_on:
-      - db
-    networks:
-      - public
-      - private
+  # node:
+  #   image: node:18
+  #   user: node
+  #   working_dir: /home/node/app
+  #   environment:
+  #     # NODE_ENV: production
+  #     PORT: 8080
+  #     DB_URL: mongodb://BQKarlaSara:BQKarlaSaraDev007@db:27017/BQKarlaSara?authSource=admin
+  #     JWT_SECRET: esta-es-la-api-burger-queen
+  #     ADMIN_EMAIL: admin@prueba.com
+  #     ADMIN_PASSWORD: changeme
+  #   volumes:
+  #     - ./:/home/node/app
+  #   expose:
+  #     - 8080
+  #   ports:
+  #     - 80:8080
+  #   command: bash -c 'rm -rf node_modules && npm install && npm start'
+  #   depends_on:
+  #     - db
+  #   networks:
+  #     - public
+  #     - private
 networks:
   public:
     internal: false

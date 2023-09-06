@@ -155,7 +155,7 @@ describe('POST /users', () => {
       body: {
         email: 'test1@test.test',
         password: '12345',
-        roles: { admin: false },
+        role: { admin: false },
       },
     })
       .then((resp) => {
@@ -166,8 +166,8 @@ describe('POST /users', () => {
         expect(typeof json._id).toBe('string');
         expect(typeof json.email).toBe('string');
         expect(typeof json.password).toBe('undefined');
-        expect(typeof json.roles).toBe('object');
-        expect(json.roles.admin).toBe(false);
+        expect(typeof json.role).toBe('object');
+        expect(json.role.admin).toBe(false);
       })
   ));
 
@@ -177,7 +177,7 @@ describe('POST /users', () => {
       body: {
         email: 'admin1@test.test',
         password: '12345',
-        roles: { admin: true },
+        role: { admin: true },
       },
     })
       .then((resp) => {
@@ -188,8 +188,8 @@ describe('POST /users', () => {
         expect(typeof json._id).toBe('string');
         expect(typeof json.email).toBe('string');
         expect(typeof json.password).toBe('undefined');
-        expect(typeof json.roles).toBe('object');
-        expect(json.roles.admin).toBe(true);
+        expect(typeof json.role).toBe('object');
+        expect(json.role.admin).toBe(true);
       })
   ));
 
@@ -223,10 +223,10 @@ describe('PUT /users/:uid', () => {
       .then((resp) => expect(resp.status).toBe(400))
   ));
 
-  it('should fail with 403 when not admin tries to change own roles', () => (
+  it('should fail with 403 when not admin tries to change own role', () => (
     fetchAsTestUser('/users/test@test.test', {
       method: 'PUT',
-      body: { roles: { admin: true } },
+      body: { role: { admin: true } },
     })
       .then((resp) => expect(resp.status).toBe(403))
   ));
