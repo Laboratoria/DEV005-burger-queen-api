@@ -1,10 +1,10 @@
 {
 	"info": {
-		"_postman_id": "2ba2ff4c-0dbb-493b-9115-b4a52c5589b8",
+		"_postman_id": "589ce290-4cc0-4fbd-9398-259019f7eb20",
 		"name": "API Requests",
 		"description": "Collection with all the possible API requests and all available endpoints.",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_uid": "28724924-2ba2ff4c-0dbb-493b-9115-b4a52c5589b8"
+		"_uid": "28724924-589ce290-4cc0-4fbd-9398-259019f7eb20"
 	},
 	"item": [
 		{
@@ -12,7 +12,7 @@
 			"item": [
 				{
 					"name": "/auth",
-					"id": "e7623876-903f-476d-bd01-d238aea683c2",
+					"id": "25d511f0-bbac-4ff6-a0e8-04b3d72a8e3e",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -24,7 +24,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"admin@prueba\",\r\n    \"password\": \"changeme\"\r\n}",
+							"raw": "{\r\n    \"email\": \"admin@prueba.com\",\r\n    \"password\": \"changeme\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -32,12 +32,12 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:80/auth",
+							"raw": "http://localhost:8080/auth",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "80",
+							"port": "8080",
 							"path": [
 								"auth"
 							]
@@ -46,7 +46,7 @@
 					"response": []
 				}
 			],
-			"id": "da7eec78-230c-4e4b-8019-95b73c44aa58",
+			"id": "2adc6c48-77c9-4896-8e37-b4b582dd5926",
 			"description": "Collection containing the POST/login request"
 		},
 		{
@@ -54,7 +54,7 @@
 			"item": [
 				{
 					"name": "/users",
-					"id": "b7e47a3f-3ad7-4c3c-a760-82775063b787",
+					"id": "40a56489-0877-4a6c-8f9b-ef1c1cfc2c3d",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -68,14 +68,24 @@
 							}
 						],
 						"url": {
-							"raw": "http://localhost:80/users",
+							"raw": "http://localhost:8080/users?page=1&limit=20",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "80",
+							"port": "8080",
 							"path": [
 								"users"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "20"
+								}
 							]
 						}
 					},
@@ -83,7 +93,7 @@
 				},
 				{
 					"name": "/users",
-					"id": "c3ea35e1-98f5-4f24-8b59-333b5aba5d73",
+					"id": "2d9afdfc-5829-4f3d-88f4-9cf5b9eb3295",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -92,7 +102,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"iamawaiter2@mail.com\",\r\n    \"password\": \"123456\",\r\n    \"role\": \"waiter\"\r\n}",
+							"raw": "{\r\n    \"email\": \"admin@prueba.com\",\r\n    \"password\": \"changeme\",\r\n    \"role\": \"admin\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -100,12 +110,12 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:80/users",
+							"raw": "http://localhost:8080/users",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "80",
+							"port": "8080",
 							"path": [
 								"users"
 							]
@@ -115,7 +125,7 @@
 				},
 				{
 					"name": "/users/{uid}",
-					"id": "49d97874-033f-41b1-903b-7af5e5bd8102",
+					"id": "1cd6d6f4-b37d-4e70-bbf1-2cc5ef71ef39",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -138,15 +148,15 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:80/users/{uid}",
+							"raw": "http://localhost:8080/users/64f77ec24151160e56993bc9",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "80",
+							"port": "8080",
 							"path": [
 								"users",
-								"{uid}"
+								"64f77ec24151160e56993bc9"
 							]
 						}
 					},
@@ -154,16 +164,16 @@
 				},
 				{
 					"name": "/users/{uid}",
-					"id": "ad2aad31-fdbf-482f-b2fa-086289d2fa24",
+					"id": "a0d9f56f-e2c9-4ea9-bdfb-25403bb8afd0",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
 					"request": {
-						"method": "PATCH",
+						"method": "PUT",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"iamawaiter2@mail.com\",\r\n    \"password\": \"123456\",\r\n    \"role\": \"waiter\"\r\n}",
+							"raw": "{\r\n    \"email\": \"iamanadmin@mail.com\",\r\n    \"password\": \"123456\",\r\n    \"role\": \"admin\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -171,15 +181,24 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:80/users/{uid}",
+							"raw": "http://localhost:8080/users/64f77ec24151160e56993bc9",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "80",
+							"port": "8080",
 							"path": [
 								"users",
-								"{uid}"
+								"64f77ec24151160e56993bc9"
+							],
+							"query": [
+								{
+									"key": "uid",
+									"value": "64f77ec24151160e56993bc9",
+									"type": "text",
+									"id": 0,
+									"disabled": true
+								}
 							]
 						}
 					},
@@ -187,7 +206,7 @@
 				},
 				{
 					"name": "/users/{uid}",
-					"id": "e246cb2d-66e5-4d0f-bcb1-b2c0d76a2d3b",
+					"id": "4ca025db-dd40-425c-bf39-df6438cbd535",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -204,22 +223,22 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:80/users/{uid}",
+							"raw": "http://localhost:8080/users/64f5724b63116e4ec7deeee6",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "80",
+							"port": "8080",
 							"path": [
 								"users",
-								"{uid}"
+								"64f5724b63116e4ec7deeee6"
 							]
 						}
 					},
 					"response": []
 				}
 			],
-			"id": "47bfb7e8-884c-4464-8820-22ba05074841",
+			"id": "30b50b29-d160-4405-af3a-2099fec98bca",
 			"description": "Collection containing all the request for the users endpoint."
 		},
 		{
@@ -227,7 +246,7 @@
 			"item": [
 				{
 					"name": "/orders",
-					"id": "c14abbac-53f8-4263-bc61-4336629957e7",
+					"id": "3755d781-d0db-4962-a04c-2d6c95bed2d5",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -265,7 +284,7 @@
 				},
 				{
 					"name": "/orders",
-					"id": "db370756-52e2-4553-8369-ec4ba01301ea",
+					"id": "8de7ea92-607d-43b9-892c-d391b41bb1da",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -303,7 +322,7 @@
 				},
 				{
 					"name": "/orders/{orderId}",
-					"id": "52a45cc1-361a-4650-9a75-f64b9d2ea29d",
+					"id": "2191c406-bcee-447f-a96d-438ab9fb589c",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -333,7 +352,7 @@
 				},
 				{
 					"name": "/orders/{orderId}",
-					"id": "5526bf85-d249-47b6-8339-5164dc677a8b",
+					"id": "dff1248a-e562-42aa-b101-ffe256200002",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -363,7 +382,7 @@
 				},
 				{
 					"name": "/orders/{orderId}",
-					"id": "cf27eac7-1ed9-475e-9516-53671d458555",
+					"id": "93021f7d-b35a-4a17-ad75-a1c76c9de857",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -395,7 +414,7 @@
 					"response": []
 				}
 			],
-			"id": "9b9bc261-f1f7-4fec-a088-5f78afccc066",
+			"id": "1bcd7559-4fc7-409b-bef0-1b1c3fa79543",
 			"description": "Collection containing all the request for the orders endpoint."
 		},
 		{
@@ -403,7 +422,7 @@
 			"item": [
 				{
 					"name": "/products",
-					"id": "ff4deaf2-ac5e-4d0b-bebd-4e30b6dc71d0",
+					"id": "a524e193-317f-417a-bbb9-bc88bc5dbcab",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -441,7 +460,7 @@
 				},
 				{
 					"name": "/products",
-					"id": "cbae4cc2-c22e-4f8c-80a8-da7082d7b6e1",
+					"id": "a82f7ccd-245a-404a-a62e-4269779b755c",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -479,7 +498,7 @@
 				},
 				{
 					"name": "/products/{productId}",
-					"id": "1a9851d3-0b91-4186-b191-4c26a40a988f",
+					"id": "bc15dc2b-70be-4615-8dc8-5ace761a8a1d",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -518,7 +537,7 @@
 				},
 				{
 					"name": "/products/{productId}",
-					"id": "eec532b4-965f-4570-a75b-8764b97fddda",
+					"id": "cb052791-3b99-47a0-9272-a5a2f7319054",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -557,7 +576,7 @@
 				},
 				{
 					"name": "/products/{productId}",
-					"id": "3f1a88b9-ff95-4fc5-8fbf-422b7b4b3e46",
+					"id": "62358c05-5931-4d44-ace9-627d32c9010c",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -595,7 +614,7 @@
 					"response": []
 				}
 			],
-			"id": "7fcc4f4d-9674-4f10-9fb5-93182175d099",
+			"id": "614580ab-0272-41ec-9f46-e9e94de94619",
 			"description": "Collection containing all the request for the products endpoint."
 		}
 	],
@@ -604,7 +623,7 @@
 		"bearer": [
 			{
 				"key": "token",
-				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NGVmOTU5MGQ0NjNhN2I0NzNhNTAxOGYiLCJyb2wiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5AcHJ1ZWJhIiwiaWF0IjoxNjkzNTAyMDg1LCJleHAiOjE2OTM1MDU2ODV9.W_3mE9xXeyEygpFSCEy84gUdVpFcMTOixbz3vV-xRis",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NGY1NzJhYTYzMTE2ZTRlYzdkZWVlZjEiLCJyb2xlIjp7InJvbGUiOiJhZG1pbiIsImFkbWluIjp0cnVlfSwiZW1haWwiOiJhZG1pbkBwcnVlYmEuY29tIiwiaWF0IjoxNjkzOTc2MTExLCJleHAiOjE2OTM5Nzk3MTF9.3IK3cMDxqkV7nJqSLr4AzcMnpDFvX6HJ5A411K4QILU",
 				"type": "string"
 			}
 		]
@@ -613,7 +632,7 @@
 		{
 			"listen": "prerequest",
 			"script": {
-				"id": "7e8b0065-9f01-4d85-b331-fefb5f949ac7",
+				"id": "cf4550aa-1e8c-4c4e-823d-a048cdf96660",
 				"type": "text/javascript",
 				"exec": [
 					""
@@ -623,7 +642,7 @@
 		{
 			"listen": "test",
 			"script": {
-				"id": "06985842-e9d8-43f2-bf33-7f92c23298a3",
+				"id": "366f4b7f-9d72-4d83-8389-0aa200f05cc1",
 				"type": "text/javascript",
 				"exec": [
 					""
