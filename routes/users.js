@@ -336,8 +336,7 @@ module.exports = (app, next) => {
       // Buscar el usuario en la base de datos
       if (uid.includes('@')) {
         userToDelete = await User.findOne({ email: uid });
-      } else if (uid === Number) {
-        const _id = new ObjectId(uid);
+      } else {
         userToDelete = await User.findOne({ _id: uid });
       }
 

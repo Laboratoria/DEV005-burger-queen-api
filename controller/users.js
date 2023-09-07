@@ -56,8 +56,7 @@ module.exports = {
       // Buscar usuario en la base de datos
       if (uid.includes('@')) {
         user = await User.findOne({ email: uid });
-      } else if (uid === Number) {
-        const _id = new ObjectId(uid);
+      } else {
         user = await User.findOne({ _id: uid });
       }
 
