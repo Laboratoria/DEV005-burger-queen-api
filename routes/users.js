@@ -219,10 +219,10 @@ module.exports = (app, next) => {
   });
 
   /**
-   * @name PUT /users
+   * @name PATCH /users
    * @description Modifica una usuaria
    * @params {String} :uid `id` o `email` de la usuaria a modificar
-   * @path {PUT} /users
+   * @path {PATCH} /users
    * @body {String} email Correo
    * @body {String} password Contraseña
    * @body {Object} [role]
@@ -240,7 +240,7 @@ module.exports = (app, next) => {
    * @code {403} una usuaria no admin intenta de modificar sus `role`
    * @code {404} si la usuaria solicitada no existe
    */
-  app.put('/users/:uid', requireAuth, async (req, res, next) => {
+  app.patch('/users/:uid', requireAuth, async (req, res, next) => {
     const client = new MongoClient(dbUrl);
     try {
       // Obtener los datos desde la req
@@ -266,7 +266,7 @@ module.exports = (app, next) => {
       }
 
       if (!isAdmin(req)) {
-        console.log('no autorizado PUT', isAdmin(req));
+        console.log('no autorizado PATCH', isAdmin(req));
         return res.status(401).json({ error: 'No tienes autorización para modificar usuario' });
       }
       // Conectarse a la base da datos

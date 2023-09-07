@@ -194,7 +194,7 @@ module.exports = (app, nextMain) => {
   /**
    * @name PATCH /products
    * @description Modifica un producto
-   * @path {PUT} /products
+   * @path {PATCH} /products
    * @params {String} :productId `id` del producto
    * @auth Requiere `token` de autenticación y que el producto sea **admin**
    * @body {String} [name] Nombre
