@@ -1,13 +1,19 @@
 const mongoose = require('mongoose');
 
 const { Schema, model } = mongoose;
+
+const getDateAndTime = () => {
+  const now = new Date();
+  return now.toISOString().replace(/[TZ]+/gm, ' ').substring(0, 19);
+};
+
 const orderSchema = new Schema({
   id: {
-    type: Number,
+    type: String,
     ref: 'Order ID',
   },
   userId: {
-    type: Number,
+    type: String,
     ref: 'User ID',
     required: true,
   },
@@ -28,12 +34,37 @@ const orderSchema = new Schema({
       required: true,
     },
     product: {
-      id: Number,
-      name: String,
-      price: Number,
-      image: String,
-      type: String,
-      dateEntry: Date,
+      id: {
+        type: String,
+        ref: 'Product ID',
+        required: true,
+      },
+      name: {
+        type: String,
+        ref: 'Product name',
+        required: true,
+      },
+      price: {
+        type: Number,
+        ref: 'Product price',
+        required: true,
+      },
+      image: {
+        type: String,
+        ref: 'Product image url',
+        required: true,
+      },
+      type: {
+        type: String,
+        ref: 'Product type',
+        enum: ['Desayuno', 'Almuerzo'],
+        required: true,
+      },
+      dateEntry: {
+        type: String,
+        ref: 'Product entry date',
+        required: true,
+      },
     },
   }],
   status: {

@@ -88,7 +88,82 @@ module.exports = (app, nextMain) => {
    * @code {400} no se indica `userId` o se intenta crear una orden sin productos
    * @code {401} si no hay cabecera de autenticación
    */
-  app.post('/orders', requireAuth, (req, res, next) => {
+  app.post('/orders', requireAuth, async (req, res, next) => {
+    try {
+      const {
+        client, table, products,
+      } = req.body;
+      const { userId } = req;
+
+      if (!userId || !client || !table || products.length === 0) {
+        console.log('requiere cliente, mesa y productos', client, table, products);
+        return res.status(400).json({ message: 'Debe proporcionar los datos mandatorios' });
+      }
+      console.log('aquí user id', userId);
+
+      // Crear una instancia de MongoClient para conectar con la base de datos
+      const mongoClient = new MongoClient(config.dbUrl);
+      await mongoClient.connect();
+      // Obtener referencia a la base de datos y colección
+      const db = mongoClient.db();
+      const orders = db.collection('orders');
+
+      if (!isAuthenticated(req)) {
+        console.log('usuario no autenticado', isAuthenticated(req));
+        return res.status(401).json({ message: 'Usuario no autenticado' });
+      }
+
+      // Obtener fecha y hora actual en formato correcto
+      const getDateAndTime = () => {
+        const now = new Date();
+        return now.toISOString().replace(/[TZ]+/gm, ' ').substring(0, 19);
+      };
+
+      // Dar formato a products
+      const formatProducts = ([...products]) => products.map(product => {
+        const formatedProduct = { };
+        formatedProduct.qty = product.qty;
+        formatedProduct.product = {
+          _id: product._id,
+          name: product.name,
+          price: product.price,
+          image: product.image,
+          type: product.type,
+          dateEntry: product.dateEntry,
+        };
+        return formatedProduct;
+      });
+
+      // Crear nueva orden
+      const newOrder = {
+        userId,
+        client,
+        table,
+        products: formatProducts(products),
+        status: 'En preparación',
+        dateEntry: getDateAndTime(),
+      };
+
+      console.log(newOrder, products, 'new product routes/products');
+
+      // Insertar el nuevo producto en la base de datos
+      const insertedOrder = await orders.insertOne(newOrder);
+
+      await mongoClient.close();
+      console.log('aquí inserted order', insertedOrder);
+      // Enviar la respuesta con los detalles del producto creado
+      res.status(200).json({
+        id: insertedOrder._id,
+        userId: newOrder.userId,
+        client: newOrder.client,
+        table: newOrder.table,
+        products: newOrder.products,
+        status: 'En preparación',
+        dateEntry: newOrder.dateEntry,
+      });
+    } catch (error) {
+      console.error('Error al agregar producto', error);
+    }
   });
 
   /**
