@@ -373,7 +373,7 @@ module.exports = (app, next) => {
         message: 'Usuario eliminado exitosamente',
         id: userToDelete._id,
         email: userToDelete.email,
-        role: req.body.role.role,
+        role: req.body.role,
       });
     } catch (error) {
       console.error('Error al eliminar usuario', error);

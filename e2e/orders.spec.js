@@ -31,7 +31,7 @@ describe('POST /orders', () => {
         method: 'POST',
         body: { name: 'Test', price: 10 },
       }),
-      fetchAsTestUser('/users/test@test.test'),
+      fetchAsTestUser('/users/ejemplo@email.com'),
     ])
       .then((responses) => {
         expect(responses[0].status).toBe(200);
@@ -63,7 +63,7 @@ describe('POST /orders', () => {
         method: 'POST',
         body: { name: 'Test', price: 25 },
       }),
-      fetchAsTestUser('/users/test@test.test'),
+      fetchAsTestUser('/users/ejemplo@email.com'),
     ])
       .then((responses) => {
         expect(responses[0].status).toBe(200);
@@ -101,7 +101,7 @@ describe('GET /orders', () => {
         method: 'POST',
         body: { name: 'Test', price: 10 },
       }),
-      fetchAsTestUser('/users/test@test.test'),
+      fetchAsTestUser('/users/ejemplo@email.com'),
     ])
       .then((responses) => {
         expect(responses[0].status).toBe(200);
@@ -147,7 +147,7 @@ describe('GET /orders', () => {
         method: 'POST',
         body: { name: 'Test', price: 10 },
       }),
-      fetchAsTestUser('/users/test@test.test'),
+      fetchAsTestUser('/users/ejemplo@email.com'),
     ])
       .then((responses) => {
         expect(responses[0].status).toBe(200);
@@ -205,7 +205,7 @@ describe('GET /orders/:orderId', () => {
         method: 'POST',
         body: { name: 'Test', price: 99 },
       }),
-      fetchAsTestUser('/users/test@test.test'),
+      fetchAsTestUser('/users/ejemplo@email.com'),
     ])
       .then((responses) => {
         expect(responses[0].status).toBe(200);
@@ -238,7 +238,7 @@ describe('GET /orders/:orderId', () => {
         method: 'POST',
         body: { name: 'Test', price: 10 },
       }),
-      fetchAsTestUser('/users/test@test.test'),
+      fetchAsTestUser('/users/ejemplo@email.com'),
     ])
       .then((responses) => {
         expect(responses[0].status).toBe(200);
@@ -286,7 +286,7 @@ describe('PUT /orders/:orderId', () => {
         method: 'POST',
         body: { name: 'Test', price: 66 },
       }),
-      fetchAsTestUser('/users/test@test.test'),
+      fetchAsTestUser('/users/ejemplo@email.com'),
     ])
       .then((responses) => {
         expect(responses[0].status).toBe(200);
@@ -313,7 +313,7 @@ describe('PUT /orders/:orderId', () => {
         method: 'POST',
         body: { name: 'Test', price: 66 },
       }),
-      fetchAsTestUser('/users/test@test.test'),
+      fetchAsTestUser('/users/ejemplo@email.com'),
     ])
       .then((responses) => {
         expect(responses[0].status).toBe(200);
@@ -341,7 +341,7 @@ describe('PUT /orders/:orderId', () => {
         method: 'POST',
         body: { name: 'Test', price: 66 },
       }),
-      fetchAsTestUser('/users/test@test.test'),
+      fetchAsTestUser('/users/ejemplo@email.com'),
     ])
       .then((responses) => {
         expect(responses[0].status).toBe(200);
@@ -376,7 +376,7 @@ describe('PUT /orders/:orderId', () => {
         method: 'POST',
         body: { name: 'Test', price: 66 },
       }),
-      fetchAsTestUser('/users/test@test.test'),
+      fetchAsTestUser('/users/ejemplo@email.com'),
     ])
       .then((responses) => {
         expect(responses[0].status).toBe(200);
@@ -411,7 +411,7 @@ describe('PUT /orders/:orderId', () => {
         method: 'POST',
         body: { name: 'Test', price: 66 },
       }),
-      fetchAsTestUser('/users/test@test.test'),
+      fetchAsTestUser('/users/ejemplo@email.com'),
     ])
       .then((responses) => {
         expect(responses[0].status).toBe(200);
@@ -461,7 +461,7 @@ describe('DELETE /orders/:orderId', () => {
         method: 'POST',
         body: { name: 'Test', price: 25 },
       }),
-      fetchAsTestUser('/users/test@test.test'),
+      fetchAsTestUser('/users/ejemplo@email.com'),
     ])
       .then((responses) => {
         expect(responses[0].status).toBe(200);
