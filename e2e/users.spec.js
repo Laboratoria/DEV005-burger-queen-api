@@ -162,12 +162,10 @@ describe('POST /users', () => {
       },
     })
       .then((resp) => {
-        console.log(resp, 'teeeeeeeeeest');
         expect(resp.status).toBe(200);
         return resp.json();
       })
       .then((json) => {
-        console.log(json, 'juuuuuuuuuuuuuuu');
         expect(typeof json.id).toBe('string');
         expect(typeof json.email).toBe('string');
         expect(typeof json.password).toBe('undefined');
@@ -182,17 +180,16 @@ describe('POST /users', () => {
       body: {
         email: 'admin1@mail.com',
         password: '123456',
-        role: {
-          role: 'admin',
-          admin: true,
-        },
+        role: 'admin',
       },
     })
       .then((resp) => {
+        console.log(resp, 'teeeeeeeeeest');
         expect(resp.status).toBe(200);
         return resp.json();
       })
       .then((json) => {
+        console.log(json, 'juuuuuuuuuuuuuuu');
         expect(typeof json.id).toBe('string');
         expect(typeof json.email).toBe('string');
         expect(typeof json.password).toBe('undefined');
