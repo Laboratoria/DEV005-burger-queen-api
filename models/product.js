@@ -14,7 +14,6 @@ const productSchema = new Schema({
   id: {
     type: String,
     ref: 'Product ID',
-    // add default id to schema
   },
   name: {
     type: String,

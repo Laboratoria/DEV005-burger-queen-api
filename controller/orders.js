@@ -56,7 +56,7 @@ module.exports = {
           table: order.table,
           products: order.products,
           status: order.status,
-          dateEntry: order.dateEntry.toISOString().replace(/[TZ]+/gm, ' ').substring(0, 19),
+          dateEntry: order.dateEntry,
         });
       }
     } catch (err) {
