@@ -90,9 +90,9 @@ describe('GET /products/:productid', () => {
   ));
 });
 
-describe('PUT /products/:productid', () => {
+describe('PATCH /products/:productid', () => {
   it('should fail with 401 when no auth', () => (
-    fetch('/products/xxx', { method: 'PUT' })
+    fetch('/products/xxx', { method: 'PATCH' })
       .then((resp) => expect(resp.status).toBe(401))
   ));
 
@@ -106,7 +106,7 @@ describe('PUT /products/:productid', () => {
         return resp.json();
       })
       .then((json) => fetchAsTestUser(`/products/${json._id}`, {
-        method: 'PUT',
+        method: 'PATCH',
         body: { price: 20 },
       }))
       .then((resp) => expect(resp.status).toBe(403))
@@ -114,7 +114,7 @@ describe('PUT /products/:productid', () => {
 
   it('should fail with 404 when admin and not found', () => (
     fetchAsAdmin('/products/12345678901234567890', {
-      method: 'PUT',
+      method: 'PATCH',
       body: { price: 1 },
     })
       .then((resp) => expect(resp.status).toBe(404))
@@ -130,7 +130,7 @@ describe('PUT /products/:productid', () => {
         return resp.json();
       })
       .then((json) => fetchAsAdmin(`/products/${json._id}`, {
-        method: 'PUT',
+        method: 'PATCH',
         body: { price: 'abc' },
       }))
       .then((resp) => expect(resp.status).toBe(400))
@@ -146,7 +146,7 @@ describe('PUT /products/:productid', () => {
         return resp.json();
       })
       .then((json) => fetchAsAdmin(`/products/${json._id}`, {
-        method: 'PUT',
+        method: 'PATCH',
         body: { price: 20 },
       }))
       .then((resp) => {

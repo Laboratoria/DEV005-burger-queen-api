@@ -29,9 +29,7 @@ module.exports = {
   },
   getOrderById: async (req, res, next) => {
     try {
-      const body = req.body; 
       const { orderId } = req.params;
-      const { userId } = req.userId
       const order = await Order.findOne({ _id: orderId });
       console.log('producto encontrado es', order);
 

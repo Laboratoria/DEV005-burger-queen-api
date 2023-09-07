@@ -184,12 +184,10 @@ describe('POST /users', () => {
       },
     })
       .then((resp) => {
-        console.log(resp, 'teeeeeeeeeest');
         expect(resp.status).toBe(200);
         return resp.json();
       })
       .then((json) => {
-        console.log(json, 'juuuuuuuuuuuuuuu');
         expect(typeof json.id).toBe('string');
         expect(typeof json.email).toBe('string');
         expect(typeof json.password).toBe('undefined');
@@ -207,30 +205,30 @@ describe('POST /users', () => {
   ));
 });
 
-describe('PUT /users/:uid', () => {
+describe('PATCH /users/:uid', () => {
   it('should fail with 401 when no auth', () => (
-    fetch('/users/foo@bar.baz', { method: 'PUT' })
+    fetch('/users/foo@bar.baz', { method: 'PATCH' })
       .then((resp) => expect(resp.status).toBe(401))
   ));
 
   it('should fail with 403 when not owner nor admin', () => (
-    fetchAsTestUser(`/users/${config.adminEmail}`, { method: 'PUT' })
+    fetchAsTestUser(`/users/${config.adminEmail}`, { method: 'PATCH' })
       .then((resp) => expect(resp.status).toBe(403))
   ));
 
   it('should fail with 404 when admin and not found', () => (
-    fetchAsAdmin('/users/abc@def.gih', { method: 'PUT' })
+    fetchAsAdmin('/users/abc@def.gih', { method: 'PATCH' })
       .then((resp) => expect(resp.status).toBe(404))
   ));
 
   it('should fail with 400 when no props to update', () => (
-    fetchAsTestUser('/users/ejemplo@email.com', { method: 'PUT' })
+    fetchAsTestUser('/users/ejemplo@email.com', { method: 'PATCH' })
       .then((resp) => expect(resp.status).toBe(400))
   ));
 
   it('should fail with 403 when not admin tries to change own role', () => (
     fetchAsTestUser('/users/ejemplo@email.com', {
-      method: 'PUT',
+      method: 'PATCH',
       body: { role: { admin: true } },
     })
       .then((resp) => expect(resp.status).toBe(403))
@@ -238,7 +236,7 @@ describe('PUT /users/:uid', () => {
 
   it('should update user when own data (password change)', () => (
     fetchAsTestUser('/users/ejemplo@email.com', {
-      method: 'PUT',
+      method: 'PATCH',
       body: { password: 'garmadon' },
     })
       .then((resp) => expect(resp.status).toBe(200))
@@ -255,7 +253,7 @@ describe('PUT /users/:uid', () => {
 
   it('should update user when admin', () => (
     fetchAsAdmin('/users/ejemplo@email.com', {
-      method: 'PUT',
+      method: 'PATCH',
       body: { password: 'ohmygod' },
     })
       .then((resp) => expect(resp.status).toBe(200))

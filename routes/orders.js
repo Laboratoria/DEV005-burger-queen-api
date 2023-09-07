@@ -1,4 +1,4 @@
-const { MongoClient } = require('mongodb');
+const { MongoClient, ObjectId } = require('mongodb');
 const {
   requireAuth,
   requireAdmin,
@@ -119,16 +119,16 @@ module.exports = (app, nextMain) => {
       };
 
       // Dar formato a products
-      const formatProducts = ([...products]) => products.map(product => {
+      const formatProducts = ([...products]) => products.map(item => {
         const formatedProduct = {
-          qty: product.qty,
+          qty: item.qty,
           product: {
-            id: product._id,
-            name: product.name,
-            price: product.price,
-            image: product.image,
-            type: product.type,
-            dateEntry: product.dateEntry,
+            id: item._id,
+            name: item.name,
+            price: item.price,
+            image: item.image,
+            type: item.type,
+            dateEntry: item.dateEntry,
           },
         };
         return formatedProduct;
@@ -136,6 +136,7 @@ module.exports = (app, nextMain) => {
 
       // Crear nueva orden
       const newOrder = {
+        id: new ObjectId(),
         userId,
         client,
         table,
@@ -151,6 +152,7 @@ module.exports = (app, nextMain) => {
 
       await mongoClient.close();
 
+      console.log('aquí la orden como quedó', insertedOrder);
       // Enviar la respuesta con los detalles de la orden creada
       res.status(200).json({
         message: 'Orden creada exitosamente',
@@ -168,9 +170,9 @@ module.exports = (app, nextMain) => {
   });
 
   /**
-   * @name PUT /orders
+   * @name PATCH /orders
    * @description Modifica una orden
-   * @path {PUT} /products
+   * @path {PATCH} /products
    * @params {String} :orderId `id` de la orden
    * @auth Requiere `token` de autenticación
    * @body {String} [userId] Id usuaria que creó la orden
@@ -195,8 +197,8 @@ module.exports = (app, nextMain) => {
    * @code {401} si no hay cabecera de autenticación
    * @code {404} si la orderId con `orderId` indicado no existe
    */
-  app.put('/orders/:orderId', requireAuth, async (req, res, next) => {
-    const mongoClient = new MongoClient(config.dbUrl);
+  app.patch('/orders/:orderId', requireAuth, async (req, res, next) => {
+    // const mongoClient = new MongoClient(config.dbUrl);
     try {
       // Obtener los datos desde la req
       const {
@@ -220,7 +222,7 @@ module.exports = (app, nextMain) => {
       }
 
       // Conectarse a la db
-      await mongoClient.connect();
+      // await mongoClient.connect();
 
       const order = await Order.findOne({ _id: orderId });
 
@@ -228,7 +230,6 @@ module.exports = (app, nextMain) => {
         console.log('No se encontró la orden con ID: ', orderId);
         return res.status(404).json({ error: 'Orden no encontrada' });
       }
-
       if (client) {
         order.client = client;
       }
@@ -237,9 +238,10 @@ module.exports = (app, nextMain) => {
       }
       if (status) {
         order.status = status;
+        console.log('aquí la orden', order);
       }
       if (products) {
-        const formatProducts = ([...cart]) => cart.map(item => {
+        const formatProducts = (products) => products.map(item => {
           const formatedProduct = {
             qty: item.qty,
             product: {
@@ -267,8 +269,6 @@ module.exports = (app, nextMain) => {
       });
     } catch (error) {
       console.error('Error al actulizar orden', error);
-    } finally {
-      mongoClient.close();
     }
   });
 
