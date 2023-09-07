@@ -153,17 +153,22 @@ describe('POST /users', () => {
     fetchAsAdmin('/users', {
       method: 'POST',
       body: {
-        email: 'test1@test.test',
-        password: '12345',
-        role: { admin: false },
+        email: 'test1@mail.com',
+        password: '123456',
+        role: {
+          role: 'waiter',
+          admin: false,
+        },
       },
     })
       .then((resp) => {
+        console.log(resp, 'teeeeeeeeeest');
         expect(resp.status).toBe(200);
         return resp.json();
       })
       .then((json) => {
-        expect(typeof json._id).toBe('string');
+        console.log(json, 'juuuuuuuuuuuuuuu');
+        expect(typeof json.id).toBe('string');
         expect(typeof json.email).toBe('string');
         expect(typeof json.password).toBe('undefined');
         expect(typeof json.role).toBe('object');
@@ -175,9 +180,12 @@ describe('POST /users', () => {
     fetchAsAdmin('/users', {
       method: 'POST',
       body: {
-        email: 'admin1@test.test',
-        password: '12345',
-        role: { admin: true },
+        email: 'admin1@mail.com',
+        password: '123456',
+        role: {
+          role: 'admin',
+          admin: true,
+        },
       },
     })
       .then((resp) => {
@@ -185,7 +193,7 @@ describe('POST /users', () => {
         return resp.json();
       })
       .then((json) => {
-        expect(typeof json._id).toBe('string');
+        expect(typeof json.id).toBe('string');
         expect(typeof json.email).toBe('string');
         expect(typeof json.password).toBe('undefined');
         expect(typeof json.role).toBe('object');
@@ -284,27 +292,19 @@ describe('DELETE /users/:uid', () => {
 
   it('should delete own user', () => {
     const credentials = { email: `foo-${Date.now()}@bar.baz`, password: '123456', role: 'waiter' };
-    console.log(credentials, 'boooooooooooooooo');
     return fetchAsAdmin('/users', { method: 'POST', body: credentials })
       .then((resp) => expect(resp.status).toBe(200))
       .then(() => fetch('/auth', { method: 'POST', body: credentials }))
       .then((resp) => {
-        console.log(resp, 'fiiirst');
         expect(resp.status).toBe(200);
         return resp.json();
       })
       .then(({ accessToken }) => fetchWithAuth(accessToken)(`/users/${credentials.email}`, {
         method: 'DELETE',
       }))
-      .then((resp) => {
-        console.log(resp, 'seeeeecond');
-        return expect(resp.status).toBe(200);
-      })
+      .then((resp) => expect(resp.status).toBe(200))
       .then(() => fetchAsAdmin(`/users/${credentials.email}`))
-      .then((resp) => {
-        console.log(resp, 'treeees');
-        expect(resp.status).toBe(404);
-      });
+      .then((resp) => expect(resp.status).toBe(404));
   });
 
   it('should delete other user as admin', () => {
