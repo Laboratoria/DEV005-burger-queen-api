@@ -24,13 +24,15 @@ module.exports = {
       const users = await User.find().select('-password -__v').lean();
 
       // Si req incluye paginación 
+      // res.header('link', ' , '); 
       if (req.query.page && req.query.limit) {
         const page = parseInt(req.query.page);
         const limit = parseInt(req.query.limit);
         const startIndex = (page - 1) * limit;
         const endIndex = page * limit
         const paginatedUsers = users.slice(startIndex, endIndex);
-        console.log('aquííííí', req.query) 
+        console.log('aquííííí', req.query)
+        console.log(res.headers.link);
         res.status(200).json(paginatedUsers)
       } else {
         res.status(200).json(users)

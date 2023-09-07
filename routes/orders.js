@@ -198,7 +198,7 @@ module.exports = (app, nextMain) => {
    * @code {404} si la orderId con `orderId` indicado no existe
    */
   app.patch('/orders/:orderId', requireAuth, async (req, res, next) => {
-    const mongoClient = new MongoClient(config.dbUrl);
+    // const mongoClient = new MongoClient(config.dbUrl);
     try {
       // Obtener los datos desde la req
       const {
@@ -222,7 +222,7 @@ module.exports = (app, nextMain) => {
       }
 
       // Conectarse a la db
-      await mongoClient.connect();
+      // await mongoClient.connect();
 
       const order = await Order.findOne({ _id: orderId });
 
@@ -238,9 +238,10 @@ module.exports = (app, nextMain) => {
       }
       if (status) {
         order.status = status;
+        console.log('aquí la orden', order);
       }
       if (products) {
-        const formatProducts = (cart) => cart.map(item => {
+        const formatProducts = (products) => products.map(item => {
           const formatedProduct = {
             qty: item.qty,
             product: {
@@ -268,8 +269,6 @@ module.exports = (app, nextMain) => {
       });
     } catch (error) {
       console.error('Error al actulizar orden', error);
-    } finally {
-      mongoClient.close();
     }
   });
 

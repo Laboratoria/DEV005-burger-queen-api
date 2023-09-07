@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const { Schema, model } = mongoose;
+const { ObjectId } = require('mongodb');
 
 const getDateAndTime = () => {
   const now = new Date();
@@ -11,6 +12,7 @@ const orderSchema = new Schema({
   id: {
     type: String,
     ref: 'Order ID',
+    default: new ObjectId(),
   },
   userId: {
     type: String,
