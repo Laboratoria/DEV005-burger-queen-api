@@ -88,7 +88,83 @@ module.exports = (app, nextMain) => {
    * @code {400} no se indica `userId` o se intenta crear una orden sin productos
    * @code {401} si no hay cabecera de autenticación
    */
-  app.post('/orders', requireAuth, (req, res, next) => {
+  app.post('/orders', requireAuth, async (req, res, next) => {
+    try {
+      const {
+        client, table, products,
+      } = req.body;
+      const { userId } = req;
+
+      if (!userId || !client || !table || products.length === 0) {
+        console.log('requiere cliente, mesa y productos', client, table, products);
+        return res.status(400).json({ message: 'Debe proporcionar los datos mandatorios' });
+      }
+      console.log('aquí user id', userId);
+
+      // Crear una instancia de MongoClient para conectar con la db
+      const mongoClient = new MongoClient(config.dbUrl);
+      await mongoClient.connect();
+      const db = mongoClient.db();
+      const orders = db.collection('orders');
+
+      if (!isAuthenticated(req)) {
+        console.log('usuario no autenticado', isAuthenticated(req));
+        return res.status(401).json({ message: 'Usuario no autenticado' });
+      }
+
+      // Obtener fecha y hora actual en formato correcto
+      const getDateAndTime = () => {
+        const now = new Date();
+        return now.toISOString().replace(/[TZ]+/gm, ' ').substring(0, 19);
+      };
+
+      // Dar formato a products
+      const formatProducts = ([...products]) => products.map(product => {
+        const formatedProduct = {
+          qty: product.qty,
+          product: {
+            id: product._id,
+            name: product.name,
+            price: product.price,
+            image: product.image,
+            type: product.type,
+            dateEntry: product.dateEntry,
+          },
+        };
+        return formatedProduct;
+      });
+
+      // Crear nueva orden
+      const newOrder = {
+        userId,
+        client,
+        table,
+        products: formatProducts(products),
+        status: 'En preparación',
+        dateEntry: getDateAndTime(),
+      };
+
+      console.log(formatProducts(products), 'new order routes/orders');
+
+      // Insertar nueva orden en la db
+      const insertedOrder = await orders.insertOne(newOrder);
+
+      await mongoClient.close();
+
+      // Enviar la respuesta con los detalles de la orden creada
+      res.status(200).json({
+        message: 'Orden creada exitosamente',
+        id: newOrder._id,
+        userId: newOrder.userId,
+        client: newOrder.client,
+        table: newOrder.table,
+        products: newOrder.products,
+        status: 'En preparación',
+        dateEntry: newOrder.dateEntry,
+      });
+    } catch (error) {
+      console.error('Error al agregar producto', error);
+    }
   });
 
   /**
@@ -119,7 +195,81 @@ module.exports = (app, nextMain) => {
    * @code {401} si no hay cabecera de autenticación
    * @code {404} si la orderId con `orderId` indicado no existe
    */
-  app.put('/orders/:orderId', requireAuth, (req, res, next) => {
+  app.put('/orders/:orderId', requireAuth, async (req, res, next) => {
+    const mongoClient = new MongoClient(config.dbUrl);
+    try {
+      // Obtener los datos desde la req
+      const {
+        client, table, products, status,
+      } = req.body; // nueva data para la orden
+      const { orderId } = req.params; // id de orden a cambiar
+      const { userId } = req.userId; // usuario haciendo el cambio
+
+      if (!client && !products && !table && !status) {
+        console.log('No se proporcionaron nuevos datos');
+        return res.status(400).json({ message: 'Debe proporcionar información para actulizar orden' });
+      }
+      if (typeof client !== 'string' && typeof table !== 'number' && typeof status !== 'string' && typeof products !== 'object') {
+        console.log('Datos inválidos');
+        console.log('heeeeeeeeere', client, table, status, products, orderId);
+        return res.status(400).json({ message: 'Debe proporcionar datos válidos' });
+      }
+      if (!isAuthenticated(req)) {
+        console.log('Usuario no autenticado', isAuthenticated(req));
+        return res.status(401).json({ error: 'Sin autorización' });
+      }
+
+      // Conectarse a la db
+      await mongoClient.connect();
+
+      const order = await Order.findOne({ _id: orderId });
+
+      if (!order) {
+        console.log('No se encontró la orden con ID: ', orderId);
+        return res.status(404).json({ error: 'Orden no encontrada' });
+      }
+
+      if (client) {
+        order.client = client;
+      }
+      if (table) {
+        order.table = table;
+      }
+      if (status) {
+        order.status = status;
+      }
+      if (products) {
+        const formatProducts = ([...cart]) => cart.map(item => {
+          const formatedProduct = {
+            qty: item.qty,
+            product: {
+              id: item._id,
+              name: item.name,
+              price: item.price,
+              image: item.image,
+              type: item.type,
+              dateEntry: item.dateEntry,
+            },
+          };
+          return formatedProduct;
+        });
+        order.products = formatProducts(products);
+      }
+      await order.save();
+
+      // Enviar la respuesta con los detalles actualizados
+      res.status(200).json({
+        message: 'Orden actualizada exitosamente',
+        _id: orderId,
+        client: order.client,
+        table: order.table,
+        products: order.products,
+      });
+    } catch (error) {
+      console.error('Error al actulizar orden', error);
+    } finally {
+      mongoClient.close();
+    }
   });
 
   /**
@@ -145,20 +295,20 @@ module.exports = (app, nextMain) => {
    */
   app.delete('/orders/:orderId', requireAdmin, async (req, res, next) => {
     try {
-      // Obtener el ID o correo de producto a eliminar desde los parámetros de la URL
+      // Obtener el ID o correo de la orden a eliminar desde params
       const { orderId } = req.params;
       console.log(orderId, 'datos del producto routes/products');
 
-      // Buscar el producto en la base de datos
+      // Buscar orden en la db
       const order = await Order.findOne({ _id: orderId });
       console.log('producto a borrar', order);
 
-      // Si el usuario no es un administrador devolver un error 403
+      // Si usuario no es admin devolver error 403
       if (!isAdmin(req)) {
         return res.status(403).json({ error: 'No tienes autorización para eliminar esta orden' });
       }
 
-      // Si no se encuentra el producto, devolver un error 404
+      // Si no se encuentra orden, devolver un error 404
       if (!order) {
         return res.status(404).json({ error: 'La orden que intentas eliminar no existe' });
       }
@@ -168,7 +318,7 @@ module.exports = (app, nextMain) => {
         return res.status(401).json({ message: 'No hay información de autorización' });
       }
 
-      // Eliminar la producto de la base de datos
+      // Eliminar orden de la db
       await order.deleteOne({ _id: order._id });
 
       // Devolver una respuesta exitosa
@@ -180,7 +330,7 @@ module.exports = (app, nextMain) => {
         table: order.table,
         products: order.products,
         status: order.status,
-        dateEntry: order.dateEntry.toISOString().replace(/[TZ]+/gm, ' ').substring(0, 19),
+        dateEntry: order.dateEntry,
       });
     } catch (error) {
       console.error('Error al eliminar la orden', error);

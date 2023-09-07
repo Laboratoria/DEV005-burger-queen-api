@@ -3,3 +3,4 @@ secrets.env
 docs
 db-data/
 coverage/
+e2e/globalConfig.json
