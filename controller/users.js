@@ -45,6 +45,7 @@ module.exports = {
     try {
       // Obtener el ID desde params
       const { uid } = req.params;
+      let user;
 
       // Si usuario no es admin ni sí mismo, devolver error 403
       if (!isAdmin(req) && uid !== req.user.email) {
@@ -53,9 +54,16 @@ module.exports = {
       }
 
       // Buscar usuario en la base de datos
-      const user = await User.findOne({ $or: [{ _id: uid }, { email: uid }] })
-        .select('-password -__v')
-        .lean();
+      if (uid.includes('@')) {
+        user = await User.findOne({ email: uid });
+      } else if (uid === Number) {
+        const _id = new ObjectId(uid);
+        user = await User.findOne({ _id: uid });
+      }
+
+      // const user = await User.findOne({ $or: [{ _id: uid }, { email: uid }] })
+      //   .select('-password -__v')
+      //   .lean();
 
       console.log('usuario encontrado es', user);
 

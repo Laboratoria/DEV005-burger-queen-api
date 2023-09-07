@@ -6,10 +6,6 @@ const {
 } = mongoose;
 
 const userSchema = new Schema({
-  id: {
-    type: Number,
-    ref: 'User ID',
-  },
   email: {
     type: String,
     ref: 'User email',
