@@ -1,4 +1,4 @@
-const { MongoClient } = require('mongodb');
+const { MongoClient, ObjectId } = require('mongodb');
 const {
   requireAuth,
   requireAdmin,
@@ -119,16 +119,16 @@ module.exports = (app, nextMain) => {
       };
 
       // Dar formato a products
-      const formatProducts = ([...products]) => products.map(product => {
+      const formatProducts = ([...products]) => products.map(item => {
         const formatedProduct = {
-          qty: product.qty,
+          qty: item.qty,
           product: {
-            id: product._id,
-            name: product.name,
-            price: product.price,
-            image: product.image,
-            type: product.type,
-            dateEntry: product.dateEntry,
+            id: item._id,
+            name: item.name,
+            price: item.price,
+            image: item.image,
+            type: item.type,
+            dateEntry: item.dateEntry,
           },
         };
         return formatedProduct;
@@ -136,6 +136,7 @@ module.exports = (app, nextMain) => {
 
       // Crear nueva orden
       const newOrder = {
+        id: new ObjectId(),
         userId,
         client,
         table,
@@ -151,6 +152,7 @@ module.exports = (app, nextMain) => {
 
       await mongoClient.close();
 
+      console.log('aquí la orden como quedó', insertedOrder);
       // Enviar la respuesta con los detalles de la orden creada
       res.status(200).json({
         message: 'Orden creada exitosamente',
