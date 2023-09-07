@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 const { MongoClient } = require('mongodb');
 const bcrypt = require('bcrypt');
 const mongoose = require('mongoose');
@@ -328,11 +329,19 @@ module.exports = (app, next) => {
     try {
       // Obtener el ID o correo de la usuario a eliminar desde los parámetros de la URL
       const { uid } = req.params;
+      let userToDelete;
 
       console.log(uid, 'datos del usuario routes/users');
 
       // Buscar el usuario en la base de datos
-      const userToDelete = await User.findOne({ $or: [{ _id: uid }, { email: uid }] });
+      if (uid.includes('@')) {
+        userToDelete = await User.findOne({ email: uid });
+      } else if (uid === Number) {
+        const _id = new ObjectId(uid);
+        userToDelete = await User.findOne({ _id: uid });
+      }
+
+      // const userToDelete = await User.findOne({ $or: [{ _id: uid }, { email: uid }] });
 
       console.log('usuario a borrar', userToDelete);
 

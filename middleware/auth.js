@@ -37,7 +37,7 @@ module.exports = secret => (req, res, next) => {
   });
 };
 
-module.exports.getLoggedUserEmail = (req, res, next) => (req.thisEmail ? req.thisEmail : next());
+// module.exports.getLoggedUserEmail = (req, res, next) => (req.thisEmail ? req.thisEmail : next());
 
 module.exports.isAuthenticated = req => (!!req.isAuthenticated);
 
