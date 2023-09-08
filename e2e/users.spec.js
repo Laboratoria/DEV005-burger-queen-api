@@ -107,6 +107,8 @@ describe('GET /users/:uid', () => {
   it('should get own user', () => (
     fetchAsTestUser('/users/ejemplo@email.com')
       .then((resp) => {
+        console.log(resp, 'teeeeeeeeeeeeeeest');
+        console.log(resp.json(), 'jiiiiiiiiiiiiiiiiiiiiii');
         expect(resp.status).toBe(200);
         return resp.json();
       })
