@@ -100,7 +100,7 @@ describe('PATCH /products/:productid', () => {
     fetchAsAdmin('/products', {
       method: 'POST',
       body: {
-        name: 'Test', price: 10, image: 'url.test', type: 'Desayuno',
+        name: 'Sopita', price: 10, image: 'url.test', type: 'Desayuno',
       },
     })
       .then((resp) => {
@@ -172,7 +172,9 @@ describe('DELETE /products/:productid', () => {
   it('should fail with 403 when not admin', () => (
     fetchAsAdmin('/products', {
       method: 'POST',
-      body: { name: 'NewTest', price: 10 },
+      body: {
+        name: 'NewTest', price: 10, image: 'https://danzadefogones.com/wp-content/uploads/2018/12/Tofu-Salteado-6.jpg', type: 'Desayuno',
+      },
     })
       .then((resp) => {
         console.log(resp, 'prooooooooooooooooo');
@@ -190,7 +192,6 @@ describe('DELETE /products/:productid', () => {
   it('should fail with 404 when admin and not found', () => (
     fetchAsAdmin('/products/64f760b91ca45c829414984e', { method: 'DELETE' })
       .then((resp) => {
-        console.log(resp, '2222222222222222222');
         expect(resp.status).toBe(404);
       })
   ));
@@ -199,7 +200,7 @@ describe('DELETE /products/:productid', () => {
     fetchAsAdmin('/products', {
       method: 'POST',
       body: {
-        name: 'Pollo', price: 10, image: 'url.test', type: 'Desayuno',
+        name: 'Pollo', price: 10, image: 'https://danzadefogones.com/wp-content/uploads/2018/12/Tofu-Salteado-6.jpg', type: 'Desayuno',
       },
     })
       .then((resp) => {
@@ -209,12 +210,13 @@ describe('DELETE /products/:productid', () => {
         return resp.json();
       })
       .then(
-        ({ _id }) => fetchAsAdmin(`/products/${_id}`, { method: 'DELETE' })
-          .then((resp) => ({ resp, _id })),
+        ({ id }) => fetchAsAdmin(`/products/${id}`, { method: 'DELETE' })
+          .then((resp) => ({ resp, id })),
       )
-      .then(({ resp, _id }) => {
+      .then(({ resp, id }) => {
         expect(resp.status).toBe(200);
-        return fetchAsAdmin(`/products/${_id}`);
+        console.log(resp, 'taaaaaaaaaaaaaa');
+        return fetchAsAdmin(`/products/${id}`);
       })
       .then((resp) => expect(resp.status).toBe(404))
   ));
