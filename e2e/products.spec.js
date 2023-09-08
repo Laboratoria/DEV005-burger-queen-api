@@ -151,7 +151,7 @@ describe('PATCH /products/:productid', () => {
         expect(resp.status).toBe(200);
         return resp.json();
       })
-      .then((json) => fetchAsAdmin(`/products/${json._id}`, {
+      .then((json) => fetchAsAdmin(`/products/${json.id}`, {
         method: 'PATCH',
         body: { price: 20 },
       }))
@@ -184,7 +184,7 @@ describe('DELETE /products/:productid', () => {
       })
       .then((json) => {
         console.log(json, 'newwwwwwwwwww');
-        return fetchAsTestUser(`/products/${json.id}`, { method: 'DELETE' });
+        return fetchAsTestUser(`/products/${json._id}`, { method: 'DELETE' });
       })
       .then((resp) => expect(resp.status).toBe(403))
   ));
