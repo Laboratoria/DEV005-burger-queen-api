@@ -5,6 +5,7 @@ const paginate = (arr, page, limit) => {
   const endIndex = page * limit;
   const currentPage = arr.slice(startIndex, endIndex);
   return {
+    limit,
     pageData: currentPage,
     prev: page > 0 ? page - 1 : null,
     next: page < lastPage ? page + 1 : null,
