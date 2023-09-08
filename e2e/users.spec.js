@@ -45,8 +45,8 @@ describe('GET /users', () => {
         return resp.json().then((json) => ({ headers: resp.headers, json }));
       })
       .then(({ headers, json }) => {
+        console.log('PAGINACIÓN', headers, json);
         const linkHeader = parseLinkHeader(headers.get('link'));
-
         const nextUrlObj = url.parse(linkHeader.next);
         const lastUrlObj = url.parse(linkHeader.last);
         const nextQuery = qs.parse(nextUrlObj.query);

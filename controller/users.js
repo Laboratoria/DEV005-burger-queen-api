@@ -4,6 +4,7 @@ const { isAdmin, isAuthenticated } = require('../middleware/auth.js')
 const config = require('../config');
 const { dbUrl } = config;
 const client = new MongoClient(dbUrl);
+const { paginate } = require('../utils/paginate')
 
 module.exports = {
   validatePassword: password => password.length >= 6,
@@ -13,19 +14,24 @@ module.exports = {
   getUsers: async (req, res, next) => {
     try { 
       const users = await User.find().select('-password -__v').lean();
-
-      // Si req incluye paginación 
-      if (req.query.page && req.query.limit) {
-        const page = parseInt(req.query.page);
-        const limit = parseInt(req.query.limit);
-        const startIndex = (page - 1) * limit;
-        const endIndex = page * limit
-        const paginatedUsers = users.slice(startIndex, endIndex);
-        console.log('aquííííí', req.query)
-        res.status(200).json(paginatedUsers)
-      } else {
-        res.status(200).json(users)
-      }      
+      const page = req.query.page ? parseInt(req.query.page) : 1;
+      const limit = req.query.limit ? parseInt(req.query.limit) : 20;
+      const currentPage = paginate(users, page, limit)
+      if (currentPage.prev) {
+        res.set('Link', 'users/page=' + page.prev)
+      }
+      if (currentPage.next) {
+        res.set('Link', 'users/page=' + page.next)
+      }
+      if (currentPage.first) {
+        res.set('Link', 'users/page=' + page.first)
+      }
+      if (currentPage.last) {
+        res.set('Link', 'users/page=' + page.last)
+      }
+      res.set('total-count', users.length);
+      res.status(200).json(currentPage.pageData)
+          
     } catch (error) {
         console.error('Error al obtener los usuarios', error);
     } finally {
