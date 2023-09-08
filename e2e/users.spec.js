@@ -213,12 +213,12 @@ describe('PATCH /users/:uid', () => {
   ));
 
   it('should fail with 403 when not owner nor admin', () => (
-    fetchAsTestUser(`/users/${config.adminEmail}`, { method: 'PATCH' })
+    fetchAsTestUser(`/users/${config.adminEmail}`, { method: 'PATCH', body: { email: config.adminEmail, password: '123456' } })
       .then((resp) => expect(resp.status).toBe(403))
   ));
 
   it('should fail with 404 when admin and not found', () => (
-    fetchAsAdmin('/users/abc@def.gih', { method: 'PATCH' })
+    fetchAsAdmin('/users/abc@def.gih', { method: 'PATCH', body: { email: 'abc@def.gih', password: '123456' } })
       .then((resp) => expect(resp.status).toBe(404))
   ));
 

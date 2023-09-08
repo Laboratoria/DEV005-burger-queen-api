@@ -239,6 +239,7 @@ module.exports = (app, next) => {
    * @code {404} si la usuaria solicitada no existe
    */
   app.patch('/users/:uid', requireAuth, async (req, res, next) => {
+    console.log('dentro del PATCH');
     try {
       // Obtener los datos desde la req
       const { email, password, role } = req.body; // nueva data para el usuario a cambiar
