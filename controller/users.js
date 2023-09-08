@@ -17,18 +17,8 @@ module.exports = {
       const page = req.query.page ? parseInt(req.query.page) : 1;
       const limit = req.query.limit ? parseInt(req.query.limit) : 20;
       const currentPage = paginate(users, page, limit)
-      if (currentPage.prev) {
-        res.set('Link', 'users/page=' + page.prev)
-      }
-      if (currentPage.next) {
-        res.set('Link', 'users/page=' + page.next)
-      }
-      if (currentPage.first) {
-        res.set('Link', 'users/page=' + page.first)
-      }
-      if (currentPage.last) {
-        res.set('Link', 'users/page=' + page.last)
-      }
+      
+      res.set('Link', '</users?page=' + currentPage.prev + '&limit=' + currentPage.limit + '>; rel="prev" , </users?page=' + currentPage.next + '&limit=' + currentPage.limit + '>; rel="next" , </users?page=' + currentPage.first + '&limit=' + currentPage.limit + '>; rel="first" , </users?page=' + currentPage.last + '&limit=' + currentPage.limit + '>; rel="last"');
       res.set('total-count', users.length);
       res.status(200).json(currentPage.pageData)
           
