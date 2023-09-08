@@ -107,12 +107,11 @@ describe('GET /users/:uid', () => {
   it('should get own user', () => (
     fetchAsTestUser('/users/ejemplo@email.com')
       .then((resp) => {
-        console.log(resp, 'teeeeeeeeeeeeeeest');
-        console.log(resp.json(), 'jiiiiiiiiiiiiiiiiiiiiii');
         expect(resp.status).toBe(200);
-        return resp.json();
+        resp.json().then((json) => {
+          expect(json.email).toBe('ejemplo@email.com');
+        });
       })
-      .then((json) => expect(json.email).toBe('ejemplo@email.com'))
   ));
 
   it('should get other user as admin', () => (
@@ -231,9 +230,12 @@ describe('PATCH /users/:uid', () => {
   it('should fail with 403 when not admin tries to change own role', () => (
     fetchAsTestUser('/users/ejemplo@email.com', {
       method: 'PATCH',
-      body: { role: { admin: true } },
+      body: { admin: 'true' },
     })
-      .then((resp) => expect(resp.status).toBe(403))
+      .then((resp) => {
+        console.log('AQUI', resp);
+        expect(resp.status).toBe(403);
+      })
   ));
 
   it('should update user when own data (password change)', () => (

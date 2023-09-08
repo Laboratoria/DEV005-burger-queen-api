@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 const { MongoClient } = require('mongodb');
 const bcrypt = require('bcrypt');
 const mongoose = require('mongoose');
@@ -10,7 +9,6 @@ const {
   requireAdmin,
   isAdmin,
   isAuthenticated,
-  getLoggedUserEmail,
 } = require('../middleware/auth');
 
 const {
@@ -124,7 +122,7 @@ module.exports = (app, next) => {
    * @code {403} si no es ni admin o la misma usuaria
    * @code {404} si la usuaria solicitada no existe
    */
-  app.get('/users/:uid', requireAdmin, getUserById);
+  app.get('/users/:uid', requireAuth, getUserById);
 
   /**
    * @name POST /users
@@ -241,20 +239,15 @@ module.exports = (app, next) => {
    * @code {404} si la usuaria solicitada no existe
    */
   app.patch('/users/:uid', requireAuth, async (req, res, next) => {
-    const client = new MongoClient(dbUrl);
     try {
       // Obtener los datos desde la req
       const { email, password, role } = req.body; // nueva data para el usuario a cambiar
       const { uid } = req.params; // usuario que se va a cambiar
-      const { userId } = req.userId; // usuario haciendo el cambio
+      const { thisEmail } = req; // usuario haciendo el cambio
 
-      if (!validateEmail(email)) {
-        console.log('correo electrónico inválido', email);
-        return res.status(400).json({ message: 'El correo debe ser una dirección válida' });
-      }
-      if (!validatePassword(password)) {
-        console.log('contraseña inválida', password);
-        return res.status(400).json({ message: 'La contraseña debe tener al menos 6 caracteres' });
+      if (!validateEmail(email) || !validatePassword(password)) {
+        console.log('datos inválidos', email, password);
+        return res.status(400).json({ message: 'Debes ingresar un correo y/o una contraseña válidos' });
       }
       if (!email && !password && !role) {
         return res.status(400).json({ error: 'Proporciona al menos una propiedad para modificar' });
@@ -265,47 +258,60 @@ module.exports = (app, next) => {
         return res.status(401).json({ error: 'Sin autorización' });
       }
 
-      if (!isAdmin(req)) {
-        console.log('no autorizado PATCH', isAdmin(req));
-        return res.status(401).json({ error: 'No tienes autorización para modificar usuario' });
+      let user;
+      // Buscar el usuario en la base de datos
+      if (uid.includes('@')) {
+        user = await User.findOne({ email: uid });
+      } else {
+        user = await User.findOne({ _id: uid });
       }
-      // Conectarse a la base da datos
-      await client.connect();
 
-      const user = await User.findOne({ $or: [{ _id: uid }, { email: uid }] });
-      const verifyIsAdminUser = role === 'admin';
-
+      // si no encuentra usuario
       if (!user) {
         console.log('No se encontró usuario con ID: ', uid);
         return res.status(404).json({ error: 'Usuario no encontrado' });
       }
 
-      // si es admin o el mismo usuario
-      if (isAdmin(req) || uid === userId) {
+      // si usuario no es admin ni el mismo usuario que se va a cambiar
+      if (!isAdmin(req) && user.email !== thisEmail) {
+        console.log('no autorizado PATCH', isAdmin(req));
+        return res.status(403).json({ error: 'No tienes autorización para modificar usuario' });
+      }
+
+      // si usuario trata de modificar su propio rol
+      if ((user.email === thisEmail || user._id === thisEmail) && role) {
+        console.log('No tiene autorización para modificar rol');
+        return res.status(403).json({ error: 'Sin autorización' });
+      }
+
+      // si usuario trata de modificar su email o contraseña
+      if (!role) {
         if (email) {
           user.email = email;
         }
         if (password) {
           user.password = bcrypt.hashSync(password, 10);
         }
+      }
+
+      // si usuario es admin y trata de cambiar un rol
+      if (isAdmin(req) && role) {
         if (role) {
           user.role.role = role;
-          user.role.admin = verifyIsAdminUser;
+          user.role.admin = isAdmin(req);
         }
-        await user.save();
-
-        // Enviar la respuesta con los detalles del usuario modificado
-        res.status(200).json({
-          message: 'Usuario actualizado exitosamente',
-          _id: uid,
-          email: user.email,
-          role: user.role.role,
-        });
       }
+      await user.save();
+
+      // Enviar la respuesta con los detalles del usuario modificado
+      res.status(200).json({
+        message: 'Usuario actualizado exitosamente',
+        _id: uid,
+        email: user.email,
+        role: user.role.role,
+      });
     } catch (error) {
       console.error('Error al modificar usuario', error);
-    } finally {
-      client.close();
     }
   });
 

@@ -11,20 +11,10 @@ module.exports = {
   validateEmail: email => /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,4})+$/.test(email ?? ''),
 
   getUsers: async (req, res, next) => {
-    try {
-      // Obtener el ID desde params
-      const { uid } = req.params;
-
-      // Si usuario no es admin ni sí mismo, devolver error 403
-      if (!isAdmin(req) && uid !== req.user.email) {
-        console.log(req.user.email, 'No coincide con este usuario');
-        return res.status(403).json({ error: 'No tienes autorización para ver esta información' });
-      }
-    
+    try { 
       const users = await User.find().select('-password -__v').lean();
 
       // Si req incluye paginación 
-      // res.header('link', ' , '); 
       if (req.query.page && req.query.limit) {
         const page = parseInt(req.query.page);
         const limit = parseInt(req.query.limit);
@@ -32,7 +22,6 @@ module.exports = {
         const endIndex = page * limit
         const paginatedUsers = users.slice(startIndex, endIndex);
         console.log('aquííííí', req.query)
-        console.log(res.headers.link);
         res.status(200).json(paginatedUsers)
       } else {
         res.status(200).json(users)
@@ -47,31 +36,28 @@ module.exports = {
     try {
       // Obtener el ID desde params
       const { uid } = req.params;
+      const { thisEmail } = req;
       let user;
-
-      // Si usuario no es admin ni sí mismo, devolver error 403
-      if (!isAdmin(req) && uid !== req.user.email) {
-        console.log(req.user.email, 'No coincide con este usuario');
-        return res.status(403).json({ error: 'No tienes autorización para ver esta información' });
-      }
-
+  
       // Buscar usuario en la base de datos
       if (uid.includes('@')) {
-        user = await User.findOne({ email: uid });
+        user = await User.findOne({ email: uid }).select('-password -__v').lean();
       } else {
-        user = await User.findOne({ _id: uid });
+        user = await User.findOne({ _id: uid }).select('-password -__v').lean();;
       }
-
-      // const user = await User.findOne({ $or: [{ _id: uid }, { email: uid }] })
-      //   .select('-password -__v')
-      //   .lean();
-
-      console.log('usuario encontrado es', user);
 
       // Si no se encuentra usuario, devolver error 404
       if (!user) {
         return res.status(404).json({ error: 'El usuario no existe' });
       }
+
+      // Si usuario no es admin ni sí mismo, devolver error 403
+      if (!isAdmin(req) && thisEmail !== user.email) {
+        console.log('Sin autorización');
+        return res.status(403).json({ error: 'No tienes autorización para ver esta información' });
+      }
+
+      console.log('usuario encontrado es', user);
 
       // Devolver una respuesta exitosa
       res.status(200).json({
