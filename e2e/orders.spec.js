@@ -61,7 +61,7 @@ describe('POST /orders', () => {
     Promise.all([
       fetchAsAdmin('/products', {
         method: 'POST',
-        body: { name: 'Test', price: 25 },
+        body: { name: 'Test1', price: 25 },
       }),
       fetchAsTestUser('/users/ejemplo@email.com'),
     ])
@@ -99,7 +99,7 @@ describe('GET /orders', () => {
     Promise.all([
       fetchAsAdmin('/products', {
         method: 'POST',
-        body: { name: 'Test', price: 10 },
+        body: { name: 'Test2', price: 10 },
       }),
       fetchAsTestUser('/users/ejemplo@email.com'),
     ])
@@ -145,7 +145,7 @@ describe('GET /orders', () => {
     Promise.all([
       fetchAsAdmin('/products', {
         method: 'POST',
-        body: { name: 'Test', price: 10 },
+        body: { name: 'Test3', price: 10 },
       }),
       fetchAsTestUser('/users/ejemplo@email.com'),
     ])
@@ -203,7 +203,7 @@ describe('GET /orders/:orderId', () => {
     Promise.all([
       fetchAsAdmin('/products', {
         method: 'POST',
-        body: { name: 'Test', price: 99 },
+        body: { name: 'Test4', price: 99 },
       }),
       fetchAsTestUser('/users/ejemplo@email.com'),
     ])
@@ -236,7 +236,7 @@ describe('GET /orders/:orderId', () => {
     Promise.all([
       fetchAsAdmin('/products', {
         method: 'POST',
-        body: { name: 'Test', price: 10 },
+        body: { name: 'Test5', price: 10 },
       }),
       fetchAsTestUser('/users/ejemplo@email.com'),
     ])
@@ -284,7 +284,7 @@ describe('PATCH /orders/:orderId', () => {
     Promise.all([
       fetchAsAdmin('/products', {
         method: 'POST',
-        body: { name: 'Test', price: 66 },
+        body: { name: 'Test6', price: 66 },
       }),
       fetchAsTestUser('/users/ejemplo@email.com'),
     ])
@@ -311,7 +311,7 @@ describe('PATCH /orders/:orderId', () => {
     Promise.all([
       fetchAsAdmin('/products', {
         method: 'POST',
-        body: { name: 'Test', price: 66 },
+        body: { name: 'Test7', price: 66 },
       }),
       fetchAsTestUser('/users/ejemplo@email.com'),
     ])
@@ -339,7 +339,7 @@ describe('PATCH /orders/:orderId', () => {
     Promise.all([
       fetchAsAdmin('/products', {
         method: 'POST',
-        body: { name: 'Test', price: 66 },
+        body: { name: 'Test8', price: 66 },
       }),
       fetchAsTestUser('/users/ejemplo@email.com'),
     ])
@@ -374,7 +374,7 @@ describe('PATCH /orders/:orderId', () => {
     Promise.all([
       fetchAsAdmin('/products', {
         method: 'POST',
-        body: { name: 'Test', price: 66 },
+        body: { name: 'Test9', price: 66 },
       }),
       fetchAsTestUser('/users/ejemplo@email.com'),
     ])
@@ -409,7 +409,7 @@ describe('PATCH /orders/:orderId', () => {
     Promise.all([
       fetchAsAdmin('/products', {
         method: 'POST',
-        body: { name: 'Test', price: 66 },
+        body: { name: 'Testa', price: 66 },
       }),
       fetchAsTestUser('/users/ejemplo@email.com'),
     ])
@@ -459,7 +459,7 @@ describe('DELETE /orders/:orderId', () => {
     Promise.all([
       fetchAsAdmin('/products', {
         method: 'POST',
-        body: { name: 'Test', price: 25 },
+        body: { name: 'Teste', price: 25 },
       }),
       fetchAsTestUser('/users/ejemplo@email.com'),
     ])
