@@ -28,11 +28,13 @@ describe('POST /products', () => {
       },
     })
       .then((resp) => {
+        console.log(resp, 'prooooooooooooooooo');
+        console.log(resp.json, 'jsooooooooon');
         expect(resp.status).toBe(200);
         return resp.json();
       })
       .then((json) => {
-        expect(typeof json._id).toBe('string');
+        expect(typeof json.id).toBe('string');
         expect(typeof json.name).toBe('string');
         expect(typeof json.price).toBe('number');
       })

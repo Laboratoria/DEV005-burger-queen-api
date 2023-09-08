@@ -47,7 +47,7 @@ describe('POST /orders', () => {
         return resp.json();
       })
       .then((json) => {
-        expect(typeof json._id).toBe('string');
+        expect(typeof json.id).toBe('string');
         expect(json.client).toBe('client');
         expect(typeof json.dateEntry).toBe('string');
         expect(Array.isArray(json.products)).toBe(true);
