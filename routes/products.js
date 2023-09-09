@@ -251,24 +251,36 @@ module.exports = (app, nextMain) => {
       }
 
       // Verificar si se proporciona al menos una propiedad para modificar
-      if (!name && !price && !image && !type) {
+      if (Object.keys(req.body).length === 0 || name === '' || price === '' || typeof price !== 'number' || image === '' || type === '') {
         return res.status(400).json({ error: 'Proporciona al menos una propiedad para modificar' });
       }
 
       // Actualizar las propiedades del producto si se proporcionan en el cuerpo de la solicitud
       if (name) {
+        if (typeof name !== 'string') {
+          return res.status(400).json({ error: 'Proporciona las propiedades a editar en el formato adecuado' });
+        }
         productToUpdate.name = name;
       }
 
       if (price) {
+        if (typeof price !== 'number') {
+          return res.status(400).json({ error: 'Proporciona las propiedades a editar en el formato adecuado' });
+        }
         productToUpdate.price = price;
       }
 
       if (image) {
+        if (typeof image !== 'string') {
+          return res.status(400).json({ error: 'Proporciona las propiedades a editar en el formato adecuado' });
+        }
         productToUpdate.image = image;
       }
 
       if (type) {
+        if (typeof type !== 'string') {
+          return res.status(400).json({ error: 'Proporciona las propiedades a editar en el formato adecuado' });
+        }
         productToUpdate.type = type;
       }
 

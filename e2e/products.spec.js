@@ -24,7 +24,7 @@ describe('POST /products', () => {
     fetchAsAdmin('/products', {
       method: 'POST',
       body: {
-        name: 'Test', price: 5, image: 'url.test', type: 'Desayuno',
+        name: 'fideos1', price: 5, image: 'url.test', type: 'Desayuno',
       },
     })
       .then((resp) => {
@@ -116,25 +116,28 @@ describe('PATCH /products/:productid', () => {
   ));
 
   it('should fail with 404 when admin and not found', () => (
-    fetchAsAdmin('/products/12345678901', {
+    fetchAsAdmin('/products/64fcaa53058d3c44a9f73d4a', {
       method: 'PATCH',
-      body: { price: 1 },
+      body: { name: 'carne', price: 1 },
     })
-      .then((resp) => expect(resp.status).toBe(404))
+      .then((resp) => {
+        console.log(resp, 'gggggggggggg');
+        expect(resp.status).toBe(404);
+      })
   ));
 
   it('should fail with 400 when bad props', () => (
     fetchAsAdmin('/products', {
       method: 'POST',
       body: {
-        name: 'Test1', price: 10, image: 'url.test', type: 'Desayuno',
+        name: 'Test11', price: 10, image: 'url.test', type: 'Desayuno',
       },
     })
       .then((resp) => {
         expect(resp.status).toBe(200);
         return resp.json();
       })
-      .then((json) => fetchAsAdmin(`/products/${json._id}`, {
+      .then((json) => fetchAsAdmin(`/products/${json.id}`, {
         method: 'PATCH',
         body: { price: 'abc' },
       }))
@@ -145,7 +148,7 @@ describe('PATCH /products/:productid', () => {
     fetchAsAdmin('/products', {
       method: 'POST',
       body: {
-        name: 'Test2', price: 10, image: 'url.test', type: 'Desayuno',
+        name: 'Test21', price: 10, image: 'url.test', type: 'Desayuno',
       },
     })
       .then((resp) => {
