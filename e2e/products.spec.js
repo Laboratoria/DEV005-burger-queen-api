@@ -59,7 +59,7 @@ describe('GET /products', () => {
 
 describe('GET /products/:productid', () => {
   it('should fail with 404 when not found', () => (
-    fetchAsTestUser('/products/notarealproduct')
+    fetchAsAdmin('/products/64fcaa53058d3c44a9f73d4a', { method: 'GET' })
       .then((resp) => expect(resp.status).toBe(404))
   ));
 
