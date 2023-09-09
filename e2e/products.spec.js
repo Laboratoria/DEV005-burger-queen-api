@@ -179,19 +179,14 @@ describe('DELETE /products/:productid', () => {
     fetchAsAdmin('/products', {
       method: 'POST',
       body: {
-        name: 'NewTest', price: 10, image: 'https://danzadefogones.com/wp-content/uploads/2018/12/Tofu-Salteado-6.jpg', type: 'Desayuno',
+        name: 'NewTest', price: 10, image: 'https://danzadefogones.com/6.jpg', type: 'Desayuno',
       },
     })
       .then((resp) => {
-        console.log(resp, 'prooooooooooooooooo');
         expect(resp.status).toBe(200);
-        console.log(resp.json(), 'jooooooooooooooooooo');
-        return resp.json();
+        return resp.json().then((json) => json);
       })
-      .then((json) => {
-        console.log(json, 'newwwwwwwwwww');
-        return fetchAsTestUser(`/products/${json._id}`, { method: 'DELETE' });
-      })
+      .then((json) => fetchAsTestUser(`/products/${json.id}`, { method: 'DELETE' }))
       .then((resp) => expect(resp.status).toBe(403))
   ));
 
@@ -210,28 +205,16 @@ describe('DELETE /products/:productid', () => {
       },
     })
       .then((resp) => {
-        console.log(resp, 'teeeeeeeeeeeeeee');
-        // const resp2 = resp.clone();
-        expect(resp.status).toBe(200);
-        // console.log(resp2.json(), 'yyyyyyyyyyyyyyy');
-        return resp.json().then((json) => json);
-      })
-      .then((json) => {
-        console.log(json, 'hhhhhhhhhhhhhhhhh');
-        // console.log(json.id, 'mmmm');
-        return fetchAsAdmin(`/products/${json.id}`, { method: 'DELETE' });
-      })
-      .then((resp) => {
-        console.log(resp, 'taaaaaaaaaaaaaa');
         expect(resp.status).toBe(200);
         return resp.json().then((json) => json);
       })
-      .then((json) => {
-        console.log(json, 'biiiiiii');
-        return fetchAsAdmin(`/products/${json.id}`, { method: 'GET' });
-      })
+      .then((json) => fetchAsAdmin(`/products/${json.id}`, { method: 'DELETE' }))
       .then((resp) => {
-        console.log(resp, 'yaaaaaaahhgh');
+        expect(resp.status).toBe(200);
+        return resp.json().then((json) => json);
+      })
+      .then((json) => fetchAsAdmin(`/products/${json.id}`, { method: 'GET' }))
+      .then((resp) => {
         expect(resp.status).toBe(404);
       })
   ));
