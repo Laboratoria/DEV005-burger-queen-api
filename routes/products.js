@@ -353,7 +353,7 @@ module.exports = (app, nextMain) => {
         price: productToDelete.price,
         image: productToDelete.image,
         type: productToDelete.type,
-        dateEntry: productToDelete.dateEntry.toISOString().replace(/[TZ]+/gm, ' ').substring(0, 19),
+        dateEntry: productToDelete.dateEntry,
       });
     } catch (error) {
       console.error('Error al eliminar producto', error);

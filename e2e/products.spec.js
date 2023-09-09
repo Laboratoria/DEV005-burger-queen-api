@@ -66,12 +66,15 @@ describe('GET /products/:productid', () => {
   it('should get product with Auth', () => (
     fetchAsTestUser('/products')
       .then((resp) => {
+        console.log(resp, '11111111111111');
+        console.log(resp.json(), '222222222');
         expect(resp.status).toBe(200);
         return resp.json();
       })
       .then((json) => {
         expect(Array.isArray(json)).toBe(true);
         expect(json.length > 0).toBe(true);
+        console.log(json, '333333333333333');
         json.forEach((product) => {
           expect(typeof product.id).toBe('string');
           expect(typeof product.name).toBe('string');
@@ -81,10 +84,13 @@ describe('GET /products/:productid', () => {
           .then((resp) => ({ resp, product: json[0] }));
       })
       .then(({ resp, product }) => {
+        console.log(resp, '444444444');
+        console.log(resp.json(), '55555555');
         expect(resp.status).toBe(200);
         return resp.json().then((json) => ({ json, product }));
       })
       .then(({ json, product }) => {
+        console.log(json, '66666');
         expect(json).toEqual(product);
       })
   ));
@@ -200,24 +206,33 @@ describe('DELETE /products/:productid', () => {
     fetchAsAdmin('/products', {
       method: 'POST',
       body: {
-        name: 'Pollo', price: 10, image: 'https://danzadefogones.com/wp-content/uploads/2018/12/Tofu-Salteado-6.jpg', type: 'Desayuno',
+        name: 'Pepino', price: 10, image: 'https://danzadefogones.jpg', type: 'Desayuno',
       },
     })
       .then((resp) => {
         console.log(resp, 'teeeeeeeeeeeeeee');
-        console.log(resp.json(), 'yyyyyyyyyyyyyyy');
+        // const resp2 = resp.clone();
         expect(resp.status).toBe(200);
-        return resp.json();
+        // console.log(resp2.json(), 'yyyyyyyyyyyyyyy');
+        return resp.json().then((json) => json);
       })
-      .then(
-        ({ id }) => fetchAsAdmin(`/products/${id}`, { method: 'DELETE' })
-          .then((resp) => ({ resp, id })),
-      )
-      .then(({ resp, id }) => {
-        expect(resp.status).toBe(200);
+      .then((json) => {
+        console.log(json, 'hhhhhhhhhhhhhhhhh');
+        // console.log(json.id, 'mmmm');
+        return fetchAsAdmin(`/products/${json.id}`, { method: 'DELETE' });
+      })
+      .then((resp) => {
         console.log(resp, 'taaaaaaaaaaaaaa');
-        return fetchAsAdmin(`/products/${id}`);
+        expect(resp.status).toBe(200);
+        return resp.json().then((json) => json);
       })
-      .then((resp) => expect(resp.status).toBe(404))
+      .then((json) => {
+        console.log(json, 'biiiiiii');
+        return fetchAsAdmin(`/products/${json.id}`, { method: 'GET' });
+      })
+      .then((resp) => {
+        console.log(resp, 'yaaaaaaahhgh');
+        expect(resp.status).toBe(404);
+      })
   ));
 });
