@@ -72,7 +72,6 @@ describe('GET /products/:productid', () => {
       .then((json) => {
         expect(Array.isArray(json)).toBe(true);
         expect(json.length > 0).toBe(true);
-        console.log(json, '333333333333333');
         const productId = json[0]._id;
         return fetchAsTestUser(`/products/${productId}`, { method: 'GET' });
       })
