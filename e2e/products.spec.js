@@ -121,7 +121,6 @@ describe('PATCH /products/:productid', () => {
       body: { name: 'carne', price: 1 },
     })
       .then((resp) => {
-        console.log(resp, 'gggggggggggg');
         expect(resp.status).toBe(404);
       })
   ));

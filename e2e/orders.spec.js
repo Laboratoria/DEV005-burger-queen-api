@@ -34,6 +34,7 @@ describe('POST /orders', () => {
       fetchAsTestUser('/users/ejemplo@email.com'),
     ])
       .then((responses) => {
+        console.log(responses, '1111111111');
         expect(responses[0].status).toBe(200);
         expect(responses[1].status).toBe(200);
         return Promise.all([responses[0].json(), responses[1].json()]);
@@ -43,10 +44,12 @@ describe('POST /orders', () => {
         body: { products: [{ productId: product._id, qty: 5, client: 'client' }], userId: user._id },
       }))
       .then((resp) => {
+        console.log(resp, '2222222');
         expect(resp.status).toBe(200);
         return resp.json();
       })
       .then((json) => {
+        console.log(json, '333333333');
         expect(typeof json.id).toBe('string');
         expect(json.client).toBe('client');
         expect(typeof json.dateEntry).toBe('string');
@@ -66,6 +69,7 @@ describe('POST /orders', () => {
       fetchAsTestUser('/users/ejemplo@email.com'),
     ])
       .then((responses) => {
+        console.log(responses, '444444444');
         expect(responses[0].status).toBe(200);
         expect(responses[1].status).toBe(200);
         return Promise.all([responses[0].json(), responses[1].json()]);
@@ -75,10 +79,12 @@ describe('POST /orders', () => {
         body: { products: [{ productId: product._id, qty: 25 }], userId: user._id },
       }))
       .then((resp) => {
+        console.log(resp, '5555555555');
         expect(resp.status).toBe(200);
         return resp.json();
       })
       .then((json) => {
+        console.log(json, '66666666666');
         expect(typeof json._id).toBe('string');
         expect(typeof json.dateEntry).toBe('string');
         expect(Array.isArray(json.products)).toBe(true);
@@ -104,6 +110,7 @@ describe('GET /orders', () => {
       fetchAsTestUser('/users/ejemplo@email.com'),
     ])
       .then((responses) => {
+        console.log(responses, '77777777');
         expect(responses[0].status).toBe(200);
         expect(responses[1].status).toBe(200);
         return Promise.all([responses[0].json(), responses[1].json()]);
@@ -120,16 +127,19 @@ describe('GET /orders', () => {
           }),
         ])
           .then((responses) => {
+            console.log(responses, '888888888888');
             expect(responses[0].status).toBe(200);
             expect(responses[1].status).toBe(200);
             return fetchAsTestUser('/orders');
           })
           .then((resp) => {
+            console.log(resp, '9999999');
             expect(resp.status).toBe(200);
             return resp.json();
           })
       ))
       .then((orders) => {
+        console.log(orders, 'aaaaaaaa');
         expect(Array.isArray(orders)).toBe(true);
         expect(orders.length > 0);
         const userIds = orders.reduce((memo, order) => (
@@ -150,6 +160,7 @@ describe('GET /orders', () => {
       fetchAsTestUser('/users/ejemplo@email.com'),
     ])
       .then((responses) => {
+        console.log(responses, 'bbbbbbbbbb');
         expect(responses[0].status).toBe(200);
         expect(responses[1].status).toBe(200);
         return Promise.all([responses[0].json(), responses[1].json()]);
@@ -166,16 +177,19 @@ describe('GET /orders', () => {
           }),
         ])
           .then((responses) => {
+            console.log(responses, 'ccccccccc');
             expect(responses[0].status).toBe(200);
             expect(responses[1].status).toBe(200);
             return fetchAsAdmin('/orders');
           })
           .then((resp) => {
+            console.log(resp, 'ddddddd');
             expect(resp.status).toBe(200);
             return resp.json();
           })
       ))
       .then((orders) => {
+        console.log(orders, 'eeeeeeeeeee');
         expect(Array.isArray(orders)).toBe(true);
         expect(orders.length > 0);
         const userIds = orders.reduce((memo, order) => (
@@ -190,12 +204,12 @@ describe('GET /orders', () => {
 
 describe('GET /orders/:orderId', () => {
   it('should fail with 401 when no auth', () => (
-    fetch('/orders/xxx')
+    fetch('/orders/64f9439a261b7b55d146d254')
       .then((resp) => expect(resp.status).toBe(401))
   ));
 
   it('should fail with 404 when admin and not found', () => (
-    fetchAsAdmin('/orders/xxx')
+    fetchAsAdmin('/orders/64f9439a261b7b55d146d254')
       .then((resp) => expect(resp.status).toBe(404))
   ));
 
@@ -208,6 +222,7 @@ describe('GET /orders/:orderId', () => {
       fetchAsTestUser('/users/ejemplo@email.com'),
     ])
       .then((responses) => {
+        console.log(responses, 'fffffff');
         expect(responses[0].status).toBe(200);
         expect(responses[1].status).toBe(200);
         return Promise.all([responses[0].json(), responses[1].json()]);
@@ -217,6 +232,7 @@ describe('GET /orders/:orderId', () => {
         body: { products: [{ productId: product._id, qty: 5 }], userId: user._id },
       }))
       .then((resp) => {
+        console.log(resp, 'gggggggggg');
         expect(resp.status).toBe(200);
         return resp.json();
       })
@@ -268,12 +284,12 @@ describe('GET /orders/:orderId', () => {
 
 describe('PATCH /orders/:orderId', () => {
   it('should fail with 401 when no auth', () => (
-    fetch('/orders/xxx', { method: 'PATCH' })
+    fetch('/orders/64f9439a261b7b55d146d254', { method: 'PATCH' })
       .then((resp) => expect(resp.status).toBe(401))
   ));
 
   it('should fail with 404 when not found', () => (
-    fetchAsAdmin('/orders/xxx', {
+    fetchAsAdmin('/orders/64f9439a261b7b55d146d254', {
       method: 'PATCH',
       body: { state: 'canceled' },
     })
@@ -446,12 +462,12 @@ describe('PATCH /orders/:orderId', () => {
 
 describe('DELETE /orders/:orderId', () => {
   it('should fail with 401 when no auth', () => (
-    fetch('/orders/xxx', { method: 'DELETE' })
+    fetch('/orders/64f9439a261b7b55d146d254', { method: 'DELETE' })
       .then((resp) => expect(resp.status).toBe(401))
   ));
 
   it('should fail with 404 when not found', () => (
-    fetchAsAdmin('/orders/xxx', { method: 'DELETE' })
+    fetchAsAdmin('/orders/64f9439a261b7b55d146d254', { method: 'DELETE' })
       .then((resp) => expect(resp.status).toBe(404))
   ));
 
