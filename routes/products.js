@@ -81,7 +81,7 @@ module.exports = (app, nextMain) => {
         price: productToGet.price,
         image: productToGet.image,
         type: productToGet.type,
-        dateEntry: productToGet.dateEntry.toISOString().replace(/[TZ]+/gm, ' ').substring(0, 19),
+        dateEntry: productToGet.dateEntry,
       });
     } catch (error) {
       console.error('Error al buscar usuario', error);

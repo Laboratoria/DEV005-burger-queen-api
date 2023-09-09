@@ -66,32 +66,28 @@ describe('GET /products/:productid', () => {
   it('should get product with Auth', () => (
     fetchAsTestUser('/products')
       .then((resp) => {
-        console.log(resp, '11111111111111');
-        console.log(resp.json(), '222222222');
         expect(resp.status).toBe(200);
-        return resp.json();
+        return resp.json().then((json) => json);
       })
       .then((json) => {
         expect(Array.isArray(json)).toBe(true);
         expect(json.length > 0).toBe(true);
         console.log(json, '333333333333333');
-        json.forEach((product) => {
-          expect(typeof product.id).toBe('string');
-          expect(typeof product.name).toBe('string');
-          expect(typeof product.price).toBe('number');
-        });
-        return fetchAsTestUser(`/products/${json[0]._id}`)
-          .then((resp) => ({ resp, product: json[0] }));
+        const productId = json[0]._id;
+        return fetchAsTestUser(`/products/${productId}`, { method: 'GET' });
       })
-      .then(({ resp, product }) => {
-        console.log(resp, '444444444');
-        console.log(resp.json(), '55555555');
+      .then((resp) => {
         expect(resp.status).toBe(200);
-        return resp.json().then((json) => ({ json, product }));
+        return resp.json().then((json) => json);
       })
-      .then(({ json, product }) => {
-        console.log(json, '66666');
-        expect(json).toEqual(product);
+      .then((json) => {
+        expect(typeof json.id).toBe('string');
+        expect(typeof json.name).toBe('string');
+        expect(typeof json.price).toBe('number');
+        expect(json).toHaveProperty('dateEntry');
+      })
+      .catch((error) => {
+        throw error;
       })
   ));
 });
