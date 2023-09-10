@@ -280,7 +280,7 @@ module.exports = (app, next) => {
       }
 
       // si usuario trata de modificar su propio rol
-      if ((user.email === thisEmail || user._id === thisEmail) && role) {
+      if (req.isAdmin === false && role !== '') {
         console.log('No tiene autorización para modificar rol');
         return res.status(403).json({ error: 'Sin autorización' });
       }
@@ -296,10 +296,10 @@ module.exports = (app, next) => {
       }
 
       // si usuario es admin y trata de cambiar un rol
-      if (isAdmin(req) && role) {
+      if (req.isAdmin === true && role) {
         if (role) {
           user.role.role = role;
-          user.role.admin = isAdmin(req);
+          user.role.admin = isAdmin(role);
         }
       }
       await user.save();
