@@ -213,12 +213,12 @@ describe('PATCH /users/:uid', () => {
   ));
 
   it('should fail with 403 when not owner nor admin', () => (
-    fetchAsTestUser(`/users/${config.adminEmail}`, { method: 'PATCH' })
+    fetchAsTestUser(`/users/${config.adminEmail}`, { method: 'PATCH', body: { email: config.adminEmail, password: '123456' } })
       .then((resp) => expect(resp.status).toBe(403))
   ));
 
   it('should fail with 404 when admin and not found', () => (
-    fetchAsAdmin('/users/abc@def.gih', { method: 'PATCH' })
+    fetchAsAdmin('/users/abc@def.gih', { method: 'PATCH', body: { email: 'abc@def.gih', password: '123456' } })
       .then((resp) => expect(resp.status).toBe(404))
   ));
 
@@ -226,11 +226,15 @@ describe('PATCH /users/:uid', () => {
     fetchAsTestUser('/users/ejemplo@email.com', { method: 'PATCH' })
       .then((resp) => expect(resp.status).toBe(400))
   ));
-
+  const roles = { role: 'admin', admin: true };
   it('should fail with 403 when not admin tries to change own role', () => (
+
     fetchAsTestUser('/users/ejemplo@email.com', {
       method: 'PATCH',
-      body: { admin: 'true' },
+      body: {
+        email: 'ejemplo@email.com',
+        role: 'admin',
+      },
     })
       .then((resp) => {
         console.log('AQUI', resp);
@@ -241,35 +245,44 @@ describe('PATCH /users/:uid', () => {
   it('should update user when own data (password change)', () => (
     fetchAsTestUser('/users/ejemplo@email.com', {
       method: 'PATCH',
-      body: { password: 'garmadon' },
+      body: { email: 'ejemplo@email.com', password: 'garmadon' },
     })
-      .then((resp) => expect(resp.status).toBe(200))
+      .then((resp) => {
+        console.log(resp, 'gaaaaaaaaaaaaaa');
+        expect(resp.status).toBe(200);
+      })
       .then(() => fetch('/auth', {
         method: 'POST',
         body: { email: 'ejemplo@email.com', password: 'garmadon' },
       }))
       .then((resp) => {
         expect(resp.status).toBe(200);
-        return resp.json();
+        return resp.json().then((json) => json);
       })
-      .then((json) => expect(json).toHaveProperty('accessToken'))
+      .then((json) => {
+        console.log(json, 'jiiiiiiiiiiiiiii');
+        expect(json).toHaveProperty('accessToken');
+      })
   ));
 
   it('should update user when admin', () => (
     fetchAsAdmin('/users/ejemplo@email.com', {
       method: 'PATCH',
-      body: { password: 'ohmygod' },
+      body: { email: 'ejemplo@email.com', password: 'ohmygod123' },
     })
       .then((resp) => expect(resp.status).toBe(200))
       .then(() => fetch('/auth', {
         method: 'POST',
-        body: { email: 'ejemplo@email.com', password: 'ohmygod' },
+        body: { email: 'ejemplo@email.com', password: 'ohmygod123' },
       }))
       .then((resp) => {
         expect(resp.status).toBe(200);
-        return resp.json();
+        return resp.json().then((json) => json);
       })
-      .then((json) => expect(json).toHaveProperty('accessToken'))
+      .then((json) => {
+        console.log(json, 'uyyyyyyyyyyy');
+        expect(json).toHaveProperty('accessToken');
+      })
   ));
 });
 

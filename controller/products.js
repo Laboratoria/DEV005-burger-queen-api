@@ -9,7 +9,6 @@ module.exports = {
     getProducts: async (req, res, next) => {
         try {
             const products = await Product.find(); // devuelve lista de productos
-            console.log(products, 'product CONTROOOOOLLLLER');
 
             // Si req incluye paginación 
             if (req.query.page && req.query.limit) {

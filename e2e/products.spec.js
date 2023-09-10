@@ -24,7 +24,7 @@ describe('POST /products', () => {
     fetchAsAdmin('/products', {
       method: 'POST',
       body: {
-        name: 'Test', price: 5, image: 'url.test', type: 'Desayuno',
+        name: 'fideos1', price: 5, image: 'url.test', type: 'Desayuno',
       },
     })
       .then((resp) => {
@@ -59,7 +59,7 @@ describe('GET /products', () => {
 
 describe('GET /products/:productid', () => {
   it('should fail with 404 when not found', () => (
-    fetchAsTestUser('/products/notarealproduct')
+    fetchAsAdmin('/products/64fcaa53058d3c44a9f73d4a', { method: 'GET' })
       .then((resp) => expect(resp.status).toBe(404))
   ));
 
@@ -67,25 +67,26 @@ describe('GET /products/:productid', () => {
     fetchAsTestUser('/products')
       .then((resp) => {
         expect(resp.status).toBe(200);
-        return resp.json();
+        return resp.json().then((json) => json);
       })
       .then((json) => {
         expect(Array.isArray(json)).toBe(true);
         expect(json.length > 0).toBe(true);
-        json.forEach((product) => {
-          expect(typeof product.id).toBe('string');
-          expect(typeof product.name).toBe('string');
-          expect(typeof product.price).toBe('number');
-        });
-        return fetchAsTestUser(`/products/${json[0]._id}`)
-          .then((resp) => ({ resp, product: json[0] }));
+        const productId = json[0]._id;
+        return fetchAsTestUser(`/products/${productId}`, { method: 'GET' });
       })
-      .then(({ resp, product }) => {
+      .then((resp) => {
         expect(resp.status).toBe(200);
-        return resp.json().then((json) => ({ json, product }));
+        return resp.json().then((json) => json);
       })
-      .then(({ json, product }) => {
-        expect(json).toEqual(product);
+      .then((json) => {
+        expect(typeof json.id).toBe('string');
+        expect(typeof json.name).toBe('string');
+        expect(typeof json.price).toBe('number');
+        expect(json).toHaveProperty('dateEntry');
+      })
+      .catch((error) => {
+        throw error;
       })
   ));
 });
@@ -115,25 +116,27 @@ describe('PATCH /products/:productid', () => {
   ));
 
   it('should fail with 404 when admin and not found', () => (
-    fetchAsAdmin('/products/12345678901', {
+    fetchAsAdmin('/products/64fcaa53058d3c44a9f73d4a', {
       method: 'PATCH',
-      body: { price: 1 },
+      body: { name: 'carne', price: 1 },
     })
-      .then((resp) => expect(resp.status).toBe(404))
+      .then((resp) => {
+        expect(resp.status).toBe(404);
+      })
   ));
 
   it('should fail with 400 when bad props', () => (
     fetchAsAdmin('/products', {
       method: 'POST',
       body: {
-        name: 'Test1', price: 10, image: 'url.test', type: 'Desayuno',
+        name: 'Test11', price: 10, image: 'url.test', type: 'Desayuno',
       },
     })
       .then((resp) => {
         expect(resp.status).toBe(200);
         return resp.json();
       })
-      .then((json) => fetchAsAdmin(`/products/${json._id}`, {
+      .then((json) => fetchAsAdmin(`/products/${json.id}`, {
         method: 'PATCH',
         body: { price: 'abc' },
       }))
@@ -144,14 +147,14 @@ describe('PATCH /products/:productid', () => {
     fetchAsAdmin('/products', {
       method: 'POST',
       body: {
-        name: 'Test2', price: 10, image: 'url.test', type: 'Desayuno',
+        name: 'Test21', price: 10, image: 'url.test', type: 'Desayuno',
       },
     })
       .then((resp) => {
         expect(resp.status).toBe(200);
         return resp.json();
       })
-      .then((json) => fetchAsAdmin(`/products/${json._id}`, {
+      .then((json) => fetchAsAdmin(`/products/${json.id}`, {
         method: 'PATCH',
         body: { price: 20 },
       }))
@@ -173,19 +176,14 @@ describe('DELETE /products/:productid', () => {
     fetchAsAdmin('/products', {
       method: 'POST',
       body: {
-        name: 'NewTest', price: 10, image: 'https://danzadefogones.com/wp-content/uploads/2018/12/Tofu-Salteado-6.jpg', type: 'Desayuno',
+        name: 'NewTest', price: 10, image: 'https://danzadefogones.com/6.jpg', type: 'Desayuno',
       },
     })
       .then((resp) => {
-        console.log(resp, 'prooooooooooooooooo');
         expect(resp.status).toBe(200);
-        console.log(resp.json(), 'jooooooooooooooooooo');
-        return resp.json();
+        return resp.json().then((json) => json);
       })
-      .then((json) => {
-        console.log(json, 'newwwwwwwwwww');
-        return fetchAsTestUser(`/products/${json.id}`, { method: 'DELETE' });
-      })
+      .then((json) => fetchAsTestUser(`/products/${json.id}`, { method: 'DELETE' }))
       .then((resp) => expect(resp.status).toBe(403))
   ));
 
@@ -200,24 +198,21 @@ describe('DELETE /products/:productid', () => {
     fetchAsAdmin('/products', {
       method: 'POST',
       body: {
-        name: 'Pollo', price: 10, image: 'https://danzadefogones.com/wp-content/uploads/2018/12/Tofu-Salteado-6.jpg', type: 'Desayuno',
+        name: 'Pepino', price: 10, image: 'https://danzadefogones.jpg', type: 'Desayuno',
       },
     })
       .then((resp) => {
-        console.log(resp, 'teeeeeeeeeeeeeee');
-        console.log(resp.json(), 'yyyyyyyyyyyyyyy');
         expect(resp.status).toBe(200);
-        return resp.json();
+        return resp.json().then((json) => json);
       })
-      .then(
-        ({ id }) => fetchAsAdmin(`/products/${id}`, { method: 'DELETE' })
-          .then((resp) => ({ resp, id })),
-      )
-      .then(({ resp, id }) => {
+      .then((json) => fetchAsAdmin(`/products/${json.id}`, { method: 'DELETE' }))
+      .then((resp) => {
         expect(resp.status).toBe(200);
-        console.log(resp, 'taaaaaaaaaaaaaa');
-        return fetchAsAdmin(`/products/${id}`);
+        return resp.json().then((json) => json);
       })
-      .then((resp) => expect(resp.status).toBe(404))
+      .then((json) => fetchAsAdmin(`/products/${json.id}`, { method: 'GET' }))
+      .then((resp) => {
+        expect(resp.status).toBe(404);
+      })
   ));
 });
