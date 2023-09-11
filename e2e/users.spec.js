@@ -34,7 +34,6 @@ describe('GET /users', () => {
       .then((json) => {
         expect(Array.isArray(json)).toBe(true);
         expect(json.length > 0).toBe(true);
-        // TODO: Check that the results are actually the "expected" user objects
       })
   ));
 
@@ -45,7 +44,6 @@ describe('GET /users', () => {
         return resp.json().then((json) => ({ headers: resp.headers, json }));
       })
       .then(({ headers, json }) => {
-        console.log('PAGINACIÓN', headers.get('link'), json);
         const linkHeader = parseLinkHeader(headers.get('link'));
         const nextUrlObj = url.parse(linkHeader.next);
         const lastUrlObj = url.parse(linkHeader.last);
@@ -226,20 +224,12 @@ describe('PATCH /users/:uid', () => {
     fetchAsTestUser('/users/ejemplo@email.com', { method: 'PATCH' })
       .then((resp) => expect(resp.status).toBe(400))
   ));
-  const roles = { role: 'admin', admin: true };
-  it('should fail with 403 when not admin tries to change own role', () => (
 
+  it('should fail with 403 when not admin tries to change own role', () => (
     fetchAsTestUser('/users/ejemplo@email.com', {
       method: 'PATCH',
-      body: {
-        email: 'ejemplo@email.com',
-        role: 'admin',
-      },
-    })
-      .then((resp) => {
-        console.log('AQUI', resp);
-        expect(resp.status).toBe(403);
-      })
+      body: { role: 'admin' },
+    }).then((resp) => expect(resp.status).toBe(403))
   ));
 
   it('should update user when own data (password change)', () => (
@@ -248,7 +238,6 @@ describe('PATCH /users/:uid', () => {
       body: { email: 'ejemplo@email.com', password: 'garmadon' },
     })
       .then((resp) => {
-        console.log(resp, 'gaaaaaaaaaaaaaa');
         expect(resp.status).toBe(200);
       })
       .then(() => fetch('/auth', {
@@ -260,7 +249,6 @@ describe('PATCH /users/:uid', () => {
         return resp.json().then((json) => json);
       })
       .then((json) => {
-        console.log(json, 'jiiiiiiiiiiiiiii');
         expect(json).toHaveProperty('accessToken');
       })
   ));
@@ -280,7 +268,6 @@ describe('PATCH /users/:uid', () => {
         return resp.json().then((json) => json);
       })
       .then((json) => {
-        console.log(json, 'uyyyyyyyyyyy');
         expect(json).toHaveProperty('accessToken');
       })
   ));

@@ -19,7 +19,7 @@ module.exports = {
       res.status(200).json(currentPage.pageData)
           
     } catch (error) {
-        console.error('Error al obtener las órdenes', error);
+      console.error('Error al obtener las órdenes', error);
     } finally {
       client.close();
     }
