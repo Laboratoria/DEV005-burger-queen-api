@@ -78,9 +78,9 @@ const orderSchema = new Schema({
     },
   status: {
     type: String,
-    ref: 'Product Status',
+    ref: 'Order Status',
     enum: ['En preparación', 'Listo en barra', 'Entregado'],
-    default: 'En  preparación',
+    default: 'En preparación',
   },
   dateEntry: {
     type: String,

@@ -135,11 +135,18 @@ module.exports = (app, nextMain) => {
         return formatedProduct;
       });
 
-      // Validar que estado sea una de las opciones si es que viene en la req
-      const validStatus = req.body.status === 'En preparación' || req.body.status === 'Listo en barra' || req.body.status === 'Entregado' ? req.bodystatus : 'null';
-
       // Insertar estado si es que viene en la req
-      const orderStatus = validStatus || 'En preparación';
+      const orderStatus = status => {
+        if (status === 'En preparación') {
+          return 'En preparación';
+        }
+        if (status === 'Listo en barra') {
+          return 'Listo en barra';
+        }
+        if (status === 'Entregado') {
+          return 'Entregado';
+        }
+      };
 
       // Crear nueva orden
       const newOrder = {
@@ -147,11 +154,15 @@ module.exports = (app, nextMain) => {
         client,
         table,
         products: formatProducts(products),
-        status: req.body.status ? req.body.status : 'En preparación',
         dateEntry: getDateAndTime(),
+        status: 'En preparación',
       };
 
-      console.log(formatProducts(products), 'new order routes/orders');
+      if (req.body.status) {
+        newOrder.status = orderStatus(req.body.status);
+      }
+
+      console.log('MIAU', req.body.status, newOrder);
 
       // Insertar nueva orden en la db
       const insertedOrder = await orders.insertOne(newOrder);
@@ -167,7 +178,7 @@ module.exports = (app, nextMain) => {
         client: newOrder.client,
         table: newOrder.table,
         products: newOrder.products,
-        status: 'En preparación',
+        status: newOrder.status,
         dateEntry: newOrder.dateEntry,
       });
     } catch (error) {
@@ -222,7 +233,13 @@ module.exports = (app, nextMain) => {
       }
       if ((client && typeof client !== 'string') || (table && typeof table !== 'number') || (status && typeof status !== 'string') || (products && typeof products !== 'object')) {
         console.log('Datos inválidos');
-        console.log('heeeeeeeeere', client, table, status, products, orderId, userId);
+        return res.status(400).json({ message: 'Debe proporcionar datos válidos' });
+      }
+
+      const validStatus = ['En preparación', 'Listo en barra', 'Entregado'].includes(status);
+
+      if (!validStatus) {
+        console.log('Datos inválidos');
         return res.status(400).json({ message: 'Debe proporcionar datos válidos' });
       }
 
@@ -238,7 +255,7 @@ module.exports = (app, nextMain) => {
       if (table) {
         order.table = table;
       }
-      if (status) {
+      if (status && validStatus) {
         order.status = status;
         console.log('aquí la orden', order, order.products, order._id);
       }
