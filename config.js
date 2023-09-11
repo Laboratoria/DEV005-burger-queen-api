@@ -1,4 +1,3 @@
-console.log(process.argv);
 exports.port = process.argv[2] || process.env.PORT || 8080;
 exports.dbUrl = process.env.MONGO_URL
   || process.env.DB_URL

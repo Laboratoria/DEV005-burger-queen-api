@@ -1,7 +1,6 @@
 const { MongoClient } = require('mongodb');
 const bcrypt = require('bcrypt');
 const mongoose = require('mongoose');
-const config = require('../config');
 const User = require('../models/user');
 const { dbUrl } = require('../config');
 
@@ -9,6 +8,7 @@ const {
   requireAuth,
   requireAdmin,
   isAdmin,
+  isAuthenticated,
 } = require('../middleware/auth');
 
 const {
@@ -36,8 +36,7 @@ const initAdminUser = async (app, next) => {
 
   mongoose.connect(dbUrl);
 
-  const userExists = await User.findOne({ email: adminUser.email });
-  // .then(res => {
+  const userExists = await User.findOne({ email: adminEmail });
   if (!userExists) {
     try {
       const user = new User(adminUser);
@@ -50,7 +49,6 @@ const initAdminUser = async (app, next) => {
   } else {
     console.log('Ya existe usuario administrador:', userExists);
   }
-  // });
   next();
 };
 
@@ -80,7 +78,6 @@ const initAdminUser = async (app, next) => {
  * (resonse).
  */
 
-// Definición de las rutas y sus funciones asociadas
 /** @module users */
 module.exports = (app, next) => {
   /**
@@ -122,7 +119,7 @@ module.exports = (app, next) => {
    * @code {403} si no es ni admin o la misma usuaria
    * @code {404} si la usuaria solicitada no existe
    */
-  app.get('/users/:uid', requireAdmin, getUserById);
+  app.get('/users/:uid', requireAuth, getUserById);
 
   /**
    * @name POST /users
@@ -144,9 +141,6 @@ module.exports = (app, next) => {
    * @code {403} si ya existe usuaria con ese `email`
    */
   app.post('/users', requireAdmin, async (req, res, next) => {
-    // TODO: implementar la ruta para agregar
-    // nuevos usuarios
-
     try {
       // Obtener los datos del cuerpo de la solicitud
       const { email, password, role } = req.body;
@@ -165,7 +159,7 @@ module.exports = (app, next) => {
       }
 
       // Crear una instancia de MongoClient para conectar con la base de datos
-      const client = new MongoClient(config.dbUrl);
+      const client = new MongoClient(dbUrl);
       await client.connect();
       // Obtener referencia a la base de datos y colección
       const db = client.db();
@@ -173,7 +167,6 @@ module.exports = (app, next) => {
 
       if (!isAdmin(req)) {
         // Cerrar conexión despues de usar
-        // Para liberar recursos y evitar problemas de conexiones agotadas.
         await client.close();
         console.log('no autorizado POST', isAdmin(req));
         return res.status(401).json({ error: 'Sin autorización para crear un usuario' });
@@ -200,11 +193,8 @@ module.exports = (app, next) => {
         },
       };
 
-      console.log('newUser en POST rotes/users', newUser);
-
       // Insertar el nuevo usuario en la base de datos
       const insertedUser = await usersCollection.insertOne(newUser);
-
       await client.close();
 
       // Enviar la respuesta con los detalles del usuario creado
@@ -219,10 +209,10 @@ module.exports = (app, next) => {
   });
 
   /**
-   * @name PUT /users
+   * @name PATCH /users
    * @description Modifica una usuaria
    * @params {String} :uid `id` o `email` de la usuaria a modificar
-   * @path {PUT} /users
+   * @path {PATCH} /users
    * @body {String} email Correo
    * @body {String} password Contraseña
    * @body {Object} [role]
@@ -240,7 +230,81 @@ module.exports = (app, next) => {
    * @code {403} una usuaria no admin intenta de modificar sus `role`
    * @code {404} si la usuaria solicitada no existe
    */
-  app.put('/users/:uid', requireAuth, (req, res, next) => {
+  app.patch('/users/:uid', requireAuth, async (req, res, next) => {
+    try {
+      // Obtener los datos desde la req
+      const { email, password, role } = req.body; // nueva data para el usuario a cambiar
+      const { uid } = req.params; // usuario que se va a cambiar
+      const { thisEmail } = req; // usuario haciendo el cambio
+
+      if ((email && !validateEmail(email)) || (password && !validatePassword(password))) {
+        console.log('datos inválidos', email, password);
+        return res.status(400).json({ message: 'Debes ingresar un correo y/o una contraseña válidos' });
+      }
+      if (!email && !password && !role) {
+        return res.status(400).json({ error: 'Proporciona al menos una propiedad para modificar' });
+      }
+
+      if (!isAuthenticated(req)) {
+        console.log('Usuario no autenticado', isAuthenticated(req));
+        return res.status(401).json({ error: 'Sin autorización' });
+      }
+
+      let user;
+      // Buscar el usuario en la base de datos
+      if (uid.includes('@')) {
+        user = await User.findOne({ email: uid });
+      } else {
+        user = await User.findOne({ _id: uid });
+      }
+
+      // si no encuentra usuario
+      if (!user) {
+        console.log('No se encontró usuario con ID: ', uid);
+        return res.status(404).json({ error: 'Usuario no encontrado' });
+      }
+
+      // si usuario no es admin ni el mismo usuario que se va a cambiar
+      if (!isAdmin(req) && user.email !== thisEmail) {
+        console.log('no autorizado PATCH', isAdmin(req));
+        return res.status(403).json({ error: 'No tienes autorización para modificar usuario' });
+      }
+
+      // si usuario no admin trata de modificar su propio rol
+      if (!isAdmin(req) && role) {
+        console.log('No tiene autorización para modificar rol');
+        return res.status(403).json({ error: 'Sin autorización' });
+      }
+
+      // si usuario trata de modificar su email o contraseña
+      if (!role) {
+        if (email) {
+          user.email = email;
+        }
+        if (password) {
+          user.password = bcrypt.hashSync(password, 10);
+        }
+      }
+
+      // si usuario es admin y trata de cambiar un rol
+      if (isAdmin(req) && role) {
+        if (role) {
+          user.role.role = role;
+          user.role.admin = role === 'admin';
+        }
+      }
+      await user.save();
+
+      // Enviar la respuesta con los detalles del usuario modificado
+      res.status(200).json({
+        message: 'Usuario actualizado exitosamente',
+        _id: uid,
+        email: user.email,
+        role: user.role.role,
+      });
+    } catch (error) {
+      console.error('Error al modificar usuario', error);
+    }
   });
 
   /**
@@ -263,23 +327,20 @@ module.exports = (app, next) => {
     try {
       // Obtener el ID o correo de la usuario a eliminar desde los parámetros de la URL
       const { uid } = req.params;
-
-      console.log(uid, 'datos del usuario routes/users');
+      let userToDelete;
 
       // Buscar el usuario en la base de datos
-      const userToDelete = await User.findOne({ $or: [{ _id: uid }, { email: uid }] });
-
-      console.log('usuario a borrar', userToDelete);
+      if (uid.includes('@')) {
+        userToDelete = await User.findOne({ email: uid });
+      } else {
+        userToDelete = await User.findOne({ _id: uid });
+      }
 
       // Verificar si el usuario autenticado es un administrador
       const isAdmin = req.isAdmin === 'admin';
 
-      console.log(isAdmin, 'usuario admin?');
-
       // Verificar si el token pertenece a la misma usuaria o si es una usuaria administradora
       const isAuthorized = req.userId === uid || isAdmin || req.thisEmail === uid;
-
-      console.log(isAuthorized, 'autorizado?');
 
       // Si el usuario no es un administrador ni la misma usuario, devolver un error 403
       if (!isAuthorized) {
@@ -300,7 +361,7 @@ module.exports = (app, next) => {
         message: 'Usuario eliminado exitosamente',
         id: userToDelete._id,
         email: userToDelete.email,
-        role: req.body.role.role,
+        role: req.body.role,
       });
     } catch (error) {
       console.error('Error al eliminar usuario', error);

@@ -50,7 +50,42 @@ module.exports = (app, nextMain) => {
    * @code {401} si no hay cabecera de autenticación
    * @code {404} si el producto con `productId` indicado no existe
    */
-  app.get('/products/:productId', requireAuth, (req, res, next) => {
+  app.get('/products/:productId', requireAuth, async (req, res, next) => {
+    try {
+      // Obtener el ID desde params
+      const { productId } = req.params;
+
+      // Buscar producto en la base de datos
+      const productToGet = await Product.findOne({ _id: productId });
+
+      console.log('producto encontrado es', productToGet);
+
+      // Si no se encuentra el producto, devolver error 404
+      if (!productToGet) {
+        return res.status(404).json({ error: 'El producto no existe' });
+      }
+
+      // Verificar si hay autorización
+      const isAuth = req.authorization !== '';
+
+      if (!isAuth) {
+        console.log('no hay cabezera de auth', isAuth);
+        return res.status(401).json({ message: 'No hay infromación de autorización' });
+      }
+
+      // Devolver una respuesta exitosa
+      res.status(200).json({
+        message: 'producto encontrado',
+        id: productToGet._id,
+        name: productToGet.name,
+        price: productToGet.price,
+        image: productToGet.image,
+        type: productToGet.type,
+        dateEntry: productToGet.dateEntry,
+      });
+    } catch (error) {
+      console.error('Error al buscar usuario', error);
+    }
   });
 
   /**
@@ -116,8 +151,15 @@ module.exports = (app, nextMain) => {
       if (existingProduct) {
         await client.close();
         console.log('ya existe el producto', existingProduct);
-        return res.status(403).json({ error: 'Este producto ya está registrado' });
+        return res.status(404).json({ error: 'Este producto ya está registrado' });
       }
+
+      // OBTENER FECHA Y HORA ACTUAL EN FORMATO CORRECTO
+      const getDateAndTime = () => {
+        const now = new Date();
+
+        return now.toISOString().replace(/[TZ]+/gm, ' ').substring(0, 19);
+      };
 
       // Lógica para crear el producto
       const newProduct = {
@@ -125,7 +167,7 @@ module.exports = (app, nextMain) => {
         price,
         image,
         type,
-        dateEntry: new Date(),
+        dateEntry: getDateAndTime(),
       };
 
       console.log(newProduct, 'new product routes/products');
@@ -150,11 +192,11 @@ module.exports = (app, nextMain) => {
   });
 
   /**
-   * @name PUT /products
+   * @name PATCH /products
    * @description Modifica un producto
-   * @path {PUT} /products
+   * @path {PATCH} /products
    * @params {String} :productId `id` del producto
-   * @auth Requiere `token` de autenticación y que el usuario sea **admin**
+   * @auth Requiere `token` de autenticación y que el producto sea **admin**
    * @body {String} [name] Nombre
    * @body {Number} [price] Precio
    * @body {String} [imagen]  URL a la imagen
@@ -172,7 +214,91 @@ module.exports = (app, nextMain) => {
    * @code {403} si no es admin
    * @code {404} si el producto con `productId` indicado no existe
    */
-  app.put('/products/:productId', requireAdmin, (req, res, next) => {
+  app.patch('/products/:productId', requireAdmin, async (req, res, next) => {
+    try {
+      // Obtener el ID desde params
+      const { productId } = req.params;
+
+      // Obtener los datos del cuerpo de la solicitud
+      const {
+        name, price, image, type,
+      } = req.body;
+
+      // Buscar producto en la base de datos
+      const productToUpdate = await Product.findOne({ _id: productId });
+
+      console.log('producto a editar', productToUpdate);
+
+      // Si no se encuentra el producto, devolver error 404
+      if (!productToUpdate) {
+        return res.status(404).json({ error: 'El producto no existe' });
+      }
+
+      // Verificar si el usuario autenticado es un administrador
+      const isAdmin = req.isAdmin === 'admin';
+
+      if (!isAdmin) {
+        console.log('usurio no es admin', isAdmin);
+        return res.status(403).json({ error: 'No tiene autorización para modificar productos' });
+      }
+
+      // Verificar si hay autorización
+      const isAuth = req.authorization !== '';
+
+      if (!isAuth) {
+        console.log('no hay cabezera de auth', isAuth);
+        return res.status(401).json({ error: 'No hay infromación de autorización' });
+      }
+
+      // Verificar si se proporciona al menos una propiedad para modificar
+      if (Object.keys(req.body).length === 0 || name === '' || price === '' || typeof price !== 'number' || image === '' || type === '') {
+        return res.status(400).json({ error: 'Proporciona al menos una propiedad para modificar' });
+      }
+
+      // Actualizar las propiedades del producto si se proporcionan en el cuerpo de la solicitud
+      if (name) {
+        if (typeof name !== 'string') {
+          return res.status(400).json({ error: 'Proporciona las propiedades a editar en el formato adecuado' });
+        }
+        productToUpdate.name = name;
+      }
+
+      if (price) {
+        if (typeof price !== 'number') {
+          return res.status(400).json({ error: 'Proporciona las propiedades a editar en el formato adecuado' });
+        }
+        productToUpdate.price = price;
+      }
+
+      if (image) {
+        if (typeof image !== 'string') {
+          return res.status(400).json({ error: 'Proporciona las propiedades a editar en el formato adecuado' });
+        }
+        productToUpdate.image = image;
+      }
+
+      if (type) {
+        if (typeof type !== 'string') {
+          return res.status(400).json({ error: 'Proporciona las propiedades a editar en el formato adecuado' });
+        }
+        productToUpdate.type = type;
+      }
+
+      // Guardar los cambios en la base de datos
+      await productToUpdate.save();
+
+      // Devolver una respuesta exitosa con los detalles del producto actualizado
+      res.status(200).json({
+        id: productToUpdate._id,
+        name: productToUpdate.name,
+        price: productToUpdate.price,
+        image: productToUpdate.image,
+        type: productToUpdate.type,
+        dateEntry: productToUpdate.dateEntry,
+      });
+    } catch (error) {
+      console.error('Error al buscar usuario', error);
+    }
   });
 
   /**
@@ -180,7 +306,7 @@ module.exports = (app, nextMain) => {
    * @description Elimina un producto
    * @path {DELETE} /products
    * @params {String} :productId `id` del producto
-   * @auth Requiere `token` de autenticación y que el usuario sea **admin**
+   * @auth Requiere `token` de autenticación y que el producto sea **admin**
    * @response {Object} product
    * @response {String} product._id Id
    * @response {String} product.name Nombre
@@ -193,7 +319,57 @@ module.exports = (app, nextMain) => {
    * @code {403} si no es ni admin
    * @code {404} si el producto con `productId` indicado no existe
    */
-  app.delete('/products/:productId', requireAdmin, (req, res, next) => {
+  app.delete('/products/:productId', requireAdmin, async (req, res, next) => {
+    try {
+      // Obtener el ID o correo de producto a eliminar desde los parámetros de la URL
+      const { productId } = req.params;
+
+      console.log(productId, 'datos del producto routes/products');
+
+      // Buscar el producto en la base de datos
+      const productToDelete = await Product.findOne({ _id: productId });
+
+      console.log('producto a borrar', productToDelete);
+
+      // Verificar si el usuario autenticado es un administrador
+      const isAdmin = req.isAdmin === 'admin';
+
+      console.log(isAdmin, 'usuario admin products?');
+
+      // Si el usuario no es un administrador devolver un error 403
+      if (!isAdmin) {
+        return res.status(403).json({ error: 'No tienes autorización para eliminar este producto' });
+      }
+
+      // Si no se encuentra el producto, devolver un error 404
+      if (!productToDelete) {
+        return res.status(404).json({ error: 'El producto que intentas eliminar no existe' });
+      }
+
+      // Verificar si hay autorización
+      const isAuth = req.authorization !== '';
+
+      if (!isAuth) {
+        console.log('no hay cabezera de auth', isAuth);
+        return res.status(401).json({ message: 'No hay infromación de autorización' });
+      }
+
+      // Eliminar la producto de la base de datos
+      await Product.deleteOne({ _id: productToDelete._id });
+
+      // Devolver una respuesta exitosa
+      return res.status(200).json({
+        message: 'producto eliminado exitosamente',
+        id: productToDelete._id,
+        name: productToDelete.name,
+        price: productToDelete.price,
+        image: productToDelete.image,
+        type: productToDelete.type,
+        dateEntry: productToDelete.dateEntry,
+      });
+    } catch (error) {
+      console.error('Error al eliminar producto', error);
+    }
   });
 
   nextMain();

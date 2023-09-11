@@ -1,6 +1,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable no-console */
 /* eslint-disable no-promise-executor-return */
+/* eslint-disable no-unused-vars */
 const path = require('path');
 const { spawn } = require('child_process');
 const kill = require('tree-kill');
@@ -22,8 +23,9 @@ const __e2e = {
   },
   adminToken: null,
   testUserCredentials: {
-    email: 'test@test.test',
+    email: 'ejemplo@email.com',
     password: '123456',
+    role: 'waiter',
   },
   testUserToken: null,
   childProcessPid: null,
@@ -34,9 +36,10 @@ const __e2e = {
 };
 
 const fetch = (url, opts = {}) => { // import('node-fetch')
-// .then(({ default: fetch }) => {
-//  console.log(`${baseUrl}${url}`);
+  // .then(({ default: fetch }) => {
+  //  console.log(`${baseUrl}${url}`);
 
+  // eslint-disable-next-line no-console
   console.log('token', __e2e.adminToken);
   return global.fetch(`${baseUrl}${url}`, {
     ...opts,
@@ -80,7 +83,7 @@ const createTestUser = () => fetchAsAdmin('/users', {
     }
     return resp.json();
   })
-  .then(({ token }) => Object.assign(__e2e, { testUserToken: token }));
+  .then(({ accessToken }) => Object.assign(__e2e, { testUserToken: accessToken }));
 
 const checkAdminCredentials = () => fetch('/auth', {
   method: 'POST',
@@ -93,7 +96,7 @@ const checkAdminCredentials = () => fetch('/auth', {
 
     return resp.json();
   })
-//   .then(console.log);
+  //   .then(console.log);
   .then(({ accessToken }) => Object.assign(__e2e, { adminToken: accessToken }));
 
 const waitForServerToBeReady = (retries = 10) => new Promise((resolve, reject) => {

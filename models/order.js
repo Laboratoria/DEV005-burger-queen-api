@@ -1,36 +1,91 @@
 const mongoose = require('mongoose');
 
 const { Schema, model } = mongoose;
+const { ObjectId } = require('mongodb');
+
+const getDateAndTime = () => {
+  const now = new Date();
+  return now.toISOString().replace(/[TZ]+/gm, ' ').substring(0, 19);
+};
+
 const orderSchema = new Schema({
+  _id: {
+    type: ObjectId,
+    ref: 'Order ID',
+  },
   userId: {
-    type: Number,
-    ref: 'User',
+    type: String,
+    ref: 'User ID',
     required: true,
   },
-  client: String,
-  table: Number,
-  products: [{
-    qty: {
-      type: Number,
+  client: {
+    type: String,
+    ref: 'Client name',
+    required: true,
+  },
+  table: {
+    type: Number,
+    ref: 'Table number',
+    required: true,
+  },
+  products:
+    {
+      type: Array,
       required: true,
+      ref: 'Product List',
+      value: [
+        {
+          qty: {
+            type: Number,
+            ref: 'Product amount',
+            required: true,
+          },
+          product: {
+            id: {
+              type: String,
+              ref: 'Product ID',
+              required: true,
+            },
+            name: {
+              type: String,
+              ref: 'Product name',
+              required: true,
+            },
+            price: {
+              type: Number,
+              ref: 'Product price',
+              required: true,
+            },
+            image: {
+              type: String,
+              ref: 'Product image url',
+              required: true,
+            },
+            type: {
+              type: String,
+              ref: 'Product type',
+              enum: ['Desayuno', 'Almuerzo'],
+              required: true,
+            },
+            dateEntry: {
+              type: String,
+              ref: 'Product entry date',
+              required: true,
+            },
+          },
+        },
+      ],
     },
-    product: {
-      id: Number,
-      name: String,
-      price: Number,
-      image: String,
-      type: String,
-      dateEntry: Date,
-    },
-  }],
   status: {
     type: String,
+    ref: 'Order Status',
     enum: ['En preparación', 'Listo en barra', 'Entregado'],
-    default: 'En  preparación',
+    default: 'En preparación',
   },
   dateEntry: {
-    type: Date,
-    default: Date.now(),
+    type: String,
+    ref: 'Order Entry Date',
+    default: getDateAndTime(),
   },
 });
 
