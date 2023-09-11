@@ -99,6 +99,7 @@ module.exports = (app, nextMain) => {
         console.log('requiere cliente, mesa y productos', client, table, products);
         return res.status(400).json({ message: 'Debe proporcionar los datos mandatorios' });
       }
+
       console.log('aquí user id', userId);
 
       // Crear una instancia de MongoClient para conectar con la db
@@ -134,14 +135,19 @@ module.exports = (app, nextMain) => {
         return formatedProduct;
       });
 
+      // Validar que estado sea una de las opciones si es que viene en la req
+      const validStatus = req.body.status === 'En preparación' || req.body.status === 'Listo en barra' || req.body.status === 'Entregado' ? req.bodystatus : 'null';
+
+      // Insertar estado si es que viene en la req
+      const orderStatus = validStatus || 'En preparación';
+
       // Crear nueva orden
       const newOrder = {
-        id: new ObjectId(),
         userId,
         client,
         table,
         products: formatProducts(products),
-        status: 'En preparación',
+        status: req.body.status ? req.body.status : 'En preparación',
         dateEntry: getDateAndTime(),
       };
 
@@ -198,7 +204,6 @@ module.exports = (app, nextMain) => {
    * @code {404} si la orderId con `orderId` indicado no existe
    */
   app.patch('/orders/:orderId', requireAuth, async (req, res, next) => {
-    // const mongoClient = new MongoClient(config.dbUrl);
     try {
       // Obtener los datos desde la req
       const {
@@ -207,22 +212,19 @@ module.exports = (app, nextMain) => {
       const { orderId } = req.params; // id de orden a cambiar
       const { userId } = req.userId; // usuario haciendo el cambio
 
-      if (!client && !products && !table && !status) {
-        console.log('No se proporcionaron nuevos datos');
-        return res.status(400).json({ message: 'Debe proporcionar información para actulizar orden' });
-      }
-      if (typeof client !== 'string' && typeof table !== 'number' && typeof status !== 'string' && typeof products !== 'object') {
-        console.log('Datos inválidos');
-        console.log('heeeeeeeeere', client, table, status, products, orderId);
-        return res.status(400).json({ message: 'Debe proporcionar datos válidos' });
-      }
       if (!isAuthenticated(req)) {
         console.log('Usuario no autenticado', isAuthenticated(req));
         return res.status(401).json({ error: 'Sin autorización' });
       }
-
-      // Conectarse a la db
-      // await mongoClient.connect();
+      if (!client && !products && !table && !status) {
+        console.log('No se proporcionaron nuevos datos');
+        return res.status(400).json({ message: 'Debe proporcionar información para actulizar orden' });
+      }
+      if ((client && typeof client !== 'string') || (table && typeof table !== 'number') || (status && typeof status !== 'string') || (products && typeof products !== 'object')) {
+        console.log('Datos inválidos');
+        console.log('heeeeeeeeere', client, table, status, products, orderId, userId);
+        return res.status(400).json({ message: 'Debe proporcionar datos válidos' });
+      }
 
       const order = await Order.findOne({ _id: orderId });
 
@@ -238,7 +240,7 @@ module.exports = (app, nextMain) => {
       }
       if (status) {
         order.status = status;
-        console.log('aquí la orden', order);
+        console.log('aquí la orden', order, order.products, order._id);
       }
       if (products) {
         const formatProducts = (products) => products.map(item => {
@@ -266,6 +268,8 @@ module.exports = (app, nextMain) => {
         client: order.client,
         table: order.table,
         products: order.products,
+        status: order.status,
+        dateEntry: order.dateEntry,
       });
     } catch (error) {
       console.error('Error al actulizar orden', error);

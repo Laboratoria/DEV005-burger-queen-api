@@ -9,10 +9,9 @@ const getDateAndTime = () => {
 };
 
 const orderSchema = new Schema({
-  id: {
-    type: String,
+  _id: {
+    type: ObjectId,
     ref: 'Order ID',
-    default: new ObjectId(),
   },
   userId: {
     type: String,
@@ -32,6 +31,8 @@ const orderSchema = new Schema({
   products:
     {
       type: Array,
+      required: true,
+      ref: 'Product List',
       value: [
         {
           qty: {
@@ -77,11 +78,13 @@ const orderSchema = new Schema({
     },
   status: {
     type: String,
+    ref: 'Product Status',
     enum: ['En preparación', 'Listo en barra', 'Entregado'],
     default: 'En  preparación',
   },
   dateEntry: {
     type: String,
+    ref: 'Order Entry Date',
     default: getDateAndTime(),
   },
 });

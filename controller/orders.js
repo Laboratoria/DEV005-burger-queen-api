@@ -27,33 +27,31 @@ module.exports = {
   getOrderById: async (req, res, next) => {
     try {
       const { orderId } = req.params;
-      const order = await Order.findOne({ _id: orderId });
-      console.log('producto encontrado es', order);
-
-      // Si no se encuentra el producto, devolver error 404
-      if (!order) {
-        console.log('Orden no encontrada');
-        return res.status(404).json({ error: 'La orden no existe' });
-      }
 
       // Verificar si hay autorización
       if (!isAuthenticated) {
         console.log('no hay cabezera de auth', isAuthenticated);
         return res.status(401).json({ message: 'No hay infromación de autorización' });
       }
-      // Si es admin o usuario autenticado
-      if( isAdmin(req) || isAuthenticated(req)) {
-        res.status(200).json({
-          message: 'Orden encontrada',
-          id: order._id,
-          userID: order.userId,
-          client: order.client,
-          table: order.table,
-          products: order.products,
-          status: order.status,
-          dateEntry: order.dateEntry,
-        });
+
+      const order = await Order.findOne({ _id: orderId });
+      console.log('producto encontrado es', order, 'y el orderId es ', orderId );
+      
+      // Si no se encuentra el producto, devolver error 404
+      if (!order) {
+        console.log('Orden no encontrada');
+        return res.status(404).json({ error: 'La orden no existe' });
       }
+      res.status(200).json({
+        message: 'Orden encontrada',
+        id: order._id,
+        userID: order.userId,
+        client: order.client,
+        table: order.table,
+        products: order.products,
+        status: order.status,
+        dateEntry: order.dateEntry,
+      });
     } catch (err) {
       console.log("error al buscar la orden", err);
       next(err);
