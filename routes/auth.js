@@ -24,30 +24,18 @@ module.exports = (app, nextMain) => {
     const { dbUrl } = app.get('config');
 
     if (!email || !password) {
-      console.log('Correo y contraseña son requeridos en routes/auth');
       return res.status(400).json({ error: 'Correo y contraseña son requeridos' });
     }
 
     const client = new MongoClient(dbUrl);
     await client.connect();
     const db = client.db();
-    // console.log(db, 'print db en routes auth');
-    // console.log(db, 'print db en routes auth');
     const usersCollection = db.collection('users');
-    // console.log(usersCollection, 'print users collection en routes auth');
-
-    // console.log(usersCollection, 'print users collection en routes auth');
-
-    // TODO: autenticar a la usuarix
-    // Hay que confirmar si el email y password
-    // coinciden con un user en la base de datos
-    // Si coinciden, manda un access token creado con jwt
 
     // Buscar el usuario por correo
     const user = await usersCollection.findOne({ email });
 
     if (!user) {
-      console.log('No hay un usuario registrado así en routes/auth', user);
       return res.status(404).json({ error: 'Usuario no encontrado' });
     }
 
@@ -55,13 +43,11 @@ module.exports = (app, nextMain) => {
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if (!isPasswordValid) {
-      console.log('Contraseña incorrecta', user.password, 'vs', password);
       return res.status(400).json({ error: 'Contraseña incorrecta' });
     }
 
     // Genera un JWT token
     const accessToken = jwt.sign({ userId: user._id, role: user.role, email: user.email }, secret, { expiresIn: '1h' });
-    console.log('nuevo token', user.role, accessToken);
     res.status(200).json({ accessToken });
 
     next();

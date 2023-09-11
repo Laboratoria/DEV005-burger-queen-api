@@ -35,26 +35,18 @@ const __e2e = {
   // testObjects: [],
 };
 
-const fetch = (url, opts = {}) => { // import('node-fetch')
-  // .then(({ default: fetch }) => {
-  //  console.log(`${baseUrl}${url}`);
-
-  // eslint-disable-next-line no-console
-  console.log('token', __e2e.adminToken);
-  return global.fetch(`${baseUrl}${url}`, {
-    ...opts,
-    headers: {
-      'content-type': 'application/json',
-      ...opts.headers,
-    },
-    ...(
-      opts.body && typeof opts.body !== 'string'
-        ? { body: JSON.stringify(opts.body) }
-        : {}
-    ),
-  });
-};
-// });
+const fetch = (url, opts = {}) => global.fetch(`${baseUrl}${url}`, {
+  ...opts,
+  headers: {
+    'content-type': 'application/json',
+    ...opts.headers,
+  },
+  ...(
+    opts.body && typeof opts.body !== 'string'
+      ? { body: JSON.stringify(opts.body) }
+      : {}
+  ),
+});
 
 const fetchWithAuth = (token) => (url, opts = {}) => fetch(url, {
   ...opts,
@@ -96,7 +88,7 @@ const checkAdminCredentials = () => fetch('/auth', {
 
     return resp.json();
   })
-  //   .then(console.log);
+
   .then(({ accessToken }) => Object.assign(__e2e, { adminToken: accessToken }));
 
 const waitForServerToBeReady = (retries = 10) => new Promise((resolve, reject) => {
@@ -123,7 +115,6 @@ module.exports = () => new Promise((resolve, reject) => {
 
   mongoGlobalSetup({ rootDir: __dirname }).then(async () => {
     console.info('\n Starting local server...');
-    console.log(port);
     const child = spawn(
       /^win/.test(process.platform) ? 'npm.cmd' : 'npm',
       ['start', port],
@@ -133,7 +124,6 @@ module.exports = () => new Promise((resolve, reject) => {
         env: { PATH: process.env.PATH, MONGO_URL: process.env.MONGO_URL },
       },
     );
-    console.log('hasta aquí voy bien');
     Object.assign(__e2e, { childProcessPid: child.pid });
 
     child.stdout.on('data', (chunk) => {
@@ -162,7 +152,7 @@ module.exports = () => new Promise((resolve, reject) => {
         console.log('there was an error');
         kill(child.pid, 'SIGKILL', () => reject(err));
       });
-  }).catch((error) => console.log(error));
+  }).catch((error) => console.error(error));
 });
 
 // Export globals - ugly... :-(
