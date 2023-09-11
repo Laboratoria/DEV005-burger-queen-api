@@ -11,8 +11,6 @@ const app = express();
 
 app.set('config', config);
 app.set('pkg', pkg);
-
-// parse application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(authMiddleware(secret));
@@ -29,7 +27,3 @@ routes(app, (err) => {
     console.info(`App listening on port ${port}`);
   });
 });
-
-/* connect()
-.then(db => db.collections().then(res => console.log('hola index.js', res)))
-.catch(error => console.error(error), 'excepción aquí en index.js'); */

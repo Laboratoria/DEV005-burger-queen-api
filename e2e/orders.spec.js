@@ -505,11 +505,9 @@ describe('PATCH /orders/:orderId', () => {
       }))
       .then((resp) => {
         expect(resp.status).toBe(200);
-        console.log('AQUI', resp);
         return resp.json();
       })
       .then((json) => {
-        console.log(json, 'AQUIII');
         expect(json.status).toBe('Listo en barra');
         return fetchAsAdmin(`/orders/${json.id}`, {
           method: 'PATCH',

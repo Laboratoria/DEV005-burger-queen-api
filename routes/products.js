@@ -58,8 +58,6 @@ module.exports = (app, nextMain) => {
       // Buscar producto en la base de datos
       const productToGet = await Product.findOne({ _id: productId });
 
-      console.log('producto encontrado es', productToGet);
-
       // Si no se encuentra el producto, devolver error 404
       if (!productToGet) {
         return res.status(404).json({ error: 'El producto no existe' });
@@ -69,8 +67,7 @@ module.exports = (app, nextMain) => {
       const isAuth = req.authorization !== '';
 
       if (!isAuth) {
-        console.log('no hay cabezera de auth', isAuth);
-        return res.status(401).json({ message: 'No hay infromación de autorización' });
+        return res.status(401).json({ message: 'Sin autorización' });
       }
 
       // Devolver una respuesta exitosa
@@ -118,7 +115,6 @@ module.exports = (app, nextMain) => {
       } = req.body;
 
       if (!name || !price) {
-        console.log('requiere nombre y precio', name, price);
         return res.status(400).json({ message: 'Debe proporcionar un nombre y un precio' });
       }
 
@@ -133,7 +129,6 @@ module.exports = (app, nextMain) => {
       const isAdmin = req.isAdmin === 'admin';
 
       if (!isAdmin) {
-        console.log('usurio no es admin', isAdmin);
         return res.status(403).json({ message: 'No tiene autorización para agregar productos' });
       }
 
@@ -141,7 +136,6 @@ module.exports = (app, nextMain) => {
       const isAuth = req.authorization !== '';
 
       if (!isAuth) {
-        console.log('no hay cabezera de auth', isAuth);
         return res.status(401).json({ message: 'No hay infromación de autorización' });
       }
 
@@ -150,7 +144,6 @@ module.exports = (app, nextMain) => {
 
       if (existingProduct) {
         await client.close();
-        console.log('ya existe el producto', existingProduct);
         return res.status(404).json({ error: 'Este producto ya está registrado' });
       }
 
@@ -169,8 +162,6 @@ module.exports = (app, nextMain) => {
         type,
         dateEntry: getDateAndTime(),
       };
-
-      console.log(newProduct, 'new product routes/products');
 
       // Insertar el nuevo producto en la base de datos
       const insertedProduct = await productsCollection.insertOne(newProduct);
@@ -227,8 +218,6 @@ module.exports = (app, nextMain) => {
       // Buscar producto en la base de datos
       const productToUpdate = await Product.findOne({ _id: productId });
 
-      console.log('producto a editar', productToUpdate);
-
       // Si no se encuentra el producto, devolver error 404
       if (!productToUpdate) {
         return res.status(404).json({ error: 'El producto no existe' });
@@ -238,7 +227,6 @@ module.exports = (app, nextMain) => {
       const isAdmin = req.isAdmin === 'admin';
 
       if (!isAdmin) {
-        console.log('usurio no es admin', isAdmin);
         return res.status(403).json({ error: 'No tiene autorización para modificar productos' });
       }
 
@@ -246,8 +234,7 @@ module.exports = (app, nextMain) => {
       const isAuth = req.authorization !== '';
 
       if (!isAuth) {
-        console.log('no hay cabezera de auth', isAuth);
-        return res.status(401).json({ error: 'No hay infromación de autorización' });
+        return res.status(401).json({ error: 'Sin autorización' });
       }
 
       // Verificar si se proporciona al menos una propiedad para modificar
@@ -324,17 +311,11 @@ module.exports = (app, nextMain) => {
       // Obtener el ID o correo de producto a eliminar desde los parámetros de la URL
       const { productId } = req.params;
 
-      console.log(productId, 'datos del producto routes/products');
-
       // Buscar el producto en la base de datos
       const productToDelete = await Product.findOne({ _id: productId });
 
-      console.log('producto a borrar', productToDelete);
-
       // Verificar si el usuario autenticado es un administrador
       const isAdmin = req.isAdmin === 'admin';
-
-      console.log(isAdmin, 'usuario admin products?');
 
       // Si el usuario no es un administrador devolver un error 403
       if (!isAdmin) {
@@ -350,7 +331,6 @@ module.exports = (app, nextMain) => {
       const isAuth = req.authorization !== '';
 
       if (!isAuth) {
-        console.log('no hay cabezera de auth', isAuth);
         return res.status(401).json({ message: 'No hay infromación de autorización' });
       }
 

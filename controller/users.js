@@ -49,11 +49,8 @@ module.exports = {
 
       // Si usuario no es admin ni sí mismo, devolver error 403
       if (!isAdmin(req) && thisEmail !== user.email) {
-        console.log('Sin autorización');
         return res.status(403).json({ error: 'No tienes autorización para ver esta información' });
       }
-
-      console.log('usuario encontrado es', user);
 
       // Devolver una respuesta exitosa
       res.status(200).json({

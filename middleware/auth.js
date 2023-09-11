@@ -22,22 +22,15 @@ module.exports = secret => (req, res, next) => {
       console.log('Error al verificar el token:', err.message);
       return res.status(403).json({ message: err.message });
     }
-    console.log('Token verificado:', decodedToken);
 
     req.userId = decodedToken.userId; // Agregar el ID del usuario al objeto `req`
     req.isAdmin = formatRole(decodedToken); // Agregar el rol del usuario al objeto `req`
     req.thisEmail = decodedToken.email; // Agregar el correo del usuario al objeto `req`
     req.isAuthenticated = true;
 
-    // console.log('REEEEQ', req, 'REEEEEQ');
-
-    // console.log('REEEEQaaaa', req.isAdmin === 'admin', 'REEEEEQaaaa');
-
     next(); // Pasar la ejecución al siguiente middleware o controlador
   });
 };
-
-// module.exports.getLoggedUserEmail = (req, res, next) => (req.thisEmail ? req.thisEmail : next());
 
 module.exports.isAuthenticated = req => (!!req.isAuthenticated);
 

@@ -30,16 +30,13 @@ module.exports = {
 
       // Verificar si hay autorización
       if (!isAuthenticated) {
-        console.log('no hay cabezera de auth', isAuthenticated);
-        return res.status(401).json({ message: 'No hay infromación de autorización' });
+        return res.status(401).json({ message: 'Sin autorización' });
       }
 
       const order = await Order.findOne({ _id: orderId });
-      console.log('producto encontrado es', order, 'y el orderId es ', orderId );
       
       // Si no se encuentra el producto, devolver error 404
       if (!order) {
-        console.log('Orden no encontrada');
         return res.status(404).json({ error: 'La orden no existe' });
       }
       res.status(200).json({
@@ -53,7 +50,7 @@ module.exports = {
         dateEntry: order.dateEntry,
       });
     } catch (err) {
-      console.log("error al buscar la orden", err);
+      console.error("error al buscar la orden", err);
       next(err);
     } finally {
       client.close();

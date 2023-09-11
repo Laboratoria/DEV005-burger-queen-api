@@ -42,7 +42,6 @@ const initAdminUser = async (app, next) => {
       const user = new User(adminUser);
       user.save();
       console.info('Usuario administrador creado con éxito');
-      console.log('Nuevo usuario creado:', user);
     } catch (error) {
       console.error('Error al crear usuario', error);
     }
@@ -51,32 +50,6 @@ const initAdminUser = async (app, next) => {
   }
   next();
 };
-
-/*
- * Diagrama de flujo de una aplicación y petición en node - express :
- *
- * request  -> middleware1 -> middleware2 -> route
- *                                             |
- * resonse <- middleware4 <- middleware3   <---
- *
- * la gracia es que la petición va pasando por cada una de las funciones
- * intermedias o "middlewares" hasta llegar a la función de la ruta, luego esa
- * función genera la resuesta y esta pasa nuevamente por otras funciones
- * intermedias hasta resonder finalmente a la usuaria.
- *
- * Un ejemplo de middleware podría ser una función que verifique que una usuaria
- * está realmente registrado en la aplicación y que tiene permisos para usar la
- * ruta. O también un middleware de traducción, que cambie la resuesta
- * dependiendo del idioma de la usuaria.
- *
- * Es por lo anterior que siempre veremos los argumentos request, resonse y
- * next en nuestros middlewares y rutas. Cada una de estas funciones tendrá
- * la oportunidad de acceder a la consulta (request) y hacerse cargo de enviar
- * una resuesta (rompiendo la cadena), o delegar la consulta a la siguiente
- * función en la cadena (invocando next). De esta forma, la petición (request)
- * va pasando a través de las funciones, así como también la resuesta
- * (resonse).
- */
 
 /** @module users */
 module.exports = (app, next) => {
@@ -146,15 +119,12 @@ module.exports = (app, next) => {
       const { email, password, role } = req.body;
 
       if (!email || !password) {
-        console.log('requiere contraseña y correo', email, password);
         return res.status(400).json({ message: 'El correo y la contraseña son requeridos' });
       }
       if (!validateEmail(email)) {
-        console.log('correo electrónico inválido', email);
         return res.status(400).json({ message: 'El correo debe ser una dirección válida' });
       }
       if (!validatePassword(password)) {
-        console.log('contraseña inválida', password);
         return res.status(400).json({ message: 'La contraseña debe tener al menos 6 caracteres' });
       }
 
@@ -168,7 +138,6 @@ module.exports = (app, next) => {
       if (!isAdmin(req)) {
         // Cerrar conexión despues de usar
         await client.close();
-        console.log('no autorizado POST', isAdmin(req));
         return res.status(401).json({ error: 'Sin autorización para crear un usuario' });
       }
 
@@ -177,7 +146,6 @@ module.exports = (app, next) => {
 
       if (existingUser) {
         await client.close();
-        console.log('ya existe user', existingUser);
         return res.status(403).json({ error: 'Este usuario ya está registrado' });
       }
 
@@ -238,7 +206,6 @@ module.exports = (app, next) => {
       const { thisEmail } = req; // usuario haciendo el cambio
 
       if ((email && !validateEmail(email)) || (password && !validatePassword(password))) {
-        console.log('datos inválidos', email, password);
         return res.status(400).json({ message: 'Debes ingresar un correo y/o una contraseña válidos' });
       }
       if (!email && !password && !role) {
@@ -246,7 +213,6 @@ module.exports = (app, next) => {
       }
 
       if (!isAuthenticated(req)) {
-        console.log('Usuario no autenticado', isAuthenticated(req));
         return res.status(401).json({ error: 'Sin autorización' });
       }
 
@@ -260,19 +226,16 @@ module.exports = (app, next) => {
 
       // si no encuentra usuario
       if (!user) {
-        console.log('No se encontró usuario con ID: ', uid);
         return res.status(404).json({ error: 'Usuario no encontrado' });
       }
 
       // si usuario no es admin ni el mismo usuario que se va a cambiar
       if (!isAdmin(req) && user.email !== thisEmail) {
-        console.log('no autorizado PATCH', isAdmin(req));
         return res.status(403).json({ error: 'No tienes autorización para modificar usuario' });
       }
 
       // si usuario no admin trata de modificar su propio rol
       if (!isAdmin(req) && role) {
-        console.log('No tiene autorización para modificar rol');
         return res.status(403).json({ error: 'Sin autorización' });
       }
 
@@ -344,7 +307,6 @@ module.exports = (app, next) => {
 
       // Si el usuario no es un administrador ni la misma usuario, devolver un error 403
       if (!isAuthorized) {
-        console.log(req.body.email, 'No coincide con este usuario');
         return res.status(403).json({ error: 'No tienes autorización para eliminar este usuario' });
       }
 
