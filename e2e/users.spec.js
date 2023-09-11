@@ -228,7 +228,7 @@ describe('PATCH /users/:uid', () => {
   it('should fail with 403 when not admin tries to change own role', () => (
     fetchAsTestUser('/users/ejemplo@email.com', {
       method: 'PATCH',
-      body: { role: 'admin' },
+      body: { email: 'ejemplo@email.com', role: 'admin' },
     }).then((resp) => expect(resp.status).toBe(403))
   ));
 
