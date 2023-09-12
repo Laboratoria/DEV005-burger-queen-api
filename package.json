@@ -30,7 +30,7 @@
     "lint": "eslint .",
     "docs:generate": "jsdoc -c jsdoc.conf --readme README-docs.md",
     "docs:deploy": "rm -rf docs && npm run docs:generate && gh-pages -d docs",
-    "build": "babel src -d lib"
+    "build": "babel index.js -d lib"
   },
   "dependencies": {
     "@shelf/jest-mongodb": "^4.1.7",
