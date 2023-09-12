@@ -1,8 +1,11 @@
 const { MongoClient } = require('mongodb');
+const express = require('express');
 const bcrypt = require('bcrypt');
 const mongoose = require('mongoose');
 const User = require('../models/user');
 const { dbUrl } = require('../config');
+
+const app = express();
 
 const {
   requireAuth,
@@ -40,7 +43,7 @@ const initAdminUser = async (app, next) => {
   if (!userExists) {
     try {
       const user = new User(adminUser);
-      user.save();
+      await user.save();
       console.info('Usuario administrador creado con éxito');
     } catch (error) {
       console.error('Error al crear usuario', error);
