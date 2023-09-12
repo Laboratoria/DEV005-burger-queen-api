@@ -28,4 +28,4 @@ routes(app, (err) => {
   });
 });
 
-connect();
+export default app;
