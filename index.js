@@ -23,7 +23,7 @@ routes(app, (err) => {
 
   app.use(errorHandler);
 
-  app.listen(process.env.PORT, () => {
-    console.info(`App listening on port ${process.env.PORT} in ${process.env.MONGO_URL}`);
+  app.listen(port, () => {
+    console.info(`App listening on port ${port} in ${config.db}`);
   });
 });
