@@ -27,3 +27,5 @@ routes(app, (err) => {
     console.info(`App listening on port ${port}`);
   });
 });
+
+connect();
