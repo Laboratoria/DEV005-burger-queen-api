@@ -5,7 +5,14 @@ const orders = require('./orders');
 
 const root = (app, next) => {
   const pkg = app.get('pkg');
-  app.get('/', (req, res) => res.json({ name: pkg.name, version: pkg.version, contributors: [pkg.contributors[0].name, pkg.contributors[1].name] }));
+  app.get('/', (req, res) => {
+    res.send('This is the BQ API by Karla Macedo and Sara Rioseco');
+    res.json({
+      name: pkg.name,
+      version: pkg.version,
+      contributors: [pkg.contributors[0].name, pkg.contributors[1].name],
+    });
+  });
   app.all('*', (req, res, nextAll) => nextAll(404));
   return next();
 };
