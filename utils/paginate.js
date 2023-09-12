@@ -7,7 +7,7 @@ const paginate = (arr, page, limit) => {
   return {
     limit,
     pageData: currentPage,
-    prev: page > 0 ? page - 1 : null,
+    prev: page > 1 ? page - 1 : null,
     next: page < lastPage ? page + 1 : null,
     first: 1,
     last: lastPage,
