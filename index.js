@@ -28,4 +28,4 @@ routes(app, (err) => {
   });
 });
 
-export default app;
+module.exports = { app };
