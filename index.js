@@ -19,10 +19,6 @@ app.use(cors({
   origin: ['https://burger-queen-api-wp1d-dev.fl0.io/'],
 }));
 app.use(authMiddleware(secret));
-app.use(cors({
-  origin: ['https://burger-queen-api-wp1d-dev.fl0.io/'],
-  methods: ['GET', 'POST', 'PATCH', 'DELETE'],
-}));
 
 // Registrar rutas
 routes(app, (err) => {
@@ -36,3 +32,5 @@ routes(app, (err) => {
     console.info(`App listening on port ${port}`);
   });
 });
+
+connect();
