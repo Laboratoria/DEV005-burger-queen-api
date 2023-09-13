@@ -1,11 +1,8 @@
 const { MongoClient } = require('mongodb');
-const express = require('express');
 const bcrypt = require('bcrypt');
+const mongoose = require('mongoose');
 const User = require('../models/user');
 const { dbUrl } = require('../config');
-const { connect } = require('../connect');
-
-const app = express();
 
 const {
   requireAuth,
@@ -20,8 +17,6 @@ const {
   getUserById,
   validatePassword,
 } = require('../controller/users');
-
-connect();
 
 // Función para inicializar al usuario administrador
 const initAdminUser = async (app, next) => {
@@ -39,11 +34,13 @@ const initAdminUser = async (app, next) => {
     },
   };
 
+  mongoose.connect(dbUrl);
+
   const userExists = await User.findOne({ email: adminEmail });
   if (!userExists) {
     try {
       const user = new User(adminUser);
-      await user.save();
+      user.save();
       console.info('Usuario administrador creado con éxito');
     } catch (error) {
       console.error('Error al crear usuario', error);

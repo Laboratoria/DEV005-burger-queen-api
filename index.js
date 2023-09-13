@@ -1,5 +1,4 @@
 const express = require('express');
-const cors = require('cors');
 const config = require('./config');
 const authMiddleware = require('./middleware/auth');
 const errorHandler = require('./middleware/error');
@@ -14,10 +13,6 @@ app.set('config', config);
 app.set('pkg', pkg);
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
-app.use(cors({
-  methods: ['GET', 'POST', 'DELETE', 'PATCH'],
-  origin: ['https://burger-queen-api-wp1d-dev.fl0.io/'],
-}));
 app.use(authMiddleware(secret));
 
 // Registrar rutas
@@ -29,8 +24,6 @@ routes(app, (err) => {
   app.use(errorHandler);
 
   app.listen(port, () => {
-    console.info(`App listening on port ${port} in ${config.db}`);
+    console.info(`App listening on port ${port}`);
   });
 });
-
-module.exports = app;

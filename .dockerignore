@@ -1,6 +1,7 @@
 **/node_modules/
 **/dist
 **/e2e/
+**/controller/
 **/guides/
 **/coverage/
 **/db-data/
