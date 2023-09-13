@@ -22,7 +22,7 @@ services:
     environment:
       NODE_ENV: production
       PORT: 8080
-      DB_URL: mongodb://BQKarlaSara:BQKarlaSaraDev007@db:27017/BQKarlaSara?authSource=admin
+      DB_URL: mongodb+srv://BQAKarlaSara:BQAKarlaSaraDev007@bqa.px2rco8.mongodb.net/?retryWrites=true&w=majority
       JWT_SECRET: esta-es-la-api-burger-queen
       ADMIN_EMAIL: admin@prueba.com
       ADMIN_PASSWORD: changeme
@@ -31,7 +31,7 @@ services:
     expose:
       - 8080
     ports:
-      - 8080:8080
+      - 80:8080
     command: bash -c 'rm -rf node_modules && npm install && npm start'
     depends_on:
       - db

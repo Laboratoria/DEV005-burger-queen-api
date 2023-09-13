@@ -30,14 +30,13 @@
     "lint": "eslint .",
     "docs:generate": "jsdoc -c jsdoc.conf --readme README-docs.md",
     "docs:deploy": "rm -rf docs && npm run docs:generate && gh-pages -d docs",
-    "build": "babel index.js -d lib"
+    "build": "babel src -d lib"
   },
   "dependencies": {
     "@shelf/jest-mongodb": "^4.1.7",
     "bcrypt": "^5.1.1",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
-    "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "jsdoc": "^4.0.2",
     "jsonwebtoken": "^9.0.1",
