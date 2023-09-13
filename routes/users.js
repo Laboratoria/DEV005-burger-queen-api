@@ -3,6 +3,7 @@ const express = require('express');
 const bcrypt = require('bcrypt');
 const User = require('../models/user');
 const { dbUrl } = require('../config');
+const { connect } = require('../connect');
 
 const app = express();
 
@@ -19,6 +20,8 @@ const {
   getUserById,
   validatePassword,
 } = require('../controller/users');
+
+connect();
 
 // Función para inicializar al usuario administrador
 const initAdminUser = async (app, next) => {
