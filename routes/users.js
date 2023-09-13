@@ -34,7 +34,7 @@ const initAdminUser = async (app, next) => {
     },
   };
 
-  // Crear una instancia de Mongoose para conectar con la base de datos
+  // Crear una instancia de MongoClient para conectar con la base de datos
   mongoose.connect(dbUrl);
 
   const userExists = await User.findOne({ email: adminEmail });
@@ -49,7 +49,7 @@ const initAdminUser = async (app, next) => {
   } else {
     console.log('Ya existe usuario administrador:', userExists);
   }
-  mongoose.disconnect();
+  // mongoose.disconnect();
   next();
 };
 

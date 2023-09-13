@@ -14,11 +14,11 @@ app.set('config', config);
 app.set('pkg', pkg);
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
-app.use(cors({
-  methods: ['GET', 'POST', 'DELETE', 'PATCH'],
-  origin: ['https://burger-queen-api-wp1d-dev.fl0.io/'],
-}));
 app.use(authMiddleware(secret));
+app.use(cors({
+  origin: ['https://burger-queen-api-wp1d-dev.fl0.io/'],
+  methods: ['GET', 'POST', 'PATCH', 'DELETE'],
+}));
 
 // Registrar rutas
 routes(app, (err) => {
