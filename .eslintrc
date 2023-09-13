@@ -17,7 +17,7 @@
     "no-shadow": "off",
     "no-useless-escape": "off",
     "arrow-parens": "off",
-    "import/no-extraneous-dependencies": ["error", {"devDependencies": ["e2e/**/*.js", "**/*.spec.js"]}],
+    "import/no-extraneous-dependencies": "off",
     "no-console": ["error", {
       "allow": ["info", "warn", "error", "log"]
     }]
