@@ -1,7 +1,6 @@
 const { MongoClient } = require('mongodb');
 const express = require('express');
 const bcrypt = require('bcrypt');
-const mongoose = require('mongoose');
 const User = require('../models/user');
 const { dbUrl } = require('../config');
 
@@ -36,8 +35,6 @@ const initAdminUser = async (app, next) => {
       admin: true,
     },
   };
-
-  mongoose.connect(dbUrl);
 
   const userExists = await User.findOne({ email: adminEmail });
   if (!userExists) {
