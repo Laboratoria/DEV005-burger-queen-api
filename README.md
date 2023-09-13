@@ -2,15 +2,18 @@
 
 ## Índice
 
-* [1. Preámbulo](#1-pre%C3%A1mbulo)
-* [2. Resumen del proyecto](#2-resumen-del-proyecto)
-* [3. Objetivos de aprendizaje](#3-objetivos-de-aprendizaje)
-* [4. Consideraciones generales](#4-consideraciones-generales)
-* [5. Criterios de aceptación mínimos del proyecto](#5-criterios-de-aceptaci%C3%B3n-m%C3%ADnimos-del-proyecto)
-* [6. Hacker (Devops) Edition con Docker](#6-hacker-%28devops%29-edition-con-docker)
-* [7. Pistas, tips y lecturas complementarias](#6-pistas-tips-y-lecturas-complementarias)
+* [1. Resumen del proyecto](#1-resumen-del-proyecto)
+* [2. Requerimientos del cliente](#2-requerimientos-del-cliente)
+* [3. Recursos y documentación](#3-recursos-y-documentaci%C3%B3n)
+* [4. Integración con Docker](#4-integraci%C3%B3n-con-docker)
+* [5. Consideraciones](#6-consideraciones)
+* [6. Despliegue](#7-despliegue)
+* [7. Testing](#8-testing)
+* [8. Organización](#8-organizaci%C3%B3n)
+* [9. Criterios de aceptación](#9-criterios-de-aceptaci%C3%B3n)
+* [10. Objetivos de aprendizaje](#10-objetivos-de-aprendizaje)
 
-## 1. Preámbulo
+## 1. Resumen del proyecto
 
 ![Node.js logo](https://nodejs.org/static/images/logos/nodejs-new-pantone-black.svg)
 
@@ -22,7 +25,7 @@ Este proyecto tiene dos áreas: interfaz web (cliente) y API (servidor). Nuestra
 clienta nos ha solicitado desarrollar la API que se puede integrar con la
 interfaz, que otro equipo de desarrolladoras está trabajando simultáneamente.
 
-## 2. Resumen del proyecto
+## 2. Requerimientos del cliente
 
 Con una API en este caso nos referimos a un _servidor web_, que es
 básicamente un programa que _escucha_ en un puerto de red, a través del cual
@@ -66,282 +69,7 @@ headers, body, status codes...), **JSON**, **JWT** (_JSON Web Tokens_),
 **conexión con una base datos** (`MongoDB`),
 **variables de entorno**, **deployment**, etc.
 
-## 3. Objetivos de aprendizaje
-
-Reflexiona y luego marca los objetivos que has llegado a entender y aplicar en tu proyecto. Piensa en eso al decidir tu estrategia de trabajo.
-
-### Node.js
-
-- [ ] **Instalar y usar módulos con npm**
-
-  <details><summary>Links</summary><p>
-
-  * [Sitio oficial de npm (en inglés)](https://www.npmjs.com/)
-</p></details>
-
-- [ ] **Configuración de package.json**
-
-  <details><summary>Links</summary><p>
-
-  * [package.json - Documentación oficial (en inglés)](https://docs.npmjs.com/files/package.json)
-</p></details>
-
-- [ ] **Configuración de npm-scripts**
-
-  <details><summary>Links</summary><p>
-
-  * [scripts - Documentación oficial (en inglés)](https://docs.npmjs.com/misc/scripts)
-</p></details>
-
-### JavaScript
-
-- [ ] **Pruebas unitarias (unit tests)**
-
-  <details><summary>Links</summary><p>
-
-  * [Empezando con Jest - Documentación oficial](https://jestjs.io/docs/es-ES/getting-started)
-</p></details>
-
-- [ ] **Pruebas asíncronas**
-
-  <details><summary>Links</summary><p>
-
-  * [Tests de código asincrónico con Jest - Documentación oficial](https://jestjs.io/docs/es-ES/asynchronous)
-</p></details>
-
-- [ ] **Uso de mocks y espías**
-
-  <details><summary>Links</summary><p>
-
-  * [Manual Mocks con Jest - Documentación oficial](https://jestjs.io/docs/es-ES/manual-mocks)
-</p></details>
-
-- [ ] **Pruebas de integración (end-to-end)**
-
-- [ ] **Módulos de ECMAScript (ES Modules)**
-
-  <details><summary>Links</summary><p>
-
-  * [import - MDN](https://developer.mozilla.org/es/docs/Web/JavaScript/Reference/Statements/import)
-  * [export - MDN](https://developer.mozilla.org/es/docs/Web/JavaScript/Reference/Statements/export)
-</p></details>
-
-- [ ] **Módulos de CommonJS**
-
-  <details><summary>Links</summary><p>
-
-  * [Modules: CommonJS modules - Node.js Docs](https://nodejs.org/docs/latest/api/modules.html)
-</p></details>
-
-- [ ] **Uso de linter (ESLINT)**
-
-- [ ] **Uso de identificadores descriptivos (Nomenclatura y Semántica)**
-
-### Control de Versiones (Git y GitHub)
-
-- [ ] **Git: Instalación y configuración**
-
-- [ ] **Git: Control de versiones con git (init, clone, add, commit, status, push, pull, remote)**
-
-- [ ] **Git: Integración de cambios entre ramas (branch, checkout, fetch, merge, reset, rebase, tag)**
-
-- [ ] **GitHub: Creación de cuenta y repos, configuración de llaves SSH**
-
-- [ ] **GitHub: Despliegue con GitHub Pages**
-
-  <details><summary>Links</summary><p>
-
-  * [Sitio oficial de GitHub Pages](https://pages.github.com/)
-</p></details>
-
-- [ ] **GitHub: Colaboración en Github (branches | forks | pull requests | code review | tags)**
-
-- [ ] **GitHub: Organización en Github (projects | issues | labels | milestones | releases)**
-
-### Express.js
-
-- [ ] **Manejo de rutas**
-
-- [ ] **Uso y creación de middleware**
-
-### HTTP
-
-- [ ] **Consulta o petición (request) y respuesta (response).**
-
-  <details><summary>Links</summary><p>
-
-  * [Generalidades del protocolo HTTP - MDN](https://developer.mozilla.org/es/docs/Web/HTTP/Overview)
-  * [Mensajes HTTP - MDN](https://developer.mozilla.org/es/docs/Web/HTTP/Messages)
-</p></details>
-
-- [ ] **Cabeceras (headers)**
-
-  <details><summary>Links</summary><p>
-
-  * [HTTP headers - MDN](https://developer.mozilla.org/es/docs/Web/HTTP/Headers)
-</p></details>
-
-- [ ] **Cuerpo (body)**
-
-  <details><summary>Links</summary><p>
-
-  * [Cuerpo de Mensajes HTTP - MDN](https://developer.mozilla.org/es/docs/Web/HTTP/Messages#cuerpo)
-</p></details>
-
-- [ ] **Verbos HTTP**
-
-  <details><summary>Links</summary><p>
-
-  * [Métodos de petición HTTP - MDN](https://developer.mozilla.org/es/docs/Web/HTTP/Methods)
-</p></details>
-
-- [ ] **Códigos de status de HTTP**
-
-  <details><summary>Links</summary><p>
-
-  * [Códigos de estado de respuesta HTTP - MDN](https://developer.mozilla.org/es/docs/Web/HTTP/Status)
-  * [The Complete Guide to Status Codes for Meaningful ReST APIs - dev.to](https://dev.to/khaosdoctor/the-complete-guide-to-status-codes-for-meaningful-rest-apis-1-5c5)
-</p></details>
-
-- [ ] **Encodings y JSON**
-
-  <details><summary>Links</summary><p>
-
-  * [Introducción a JSON - Documentación oficial](https://www.json.org/json-es.html)
-</p></details>
-
-- [ ] **CORS (Cross-Origin Resource Sharing)**
-
-  <details><summary>Links</summary><p>
-
-  * [Control de acceso HTTP (CORS) - MDN](https://developer.mozilla.org/es/docs/Web/HTTP/CORS)
-</p></details>
-
-### Autenticación
-
-- [ ] **JWT (JSON Web Token)**
-
-- [ ] **Almacenamiento y acceso de contraseñas**
-
-### WebOps
-
-- [ ] **Variables de entorno**
-
-- [ ] **Contenedores (Docker)**
-
-- [ ] **Docker compose**
-
-- [ ] **Cloud Functions**
-
-### MongoDB
-
-- [ ] **Operaciones CRUD (Create-Read-Update-Delete)**
-
-  <details><summary>Links</summary><p>
-
-  * [MongoDB CRUD Operations - Docs (en inglés)](https://docs.mongodb.com/manual/crud/)
-  * [Insert Documents - Docs (en inglés)](https://docs.mongodb.com/manual/tutorial/insert-documents/)
-  * [Query Documents - Docs (en inglés)](https://docs.mongodb.com/manual/tutorial/query-documents/)
-  * [Update Documents - Docs (en inglés)](https://docs.mongodb.com/manual/tutorial/update-documents/)
-  * [Delete Documents - Docs (en inglés)](https://docs.mongodb.com/manual/tutorial/remove-documents/)
-</p></details>
-
-- [ ] **Modelos y esquemas de datos**
-
-  <details><summary>Links</summary><p>
-
-  * [Schema Validation - Docs (en inglés)](https://docs.mongodb.com/manual/core/schema-validation/)
-  * [Data Model Design - Docs (en inglés)](https://docs.mongodb.com/manual/core/data-model-design/)
-</p></details>
-
-- [ ] **Respaldo y restauración (backup/restore)**
-
-  <details><summary>Links</summary><p>
-
-  * [MongoDB Backup Methods - Docs (en inglés)](https://docs.mongodb.com/manual/core/backups/)
-</p></details>
-
-### PostgreSQL
-
-- [ ] **Cliente de terminal psql**
-
-  <details><summary>Links</summary><p>
-
-  * [psql - Docs (en inglés)](https://www.postgresql.org/docs/14/app-psql.html)
-</p></details>
-
-- [ ] **Tipos de datos**
-
-  <details><summary>Links</summary><p>
-
-  * [Chapter 8. Data Types - Docs (en inglés)](https://www.postgresql.org/docs/14/datatype.html)
-</p></details>
-
-- [ ] **Respaldo y restauración (backup/restore)**
-
-  <details><summary>Links</summary><p>
-
-  * [Chapter 26. Backup and Restore - Docs (en inglés)](https://www.postgresql.org/docs/14/backup.html)
-</p></details>
-
-### MySQL
-
-- [ ] **Cliente de terminal mysql**
-
-  <details><summary>Links</summary><p>
-
-  * [The MySQL Command-Line Client - Docs (en inglés)](https://dev.mysql.com/doc/refman/8.0/en/mysql.html)
-</p></details>
-
-- [ ] **Tipos de datos**
-
-  <details><summary>Links</summary><p>
-
-  * [Chapter 11 Data Types - Docs (en inglés)](https://dev.mysql.com/doc/refman/8.0/en/data-types.html)
-</p></details>
-
-- [ ] **Respaldo y restauración (backup/restore)**
-
-  <details><summary>Links</summary><p>
-
-  * [Chapter 7 Backup and Recovery - Docs (en inglés)](https://dev.mysql.com/doc/refman/8.0/en/backup-and-recovery.html)
-  * [mysqldump — A Database Backup Program - Docs (en inglés)](https://dev.mysql.com/doc/refman/8.0/en/mysqldump.html)
-</p></details>
-
-### Bases de datos
-
-- [ ] **Modelado de datos**
-
-- [ ] **Conexión**
-
-### SQL
-
-- [ ] **Creación y modificación de tablas**
-
-  <details><summary>Links</summary><p>
-
-  * [SQL CREATE TABLE Statement - w3schools (en inglés)](https://www.w3schools.com/sql/sql_create_table.asp)
-  * [CREATE TABLE Statement - PostgreSQL Docs (en inglés)](https://www.postgresql.org/docs/9.1/sql-createtable.html)
-  * [ALTER TABLE Statement - PostgreSQL Docs (en inglés)](https://www.postgresql.org/docs/9.1/sql-altertable.html)
-</p></details>
-
-- [ ] **Operaciones CRUD (Create-Read-Update-Delete)**
-
-  <details><summary>Links</summary><p>
-
-  * [INSERT](https://www.postgresql.org/docs/9.5/sql-insert.html)
-  * [SELECT](https://www.postgresql.org/docs/9.5/sql-select.html)
-  * [UPDATE](https://www.postgresql.org/docs/9.1/sql-update.html)
-  * [DELETE](https://www.postgresql.org/docs/8.1/sql-delete.html)
-</p></details>
-
-- [ ] **Borrado de tablas o bases de datos enteras con DROP**
-
-  <details><summary>Links</summary><p>
-
-  * [DROP TABLE](https://www.postgresql.org/docs/8.2/sql-droptable.html)
-  * [DROP DATABASE](https://www.postgresql.org/docs/8.2/sql-dropdatabase.html)
-</p></details>
+## 3. Recursos y documentación
 
 ## 4. Consideraciones generales
 
@@ -382,143 +110,7 @@ REMOTE_URL=<TODO: poner URL> npm run test:e2e
 Las pruebas _end-to-end_ ya están completas en el _boilerplate_, así que puedes
 usarlas como guía de implementación y checklist de completitud.
 
-## 5. Criterios de aceptación mínimos del proyecto
-
-### 5.1 API
-
-Según lo establecido por la
-[documentación](https://app.swaggerhub.com/apis-docs/ssinuco/BurgerQueenAPI/2.0.0)
-entregada por nuestra clienta, la API debe exponer los siguientes endpoints:
-
-#### 5.1.1 `/`
-
-* `GET /`
-
-#### 5.1.2 `/auth`
-
-* `POST /auth`
-
-#### 5.1.3 `/users`
-
-* `GET /users`
-* `GET /users/:uid`
-* `POST /users`
-* `PATCH /users/:uid`
-* `DELETE /users/:uid`
-
-#### 5.1.4 `/products`
-
-* `GET /products`
-* `GET /products/:productid`
-* `POST /products`
-* `PATCH /products/:productid`
-* `DELETE /products/:productid`
-
-#### 5.1.5 `/orders`
-
-* `GET /orders`
-* `GET /orders/:orderId`
-* `POST /orders`
-* `PATCH /orders/:orderId`
-* `DELETE /orders/:orderId`
-
-### 5.2 CLI
-
-La clienta nos ha solicitado que la aplicación cuente un comando **`npm start`**
-que se debe encargar de ejecutar nuestra aplicación node y que además pueda
-recibir información de configuración, como el puerto en el que escuchar, a qué
-base datos conectarse, etc. Estos datos de configuración serán distintos entre
-diferentes entornos (desarrollo, producción, etc.). El _boilerplate_ ya
-implementa [el código necesario](config.js) para leer esta información de los
-[argumentos de invocación](https://nodejs.org/docs/latest/api/process.html#process_process_argv)
-y el
-[entorno](https://nodejs.org/docs/latest/api/process.html#process_process_env).
-
-#### 5.2.1 Argumentos de línea de comando
-
-Podemos especificar el puerto en el que debe arrancar la aplicación pasando un
-argumento a la hora de invocar nuestro programa:
-
-```sh
-# Arranca la aplicación el puerto 8888 usando npm
-npm start 8888
-```
-
-#### 5.2.2 Variables de entorno
-
-Nuestra aplicación usa las siguientes variables de entorno:
-
-* `PORT`: Si no se ha especificado un puerto como argumento de línea de comando,
-  podemos usar la variable de entorno `PORT` para especificar el puerto. Valor
-  por defecto `8080`.
-* `DB_URL`: El _string_ de conexión de _MongoDB_. Cuando ejecutemos la
-  aplicación en nuestra computadora (en entorno de desarrollo), podemos usar el
-  una base de datos local, pero en producción deberemos utilizar las instancias
-  configuradas con `docker-compose` (mas sobre esto en la siguiente sección de
-  **Deployment**)
-* `JWT_SECRET`: Nuestra aplicación implementa autenticación usando JWT (JSON
-  Web Tokens). Para poder firmar (cifrar) y verificar (descifrar) los tokens,
-  nuestra aplicación necesita un secreto. En local puedes usar el valor por
-  defecto (`xxxxxxxx`), pero es muy importante que uses un _secreto_ de verdad
-  en producción.
-* `ADMIN_EMAIL`: Opcionalmente podemos especificar un email y password para
-  el usuario admin (root). Si estos detalles están presentes la aplicación se
-  asegurará que exista el usuario y que tenga permisos de administrador. Valor
-  por defecto `admin@localhost`.
-* `ADMIN_PASSWORD`: Si hemos especificado un `ADMIN_EMAIL`, debemos pasar
-  también una contraseña para el usuario admin. Valor por defecto: `changeme`.
-
-### 5.3 Despliegue (Deployment)
-
-Puedes elegir el proveedor (o proveedores) que prefieras junto
-con el mecanismo de despliegue y estrategia de alojamiento. Te recomendamos
-explorar las siguientes opciones:
-
-* [Vercel](https://vercel.com/) es una opción enfocada
-  a aplicaciones web estáticas (como las que se construyen con React). Sin embargo,
-  Vercel también nos permite desplegar aplicaciones node usando [Serverless
-  Functions](https://vercel.com/docs/serverless-functions/introduction).
-* [MongoDB Atlas](https://www.mongodb.com/cloud/atlas)
-  es una muy buena opción para alojar nuestra base datos de producción, la cuál
-  podemos usar en conjunción con cualquiera de las opciones mencionadas arriba.
-
-Si tienes dudas sobre las diferentes (y múltiples) opciones de despliegue no
-dudes en consultar con tus pares y tus coaches.
-
-### 6. Hacker (Devops) Edition con Docker
-
-Nuestra clienta nos ha manifestado que su equipo de _devops_ está siempre con
-muchas tareas, por lo que nos pide como requerimiento que la aplicación esté
-configurada con `docker-compose` para que pueda ser desplegada sin dificultades
-en cualquier entorno.
-
-El _boilerplate_ ya cuenta con una configuración inicial de `docker-compose` para
-la aplicación de node, tu tarea será extender esa configuración para incluir
-la configuración de base de datos. Ten en cuenta que como vas a tener dos
-servidores corriendo sobre una misma configuración, deberás exponer
-los servicios en diferentes puertos.
-
-Lee la [**guía para docker**] (./guides/GETTING-STARTED-DOCKER.md)
-incluido en el proyecto para mas información.
-
-Para probar tu configuración de docker, te recomendamos usar `docker-compose`
-localmente (en tu computadora) para ejecutar la aplicación junto
-con la base de datos.
-
-Con respecto al despliegue, puedes elegir el proveedor (o proveedores)
-que prefieras junto con el mecanismo de despliegue y estrategia de alojamiento.
-Te recomendamos explorar las siguientes opciones:
-
-* Si quieres explorar opciones más personalizadas y ver docker del lado del
-  servidor puedes considerar proveedores como
-  [AWS (Amazon Web Services)](https://aws.amazon.com/) o
-  [GCP (Google Cloud Platform)](https://cloud.google.com/), ambos tienen algún
-  tipo de _free tier_ así como tanto _instancias_ de _servidores virtuales_
-  (VPS) donde configurar nuestro propio Docker o servicios para desplegar
-  aplicaciones en contenedores (por ejemplo [Compute Engine](https://cloud.google.com/compute/docs/containers)
-  de GCP o [Elastic Container Service](https://aws.amazon.com/ecs/) de AWS).
-
-## 7. Pistas, tips y lecturas complementarias
+## 5. ## 7. Pistas, tips y lecturas complementarias
 
 ### Primeros pasos
 
@@ -537,3 +129,153 @@ Te recomendamos explorar las siguientes opciones:
 * [Postman](https://www.getpostman.com)
 * [Variable de entorno - Wikipedia](https://es.wikipedia.org/wiki/Variable_de_entorno)
 * [`process.env` - Node.js docs](https://nodejs.org/api/process.html#process_process_env)
+
+## 8. Organización
+
+## 9. Criterios de aceptación
+
+Todos los criterios de aceptación mínimos del proyecto fueron logrados.
+A continuación el detalle de cada uno:
+
+### 9.1 API
+
+La API expone los siguientes endpoints:
+
+#### 9.1.1 `/`
+* [x] `GET /`
+
+#### 9.1.2 `/auth`
+* [x] `POST /auth`
+
+#### 9.1.3 `/users`
+* [x] `GET /users`
+* [x] `GET /users/:uid`
+* [x] `POST /users`
+* [x] `PATCH /users/:uid`
+* [x] `DELETE /users/:uid`
+
+#### 9.1.4 `/products`
+* [x] `GET /products`
+* [x] `GET /products/:productid`
+* [x] `POST /products`
+* [x] `PATCH /products/:productid`
+* [x] `DELETE /products/:productid`
+
+#### 9.1.5 `/orders`
+* [x] `GET /orders`
+* [x] `GET /orders/:orderId`
+* [x] `POST /orders`
+* [x] `PATCH /orders/:orderId`
+* [x] `DELETE /orders/:orderId`
+
+### 9.2 CLI
+
+La API se puede ejecutar con el comando **`npm start`**
+Esto se encargará de cargar nuestra aplicación node y además puede recibir el puerto al que escuchar.
+
+#### 9.2.1 Argumentos de línea de comando
+
+Podemos especificar el puerto en el que debe arrancar la aplicación pasando un
+argumento a la hora de invocar nuestro programa:
+
+```sh
+# Arranca la aplicación en el puerto 8888 usando npm
+npm start 8888
+```
+
+#### 9.2.2 Variables de entorno
+
+Nuestra aplicación usa las siguientes variables de entorno:
+
+* `PORT`: Si no se ha especificado un puerto como argumento de línea de comando,
+  podemos usar la variable de entorno `PORT` para especificar el puerto. Valor
+  por defecto `8080`.
+* `DB_URL`: El _string_ de conexión de _MongoDB_.
+* `JWT_SECRET`: Nuestra aplicación implementa autenticación usando JWT (JSON
+  Web Tokens). Para poder usar JWT es necesario este "secreto".
+* `ADMIN_EMAIL`: Opcionalmente podemos especificar un email y password para
+  el usuario admin (root). Si estos detalles están presentes la aplicación se
+  asegurará que exista el usuario y que tenga permisos de administrador. Valor
+  por defecto `admin@localhost`.
+* `ADMIN_PASSWORD`: Si hemos especificado un `ADMIN_EMAIL`, debemos pasar
+  también una contraseña para el usuario admin. Valor por defecto: `changeme`.
+
+### 9.3 Despliegue (Deployment)
+
+El despliegue fue realizado con la plataforma [Fl0](https://www.fl0.com) en conjunto con [MongoDB Atlas](https://www.mongodb.com/cloud/atlas)
+
+Se puede acceder a él desde el enlace: [https://burger-queen-api-wp1d-dev.fl0.io/](https://burger-queen-api-wp1d-dev.fl0.io/)
+
+### 9.4 Hacker Edition - Integración con Docker (DevOps) 
+
+Nuestro proyecto tiene la configuración necesaria para ser ejecutado con Docker,
+utilizando el comando `docker compose up`.
+Esto correra un multicontenedor que contiene dos imágenes, una para el servicio
+de la database de MongoDB y otra para el servicio de Node.
+
+## 10. Objectivos de aprendizaje
+
+### Node.js
+
+- [x] **Instalar y usar módulos con npm**
+- [x] **Configuración de package.json**
+- [x] **Configuración de npm-scripts**
+
+### JavaScript
+
+- [ ] **Pruebas unitarias (unit tests)** `PENDING`
+- [ ] **Pruebas asíncronas** `PENDING`
+- [ ] **Uso de mocks y espías** `PENDING`
+- [x] **Pruebas de integración (end-to-end)**
+- [x] **Módulos de ECMAScript (ES Modules)**
+- [x] **Módulos de CommonJS**
+- [x] **Uso de linter (ESLINT)**
+- [x] **Uso de identificadores descriptivos (Nomenclatura y Semántica)**
+
+### Control de Versiones (Git y GitHub)
+
+- [X] **Git: Instalación y configuración**
+- [X] **Git: Control de versiones con git (init, clone, add, commit, status, push, pull, remote)**
+- [X] **Git: Integración de cambios entre ramas (branch, checkout, fetch, merge, reset, rebase, tag)**
+- [X] **GitHub: Creación de cuenta y repos, configuración de llaves SSH**
+- [X] **GitHub: Despliegue con GitHub Pages**
+- [X] **GitHub: Colaboración en Github (branches | forks | pull requests | code review | tags)**
+- [X] **GitHub: Organización en Github (projects | issues | labels | milestones | releases)**
+
+### Express.js
+
+- [X] **Manejo de rutas**
+- [X] **Uso y creación de middleware**
+
+### HTTP
+
+- [X] **Consulta o petición (request) y respuesta (response).**
+- [X] **Cabeceras (headers)**
+- [x] **Cuerpo (body)**
+- [x] **Verbos HTTP**
+- [x] **Códigos de status de HTTP**
+- [x] **Encodings y JSON**
+- [ ] **CORS (Cross-Origin Resource Sharing)**
+
+### Autenticación
+
+- [x] **JWT (JSON Web Token)**
+- [x] **Almacenamiento y acceso de contraseñas**
+
+### WebOps
+
+- [x] **Variables de entorno**
+- [x] **Contenedores (Docker)**
+- [x] **Docker compose**
+- [x] **Cloud Functions**
+
+### MongoDB
+
+- [x] **Operaciones CRUD (Create-Read-Update-Delete)**
+- [x] **Modelos y esquemas de datos**
+- [x] **Respaldo y restauración (backup/restore)**
+
+### Bases de datos
+
+- [x] **Modelado de datos**
+- [x] **Conexión**
