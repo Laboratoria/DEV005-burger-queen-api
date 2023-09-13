@@ -1,9 +1,8 @@
 const {
-  getUsers,
-} = require('../users');
+  getUsers, getUserById
+} = require('../users.js');
 
 describe('getUsers', () => {
   it('should get users collection', (done) => {
-    done();
   });
 });
