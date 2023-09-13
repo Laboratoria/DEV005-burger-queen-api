@@ -24,7 +24,7 @@ routes(app, (err) => {
   app.use(errorHandler);
 
   app.listen(port, () => {
-    console.info(`App listening on port ${port}`);
+    console.info(`App listening on port ${port} in ${config.db}`);
   });
 });
 
